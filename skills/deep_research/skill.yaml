@@ -1,0 +1,5 @@
+name: "deep_research"
+title: "Deep Research"
+description: "Run structured two-phase deep research for a thesis or any topic: build a confirmed outline and field framework, investigate every item with parallel web search, validate coverage, and compile a cited markdown report."
+category: "Work and knowledge"
+include_in_prompt: true

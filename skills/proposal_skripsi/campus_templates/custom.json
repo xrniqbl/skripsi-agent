@@ -1,0 +1,218 @@
+{
+  "kampus": "ISI DENGAN NAMA INSTITUSI ANDA",
+  "singkat": "KODE",
+  "jenjang": [
+    "skripsi"
+  ],
+  "verifikasi": "Salin berkas ini menjadi nama Institutional_anda.json, lalu isi seluruh field dari pedoman resmi kampus Anda. Jangan menebak aturan tata letak; Field yang kosong akan diisi manual.",
+  "gaya_dokumen": {
+    "ukuran_halaman": "",
+    "margin": {
+      "atas": "",
+      "bawah": "",
+      "kiri": "",
+      "kanan": ""
+    },
+    "font_isi": "",
+    "font_judul": "",
+    "spasi": "",
+    "rata_kanan_kiri": "",
+    "penomoran_halaman": "",
+    "nomor_bab": ""
+  },
+  "sitasi": "",
+  "kelengkapan": [
+    "halaman judul",
+    "lembar persetujuan",
+    "pernyataan keaslian",
+    "kata pengantar",
+    "daftar isi",
+    "daftar tabel",
+    "daftar gambar",
+    "daftar singkatan",
+    "inti sari",
+    "abstrak bahasa Inggris",
+    "BAB I Pendahuluan",
+    "BAB II Tinjauan Pustaka",
+    "BAB III Metode Penelitian",
+    "daftar pustaka",
+    "lampiran"
+  ],
+  "struktur": [
+    {
+      "id": "frontmatter",
+      "judul": "Halaman Depan",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Halaman Judul",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Lembar Persetujuan",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Pernyataan Keaslian",
+          "wajib": true,
+          "catatan": ""
+        }
+      ],
+      "wadah": true
+    },
+    {
+      "id": "bab1",
+      "judul": "BAB I PENDAHULUAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Latar Belakang Masalah",
+          "wajib": true,
+          "cek": [
+            "latar_belakang",
+            "data_empat_lapisan",
+            "celah_penelitian"
+          ]
+        },
+        {
+          "judul": "Rumusan Masalah",
+          "wajib": true,
+          "cek": [
+            "rumusan_masalah"
+          ]
+        },
+        {
+          "judul": "Tujuan Penelitian",
+          "wajib": true,
+          "cek": [
+            "tujuan"
+          ]
+        },
+        {
+          "judul": "Manfaat Penelitian",
+          "wajib": true,
+          "cek": [
+            "manfaat"
+          ]
+        },
+        {
+          "judul": "Batasan Masalah",
+          "wajib": true,
+          "cek": [
+            "batasan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bab2",
+      "judul": "BAB II TINJAUAN PUSTAKA",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Landasan Teori",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Penelitian Terdahulu yang Relevan",
+          "wajib": true,
+          "cek": [
+            "tabel_penelitian_terdahulu",
+            "celah_penelitian"
+          ]
+        },
+        {
+          "judul": "Kerangka Berpikir",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Hipotesis",
+          "wajib": false,
+          "catatan": "Sesuaikan dengan desain"
+        }
+      ]
+    },
+    {
+      "id": "bab3",
+      "judul": "BAB III METODE PENELITIAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Desain Penelitian",
+          "wajib": true,
+          "cek": [
+            "desain_penelitian"
+          ]
+        },
+        {
+          "judul": "Populasi dan Sampel",
+          "wajib": true,
+          "cek": [
+            "populasi_sampel",
+            "teknik_sampel"
+          ]
+        },
+        {
+          "judul": "Variabel Penelitian",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Definisi Operasional Variabel",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Skala Pengukuran",
+          "wajib": true,
+          "catatan": ""
+        },
+        {
+          "judul": "Teknik Pengumpulan Data",
+          "wajib": true,
+          "cek": [
+            "instrumen_validitas_reliabilitas"
+          ]
+        },
+        {
+          "judul": "Teknik Analisis Data",
+          "wajib": true,
+          "cek": [
+            "uji_statistik_cocok"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backmatter",
+      "judul": "Bagian Akhir",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Daftar Pustaka",
+          "wajib": true,
+          "cek": [
+            "semua_penanda_terdaftar"
+          ]
+        },
+        {
+          "judul": "Lampiran",
+          "wajib": true,
+          "catatan": ""
+        }
+      ],
+      "wadah": true
+    }
+  ],
+  "sumber": {
+    "status": "konvensi-umum",
+    "dokumen": null,
+    "url": null,
+    "scope": "seluruh kampus (perlu konfirmasi)",
+    "catatan": "Preset lama, disusun dari kebiasaan umum penulisan ilmiah; belum diverifikasi ke pedoman resmi fakultas/program studi."
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "kampus": "Universitas Dian Nusantara",
+  "singkat": "UDINUS",
+  "jenjang": [
+    "skripsi",
+    "thesis",
+    "disertasi"
+  ],
+  "verifikasi": "Preset ini BELUM diverifikasi ke pedoman resmi. Angka format berasal dari konvensi umum penulisan Indonesia, bukan dari dokumen Universitas Dian Nusantara. Selalu cocokkan dengan pedoman resmi fakultas/program studi Anda sebelum submit.",
+  "sumber": {
+    "status": "konvensi-umum",
+    "dokumen": null,
+    "url": null,
+    "scope": "seluruh kampus (perlu konfirmasi)",
+    "catatan": "Ambil Panduan Penulisan Skripsi resmi Udinus."
+  },
+  "gaya_dokumen": {
+    "ukuran_halaman": "A4",
+    "margin": {
+      "atas": "4 cm",
+      "bawah": "3 cm",
+      "kiri": "4 cm",
+      "kanan": "3 cm"
+    },
+    "font_isi": "Times New Roman 12 pt",
+    "font_judul": "Times New Roman 14 pt tebal",
+    "spasi": "1.5",
+    "rata_kanan_kiri": "justify",
+    "penomoran_halaman": "bagian awal angka romawi kecil, bagian inti angka arab, di tengah bawah",
+    "nomor_bab": "BAB I, BAB II, BAB III"
+  },
+  "sitasi": "APA 7",
+  "daftar_pustaka": "heading \"DAFTAR PUSTAKA\" di halaman baru",
+  "kelengkapan": [
+    "halaman judul",
+    "lembar persetujuan",
+    "pernyataan keaslian",
+    "kata pengantar",
+    "daftar isi",
+    "daftar tabel",
+    "daftar gambar",
+    "daftar singkatan",
+    "abstrak (inti sari) bahasa Indonesia",
+    "abstrak bahasa Inggris",
+    "BAB I Pendahuluan",
+    "BAB II Tinjauan Pustaka",
+    "BAB III Metode Penelitian",
+    "BAB IV Hasil dan Pembahasan",
+    "BAB V Kesimpulan dan Saran",
+    "daftar pustaka",
+    "lampiran (instrumen, data, izin penelitian)"
+  ],
+  "struktur": [
+    {
+      "id": "frontmatter",
+      "judul": "Halaman Depan",
+      "wajib": true,
+      "wadah": true,
+      "subbab": [
+        {
+          "judul": "Halaman Judul",
+          "wajib": true,
+          "catatan": "Judul, nama, NIM, pembimbing, program studi, fakultas, tahun"
+        },
+        {
+          "judul": "Lembar Persetujuan",
+          "wajib": true,
+          "catatan": "Tanda tangan pembimbing, dekan/gubernur fakultas"
+        },
+        {
+          "judul": "Pernyataan Keaslian",
+          "wajib": true,
+          "catatan": "Pernyataan naskah orisinal dan tidak plagiat"
+        },
+        {
+          "judul": "Kata Pengantar",
+          "wajib": false
+        },
+        {
+          "judul": "Abstrak",
+          "wajib": false
+        }
+      ]
+    },
+    {
+      "id": "bab1",
+      "judul": "BAB I PENDAHULUAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Latar Belakang Masalah",
+          "wajib": true,
+          "cek": [
+            "latar_belakang",
+            "data_empat_lapisan",
+            "celah_penelitian"
+          ]
+        },
+        {
+          "judul": "Rumusan Masalah",
+          "wajib": true,
+          "cek": [
+            "rumusan_masalah"
+          ]
+        },
+        {
+          "judul": "Tujuan Penelitian",
+          "wajib": true,
+          "cek": [
+            "tujuan"
+          ]
+        },
+        {
+          "judul": "Manfaat Penelitian",
+          "wajib": true,
+          "cek": [
+            "manfaat"
+          ]
+        },
+        {
+          "judul": "Batasan Masalah",
+          "wajib": true,
+          "cek": [
+            "batasan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bab2",
+      "judul": "BAB II TINJAUAN PUSTAKA",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Landasan Teori",
+          "wajib": true
+        },
+        {
+          "judul": "Hubungan Antarvariabel",
+          "wajib": true
+        },
+        {
+          "judul": "Penelitian Terdahulu yang Relevan",
+          "wajib": true,
+          "cek": [
+            "tabel_penelitian_terdahulu",
+            "celah_penelitian"
+          ]
+        },
+        {
+          "judul": "Kerangka Berpikir",
+          "wajib": true
+        },
+        {
+          "judul": "Hipotesis",
+          "wajib": false,
+          "catatan": "Wajib untuk rancangan kuantitatif hipotesis"
+        }
+      ]
+    },
+    {
+      "id": "bab3",
+      "judul": "BAB III METODE PENELITIAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "Desain Penelitian",
+          "wajib": true,
+          "cek": [
+            "desain_penelitian"
+          ]
+        },
+        {
+          "judul": "Populasi dan Sampel",
+          "wajib": true,
+          "cek": [
+            "populasi_sampel",
+            "teknik_sampel",
+            "perhitungan_sampel"
+          ]
+        },
+        {
+          "judul": "Variabel Penelitian",
+          "wajib": true
+        },
+        {
+          "judul": "Definisi Operasional Variabel",
+          "wajib": true
+        },
+        {
+          "judul": "Skala Pengukuran",
+          "wajib": true,
+          "cek": [
+            "skala_likert"
+          ]
+        },
+        {
+          "judul": "Teknik Pengumpulan Data",
+          "wajib": true,
+          "cek": [
+            "instrumen_validitas_reliabilitas"
+          ]
+        },
+        {
+          "judul": "Teknik Analisis Data",
+          "wajib": true,
+          "cek": [
+            "uji_statistik_cocok",
+            "hasil_uji_tabel"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backmatter",
+      "judul": "Bagian Akhir",
+      "wajib": true,
+      "wadah": true,
+      "subbab": [
+        {
+          "judul": "Daftar Pustaka",
+          "wajib": true,
+          "cek": [
+            "semua_penanda_terdaftar"
+          ]
+        },
+        {
+          "judul": "Lampiran",
+          "wajib": true
+        }
+      ]
+    }
+  ]
+}

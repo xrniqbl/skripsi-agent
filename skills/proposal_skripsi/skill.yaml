@@ -1,0 +1,5 @@
+name: "proposal_skripsi"
+title: "Proposal Skripsi"
+description: "Compose a complete Indonesian research proposal (BAB I Pendahuluan, BAB II Tinjauan Pustaka, BAB III Metode Penelitian) for skripsi, thesis or dissertation from the user's local source folder: real dataset profiling and statistical tests, qualitative interview coding, 28 Indonesian campus format presets, EYD language check, plagiarism check, and Markdown plus DOCX export with BibTeX, RIS and EndNote references."
+category: "Work and knowledge"
+include_in_prompt: true

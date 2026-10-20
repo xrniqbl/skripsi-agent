@@ -1,0 +1,387 @@
+{
+  "files": [
+    {
+      "file": "/home/hatch/workspace/custom-skills/proposal_skripsi/tests/sample_dataset.csv",
+      "delimiter": ",",
+      "n_rows": 30,
+      "n_cols": 15,
+      "kolom": [
+        {
+          "nama": "Responden",
+          "tipe": "kategorikal",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 30,
+          "frekuensi_top": [
+            {
+              "nilai": "R01",
+              "freq": 1,
+              "pct": 3.3
+            },
+            {
+              "nilai": "R02",
+              "freq": 1,
+              "pct": 3.3
+            },
+            {
+              "nilai": "R03",
+              "freq": 1,
+              "pct": 3.3
+            },
+            {
+              "nilai": "R04",
+              "freq": 1,
+              "pct": 3.3
+            },
+            {
+              "nilai": "R05",
+              "freq": 1,
+              "pct": 3.3
+            }
+          ]
+        },
+        {
+          "nama": "X1_Motivasi_1",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.6,
+          "median": 4.0,
+          "std": 1.07,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.17,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8699,
+          "shapiro_p": 0.0017,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X1_Motivasi_2",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.733,
+          "median": 4.0,
+          "std": 0.944,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.187,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8782,
+          "shapiro_p": 0.0026,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X1_Motivasi_3",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.667,
+          "median": 4.0,
+          "std": 0.959,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.235,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8784,
+          "shapiro_p": 0.0026,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X1_Motivasi_4",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.733,
+          "median": 4.0,
+          "std": 0.98,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.323,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8717,
+          "shapiro_p": 0.0018,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X2_Kompetensi_1",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.933,
+          "median": 4.0,
+          "std": 0.828,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.75,
+          "skewness": -0.236,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8572,
+          "shapiro_p": 0.0009,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X2_Kompetensi_2",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.833,
+          "median": 4.0,
+          "std": 0.913,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.75,
+          "skewness": -0.209,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8697,
+          "shapiro_p": 0.0016,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X2_Kompetensi_3",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.833,
+          "median": 4.0,
+          "std": 0.986,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.75,
+          "skewness": -0.515,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8504,
+          "shapiro_p": 0.0006,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "X2_Kompetensi_4",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.967,
+          "median": 4.0,
+          "std": 0.85,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 5.0,
+          "skewness": -0.266,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8539,
+          "shapiro_p": 0.0008,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "Y_Kinerja_1",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.933,
+          "median": 4.0,
+          "std": 0.944,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 5.0,
+          "skewness": -0.349,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8561,
+          "shapiro_p": 0.0008,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "Y_Kinerja_2",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.8,
+          "median": 4.0,
+          "std": 0.925,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.374,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8688,
+          "shapiro_p": 0.0016,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "Y_Kinerja_3",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.8,
+          "median": 4.0,
+          "std": 0.887,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 4.0,
+          "skewness": -0.195,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.873,
+          "shapiro_p": 0.002,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "Y_Kinerja_4",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 4,
+          "mean": 3.9,
+          "median": 4.0,
+          "std": 0.96,
+          "min": 2.0,
+          "max": 5.0,
+          "q1": 3.0,
+          "q3": 5.0,
+          "skewness": -0.489,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8565,
+          "shapiro_p": 0.0009,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": 4
+        },
+        {
+          "nama": "Divisi",
+          "tipe": "kategorikal",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 2,
+          "frekuensi_top": [
+            {
+              "nilai": "Operasional",
+              "freq": 17,
+              "pct": 56.7
+            },
+            {
+              "nilai": "Administrasi",
+              "freq": 13,
+              "pct": 43.3
+            }
+          ]
+        },
+        {
+          "nama": "Masa_Kerja_Tahun",
+          "tipe": "numerik",
+          "n_valid": 30,
+          "n_missing": 0,
+          "pct_lengkap": 100.0,
+          "n_unik": 6,
+          "mean": 2.5,
+          "median": 2.0,
+          "std": 1.333,
+          "min": 1.0,
+          "max": 6.0,
+          "q1": 2.0,
+          "q3": 3.0,
+          "skewness": 0.845,
+          "normalitas_skew": "normal",
+          "shapiro_stat": 0.8768,
+          "shapiro_p": 0.0024,
+          "normalitas_metode": "shapiro-wilk",
+          "skala_likert": null
+        }
+      ],
+      "alpha": {
+        "X_Motivasi_": {
+          "kolom": [
+            "X1_Motivasi_1",
+            "X1_Motivasi_2",
+            "X1_Motivasi_3",
+            "X1_Motivasi_4"
+          ],
+          "alpha": 0.926,
+          "kategori": "baik"
+        },
+        "X_Kompetensi_": {
+          "kolom": [
+            "X2_Kompetensi_1",
+            "X2_Kompetensi_2",
+            "X2_Kompetensi_3",
+            "X2_Kompetensi_4"
+          ],
+          "alpha": 0.885,
+          "kategori": "baik"
+        },
+        "Y_Kinerja_": {
+          "kolom": [
+            "Y_Kinerja_1",
+            "Y_Kinerja_2",
+            "Y_Kinerja_3",
+            "Y_Kinerja_4"
+          ],
+          "alpha": 0.899,
+          "kategori": "baik"
+        }
+      },
+      "n_likert_cols": 12,
+      "rekomendasi": [
+        {
+          "tipe": "regresi",
+          "untuk": "Y_Kinerja sebagai variabel dependen, dipengaruhi oleh X1_Motivasi_1, X1_Motivasi_2, X1_Motivasi_3, X1_Motivasi_4, X2_Kompetensi_1, X2_Kompetensi_2, X2_Kompetensi_3, X2_Kompetensi_4",
+          "alasan": "butir skala Likert membentuk variabel laten sehingga skor variabel dihitung dari rata-rata butirnya; PLS-SEM (apabila jumlah indikator banyak) atau regresi berganda",
+          "data": "Y_Kinerja_1 vs X1_Motivasi_1, X1_Motivasi_2, X1_Motivasi_3, X1_Motivasi_4, X2_Kompetensi_1, X2_Kompetensi_2, X2_Kompetensi_3, X2_Kompetensi_4"
+        },
+        {
+          "tipe": "perbandingan antar kelompok",
+          "untuk": "Y_Kinerja_1 menurut kelompok Divisi",
+          "alasan": "kolom Divisi berperan sebagai kelompok pembanding (2 kategori); gunakan one-way ANOVA atau independent t-test",
+          "data": "Y_Kinerja_1 x Divisi"
+        }
+      ]
+    }
+  ]
+}

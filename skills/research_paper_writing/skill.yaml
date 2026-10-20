@@ -1,0 +1,5 @@
+name: "research_paper_writing"
+title: "Research Paper Writing"
+description: "Improve academic paper writing quality for ML, CV and NLP style papers and theses: section structure for Abstract, Introduction, Related Work, Method, Experiments and Conclusion, paragraph flow checks, claim-evidence alignment, and adversarial self-review before submission."
+category: "Work and knowledge"
+include_in_prompt: true
