@@ -1,0 +1,5 @@
+name: "ars_academic_pipeline"
+title: "Academic Pipeline (ARS)"
+description: "Orchestrate the full ARS academic pipeline from research to finished paper: research, writing, integrity checks, two-stage peer review, revision and finalization, coordinating ars_deep_research, ars_academic_paper and ars_academic_paper_reviewer."
+category: "Work and knowledge"
+include_in_prompt: true

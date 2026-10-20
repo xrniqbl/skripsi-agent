@@ -1,0 +1,5 @@
+name: "ars_academic_paper"
+title: "Academic Paper (ARS)"
+description: "Write academic papers with the ARS 12-agent pipeline: 11 modes including full draft, plan, outline, revision, abstract, literature review, citation check, format conversion, AI disclosure and rebuttal audit, with style calibration and APA 7 and other citation formats."
+category: "Work and knowledge"
+include_in_prompt: true

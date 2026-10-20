@@ -1,0 +1,5 @@
+name: "ars_academic_paper_reviewer"
+title: "Academic Paper Reviewer (ARS)"
+description: "Simulate a multi-perspective peer review panel for a paper or thesis draft: journal fit, methodology, domain and Devil's Advocate reviewers plus an editorial decision and revision roadmap, with re-review and reviewer calibration modes."
+category: "Work and knowledge"
+include_in_prompt: false
