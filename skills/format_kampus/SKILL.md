@@ -1,0 +1,92 @@
+---
+name: format_kampus
+description: Mengubah buku panduan/pedoman skripsi sebuah kampus (PDF, DOCX, atau teks) menjadi profil format terstruktur (YAML) yang mengikat semua pekerjaan skripsi berikutnya, lalu menghasilkan template DOCX dari profil itu dan mengaudit dokumen jadi terhadapnya. Gunakan di AWAL setiap proyek skripsi baru, atau kapan pun pengguna mengirim panduan/format/template kampusnya, menyebut nama kampus, atau meminta dokumen disesuaikan dengan format kampus tertentu.
+---
+
+# Format Kampus — Adaptasi Panduan Skripsi Menjadi Profil yang Mengikat
+
+Satu-satunya sumber kebenaran format dalam bundel ini adalah **profil kampus**:
+berkas YAML terstruktur yang diekstrak dari panduan resmi kampus pengguna.
+Skill lain (proposal_skripsi, office_skripsi, skripsi_writing, dan seterusnya)
+tidak menebak format — mereka membaca profil ini.
+
+## Alur Wajib (lima langkah)
+
+### 1. Terima panduan
+
+Pengguna mengirim panduan/pedoman/template kampusnya dalam bentuk apa pun:
+PDF buku panduan, DOCX template, tangkapan layar ketentuan, atau teks tempelan.
+Ekstrak teksnya secara penuh (untuk PDF hasil pindaian, baca halaman sebagai gambar).
+Jangan mengambil kesimpulan dari satu halaman — baca bab format DAN bab sistematika.
+
+### 2. Ekstrak menjadi profil
+
+Isi semua bidang pada `format-profile-template.yaml` (di folder skill ini) mengikuti
+`references/ekstraksi-checklist.md`. Aturan ekstraksi:
+
+- Nilai yang tidak tertulis di panduan diisi `null` dan dicatat sebagai
+  "tidak diatur" — **jangan mengarang ketentuan**.
+- Bila dua bagian panduan bertentangan, catat keduanya di bidang `catatan_konflik`
+  dan tanyakan kepada pengguna pada langkah 3.
+- Bedakan aturan dokumen (margin, font, spasi) dari aturan isi (sistematika bab,
+  jumlah minimal jurnal, gaya sitasi) — keduanya masuk profil di bagiannya masing-masing.
+
+Simpan hasil sebagai `profil-kampus.yaml` di folder proyek pengguna
+(mis. `<proyek>/profil-kampus.yaml`).
+
+### 3. Konfirmasikan ke pengguna
+
+Tampilkan ringkasan profil dalam tabel yang mudah diperiksa: ukuran kertas, margin,
+font dan ukuran per elemen, spasi, skema penomoran halaman per bagian, sistematika
+bab, gaya sitasi, dan aturan khusus. Minta pengguna mengoreksi yang keliru sebelum
+profil dikunci. Profil terkunci = kontrak format untuk seluruh proyek.
+
+### 4. Terapkan
+
+- Hasilkan template acuan DOCX dari profil dengan
+  `scripts/buat_template_docx.py profil-kampus.yaml template-kampus.docx`, lalu
+  pakai berkas itu sebagai reference-doc (pandoc) atau basis dokumen pada skill
+  penulisan mana pun di bundel ini.
+- Saat menulis, patuhi bagian isi profil: sistematika bab, urutan bagian awal/akhir,
+  format caption, dan gaya sitasi.
+- Profil mengalahkan default semua skill lain. Bila pengguna meminta penyimpangan
+  sekali saja, catat sebagai pengecualian eksplisit di profil (`pengecualian:`),
+  jangan mengubah aturan dasarnya diam-diam.
+
+### 5. Audit sebelum menyatakan selesai
+
+Jalankan `scripts/audit_docx.py dokumen.docx profil-kampus.yaml` dan periksa juga
+hasil render dokumen (PDF/gambar):
+
+- Auditor memeriksa margin, ukuran kertas, font/ukuran/spasi style, DAN atribut
+  font tema pada XML dokumen. Atribut tema (`w:asciiTheme` dan sejenisnya) membuat
+  Microsoft Word menampilkan font tema (mis. Aptos) alih-alih font yang tertulis —
+  dokumen yang "terlihat benar" di pemeriksa lain bisa salah di Word. Temuan ini
+  selalu dianggap gagal.
+- Cocokkan nomor halaman hasil render dengan skema tiga bagian di profil
+  (bagian awal / pokok / akhir), posisi dan format angkanya, halaman per halaman.
+- Cocokkan struktur dokumen dengan sistematika profil dan format caption-nya.
+- Laporkan hasil audit apa adanya. Dokumen belum selesai sebelum audit lulus atau
+  penyimpangannya disetujui eksplisit oleh pengguna.
+
+## Preset
+
+Folder `presets/` adalah registry profil kampus yang sudah jadi (daftarnya di
+`presets/INDEX.md`). Alur memakainya:
+
+1. Sebelum mengekstrak panduan dari nol, cari kampus pengguna di registry.
+2. Bila ada presetnya, jadikan itu draf awal profil — tetapi tetap tampilkan
+   ringkasannya untuk dikonfirmasi pengguna, dan sarankan mencocokkan dengan
+   edisi panduan terbaru kampusnya.
+3. Bila belum ada, ekstrak dari panduan pengguna seperti biasa; tawarkan menyimpan
+   hasilnya sebagai preset baru mengikuti aturan di `presets/INDEX.md`.
+
+Registry saat ini baru berisi satu contoh FIKSI (`universitas-contoh.yaml`) sebagai
+acuan bentuk isian — bukan ketentuan kampus nyata mana pun.
+
+## Batasan
+
+- Skill ini mengekstrak dan menegakkan format; ia tidak menggantikan penilaian
+  dosen pembimbing. Bila panduan ambigu, keputusan akhir pada pengguna/dosennya.
+- Nilai default pada template profil hanyalah kerangka isian, bukan ketentuan
+  kampus mana pun.

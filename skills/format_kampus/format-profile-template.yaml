@@ -1,0 +1,64 @@
+# Profil Format Kampus — kerangka isian (lihat SKILL.md skill format_kampus).
+# Isi dari buku panduan resmi kampus pengguna. Nilai yang tidak diatur panduan: null.
+# Nilai contoh di bawah ini BUKAN ketentuan kampus mana pun.
+
+kampus:
+  nama: ""            # nama resmi persis seperti di panduan
+  fakultas: ""
+  program_studi: ""
+  sumber_panduan: ""  # nama berkas / edisi / tahun panduan
+
+dokumen:
+  ukuran_kertas: A4   # A4 | F4 | Letter
+  margin_cm:
+    kiri: 4
+    atas: 3
+    kanan: 3
+    bawah: 3
+
+font:
+  nama: "Times New Roman"
+  isi_pt: 12
+  judul_bab: {pt: 14, tebal: true, kapital: true, rata: tengah}
+  subbab: {pt: 12, tebal: true}
+  sub_subbab: {pt: 12, tebal: true}
+  judul_tabel_gambar_pt: 12
+
+spasi:
+  isi: 1.5            # spasi antarbaris naskah utama (1.0 | 1.5 | 2.0)
+  judul: 1.5
+  tabel: 1.0          # isi tabel boleh lebih rapat bila panduan mengizinkan
+  daftar_pustaka: 1.0
+
+sistematika:
+  bagian_awal: []     # urutan: lembar judul, persetujuan, kata pengantar, ...
+  bab: {}             # {"BAB I": ["1.1 ...", "1.2 ..."], ...}
+  bagian_akhir: []    # daftar pustaka, riwayat hidup, lampiran, ...
+
+penomoran_halaman:
+  bagian_awal: {format: romawi_kecil, posisi: tengah_bawah, jarak_dari_bawah_cm: null, lembar_judul_dihitung_tanpa_nomor: true}
+  bagian_pokok: {format: arab, mulai_dari: 1, awal_bab: tengah_bawah, halaman_lain: kanan_atas}
+  bagian_akhir: {format: arab_lanjutan, posisi: tengah_bawah}
+
+caption:
+  tabel: {posisi: di_atas_tabel, rata: tengah, penomoran: "per bab, angka Romawi (Tabel III.1)"}
+  gambar: {posisi: di_bawah_gambar, rata: tengah, penomoran: "per bab, angka Romawi (Gambar III.1)"}
+
+sitasi:
+  gaya: APA           # APA | IEEE | Vancouver | MLA | gaya kampus
+  min_jurnal_atau_prosiding: null
+  batas_usia_referensi_tahun: null
+  aturan_khusus: []   # mis. kewajiban mengutip jurnal dosen kampus sendiri
+
+sampul:
+  urutan_baris: []    # judul, logo, kata SKRIPSI, diajukan..., nama, NIM, prodi, ...
+  judul: {pt: 14, kapital: true, spasi: 1.5}
+  kata_skripsi_pt: 18
+  nama_nim_pt: 14
+  institusi_pt: 12
+
+bahasa:
+  istilah_asing: miring   # istilah asing tanpa padanan ditulis miring
+
+pengecualian: []      # penyimpangan yang disetujui pengguna, dicatat eksplisit
+catatan_konflik: []   # ketentuan panduan yang saling bertentangan, untuk ditanyakan

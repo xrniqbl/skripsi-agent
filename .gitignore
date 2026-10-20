@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.muse-github-snapshot-sync.json
+*.muse-github-snapshot-sync.json.tmp-*

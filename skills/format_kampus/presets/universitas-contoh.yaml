@@ -1,0 +1,55 @@
+# CONTOH FIKSI — bukan ketentuan kampus nyata mana pun.
+# Memperlihatkan bentuk profil yang sudah terisi penuh (lihat SKILL.md).
+kampus:
+  nama: "Universitas Contoh"
+  fakultas: "Fakultas Contoh"
+  program_studi: "S1 Contoh"
+  sumber_panduan: "Panduan Skripsi Universitas Contoh (contoh fiksi)"
+
+dokumen:
+  ukuran_kertas: A4
+  margin_cm: {kiri: 4, atas: 3, kanan: 3, bawah: 3}
+
+font:
+  nama: "Times New Roman"
+  isi_pt: 12
+  judul_bab: {pt: 14, tebal: true, kapital: true, rata: tengah}
+  subbab: {pt: 12, tebal: true}
+  sub_subbab: {pt: 12, tebal: true}
+  judul_tabel_gambar_pt: 12
+
+spasi: {isi: 1.5, judul: 1.5, tabel: 1.0, daftar_pustaka: 1.0}
+
+sistematika:
+  bagian_awal: ["Lembar Judul", "Lembar Persetujuan", "Kata Pengantar", "Abstrak", "Daftar Isi"]
+  bab:
+    "BAB I": ["1.1 Latar Belakang", "1.2 Rumusan Masalah", "1.3 Tujuan", "1.4 Manfaat", "1.5 Ruang Lingkup"]
+    "BAB II": ["2.1 Tinjauan Pustaka", "2.2 Tinjauan Studi"]
+    "BAB III": ["3.1 Objek Penelitian", "3.2 Alur Penelitian", "3.3 Alat dan Bahan"]
+  bagian_akhir: ["Daftar Pustaka", "Lampiran"]
+
+penomoran_halaman:
+  bagian_awal: {format: romawi_kecil, posisi: tengah_bawah, jarak_dari_bawah_cm: 2, lembar_judul_dihitung_tanpa_nomor: true}
+  bagian_pokok: {format: arab, mulai_dari: 1, awal_bab: tengah_bawah, halaman_lain: kanan_atas}
+  bagian_akhir: {format: arab_lanjutan, posisi: tengah_bawah}
+
+caption:
+  tabel: {posisi: di_atas_tabel, rata: tengah, penomoran: "per bab, angka Romawi (Tabel III.1)"}
+  gambar: {posisi: di_bawah_gambar, rata: tengah, penomoran: "per bab, angka Romawi (Gambar III.1)"}
+
+sitasi:
+  gaya: APA
+  min_jurnal_atau_prosiding: 10
+  batas_usia_referensi_tahun: 5
+  aturan_khusus: []
+
+sampul:
+  urutan_baris: ["Judul", "Logo", "SKRIPSI", "Diajukan...", "Nama", "NIM", "Program Studi", "Universitas", "Kota", "Tahun"]
+  judul: {pt: 14, kapital: true, spasi: 1.5}
+  kata_skripsi_pt: 18
+  nama_nim_pt: 14
+  institusi_pt: 12
+
+bahasa: {istilah_asing: miring}
+pengecualian: []
+catatan_konflik: []
