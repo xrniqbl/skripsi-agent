@@ -1,0 +1,5 @@
+name: "ars_sr_screener"
+title: "Systematic Review Screener (ARS)"
+description: "Screen records for a systematic review with the ARS sr-screener: protocol-driven title, abstract and full-text screening with dual reviewer roles, quality control audits and PRISMA-ready outputs."
+category: "Work and knowledge"
+include_in_prompt: false

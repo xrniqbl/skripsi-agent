@@ -1,0 +1,5 @@
+name: "ars_deep_research"
+title: "Deep Research (ARS)"
+description: "Run the ARS 13-agent academic deep research team: research question formulation, systematic literature search with PRISMA support, source verification, synthesis, risk of bias, meta-analysis and APA 7 report compilation. Distinct from the Weizhena deep_research skill."
+category: "Work and knowledge"
+include_in_prompt: true
