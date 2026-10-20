@@ -1,0 +1,6 @@
+[
+  "tests/test_convert_to_pdf.py::test_convert_to_pdf_with_temp_docx",
+  "tests/test_proofread_id.py::test_proofread_bersih",
+  "tests/test_proofread_id.py::test_proofread_cek_jurnal",
+  "tests/test_proofread_id.py::test_proofread_menemukan_kesalahan"
+]

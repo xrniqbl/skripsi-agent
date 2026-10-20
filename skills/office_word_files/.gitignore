@@ -1,0 +1,26 @@
+# Project files
+.idea
+.DS_Store
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.venv-mcp
+venv/
+.env
+.env.example
+.idea
+
+# Dokumen contoh / hasil tes lokal (jangan push file pribadi)
+sample_*.docx
+*_backup.docx
+*.italic.docx
+work/
+*.pdf

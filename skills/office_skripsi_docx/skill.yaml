@@ -1,0 +1,5 @@
+name: "office_skripsi_docx"
+title: "Office Skripsi DOCX"
+description: "Manipulate Word DOCX files for skripsi work with python-docx and raw XML editing: inspect styles and headings, edit content, renumber captions, rebuild fields and validate the result."
+category: "Work and knowledge"
+include_in_prompt: false

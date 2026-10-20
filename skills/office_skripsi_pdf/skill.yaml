@@ -1,0 +1,5 @@
+name: "office_skripsi_pdf"
+title: "Office Skripsi PDF"
+description: "Inspect and audit PDF files for skripsi work: extract text with layout, audit embedded fonts, and verify a converted thesis PDF before submission."
+category: "Work and knowledge"
+include_in_prompt: false

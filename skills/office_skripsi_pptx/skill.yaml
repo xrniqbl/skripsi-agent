@@ -1,0 +1,5 @@
+name: "office_skripsi_pptx"
+title: "Office Skripsi PPTX"
+description: "Create and edit PowerPoint PPTX files, for example a thesis defense (sidang) presentation, with scripted generation and validation."
+category: "Work and knowledge"
+include_in_prompt: false

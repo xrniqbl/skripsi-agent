@@ -1,0 +1,5 @@
+name: "office_skripsi"
+title: "Office Skripsi"
+description: "Edit a skripsi or thesis DOCX directly: fix content, formatting, headings, captions, table of contents, cross-check in-text citations against the bibliography, audit consistency across chapters, and paraphrase safely toward a similarity target below 20 percent."
+category: "Work and knowledge"
+include_in_prompt: true

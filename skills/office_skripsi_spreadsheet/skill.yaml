@@ -1,0 +1,5 @@
+name: "office_skripsi_spreadsheet"
+title: "Office Skripsi Spreadsheet"
+description: "Create and edit spreadsheet files for skripsi data work, such as research data tables and questionnaire recaps, with scripted generation and validation."
+category: "Work and knowledge"
+include_in_prompt: false
