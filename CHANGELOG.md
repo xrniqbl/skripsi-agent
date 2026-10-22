@@ -3,6 +3,33 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [1.3.0] — 2026-10-22
+
+### Ditambahkan
+- Skill `bahasa_akademik`: pedoman bahasa akademik Indonesia (EYD, ragam orang
+  ketiga, kata baku, pleonasme, istilah konsisten) + `cek_bahasa.py`, pemeriksa
+  otomatis untuk DOCX/Markdown (URL/DOI disamarkan agar DOI jurnal tidak terbaca
+  sebagai kata; temuan dibedakan kesalahan vs peringatan).
+- `format_kampus/scripts/audit_rapi.py`: audit kerapian Word — paragraf kosong
+  berlebih, judul palsu, loncat tingkat judul, tabel/gambar tanpa caption
+  (gambar sampul sebelum Heading 1 pertama dikecualikan), spasi ganda.
+- `format_kampus/scripts/buat_daftar_isi.py`: pembangun daftar isi otomatis dari
+  judul dokumen + nomor halaman hasil render (field TOC Word, titik pemimpin
+  dari tab stop kanan per paragraf, halaman daftar isi dilewati saat pencarian,
+  pencocokan tak peka huruf besar/kecil). Terverifikasi terhadap dokumen nyata:
+  semua nomor sama dengan daftar isi acuan.
+- `format_kampus/references/kerapian-word-dan-daftar-isi.md`: standar kerapian
+  Word dan anatomi daftar isi skripsi.
+
+### Diubah
+- Generator template: style judul kini anti-yatim (keep with next + widow
+  control) dan template memuat style TOC 1/2/3 dengan tab stop kanan berdot
+  leader selebar teks.
+- Router utama: tahap bahasa akademik masuk peta, dan tiga gerbang mutu naskah
+  (bahasa, kerapian, daftar isi) menjadi langkah wajib sebelum dokumen selesai.
+- Tes bundel: 15 pemeriksaan (tambah pemeriksa bahasa dua arah, audit kerapian,
+  style TOC, dan uji asap pembuat daftar isi).
+
 ## [1.2.0] — 2026-10-20
 
 ### Ditambahkan

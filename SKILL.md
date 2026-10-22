@@ -31,6 +31,7 @@ terkunci:
 | Tahap / permintaan pengguna | Sub-skill |
 |---|---|
 | Panduan/format/template kampus → profil format + template DOCX + audit dokumen | `skills/format_kampus/` |
+| Memeriksa/menyunting bahasa naskah agar baku akademik (EYD) + pemeriksa otomatis | `skills/bahasa_akademik/` |
 | Riset topik, tinjauan literatur mendalam, laporan bersitasi | `skills/deep_research/` atau `skills/ars_deep_research/` |
 | Menyusun proposal skripsi/tesis Bab I–III dari bahan lokal | `skills/proposal_skripsi/` |
 | Menulis skripsi gaya Sistem Informasi (IEEE, audit konsistensi, persiapan sidang) | `skills/skripsi_pacil/` |
@@ -62,10 +63,21 @@ Suite ARS memakai sumber daya bersama di `skills/ars_shared_files/` (alias
    (validator, test, doctor), periksa hasil akhir secara visual bila berupa dokumen,
    dan laporkan status verifikasinya secara jujur — termasuk yang gagal atau belum
    bisa diverifikasi.
+6. **Gerbang mutu naskah** (untuk dokumen skripsi/proposal Indonesia, ketiganya
+   wajib sebelum menyebut dokumen selesai):
+   - Bahasa akademik: jalankan `skills/bahasa_akademik/scripts/cek_bahasa.py`
+     pada naskah dan perbaiki temuannya sesuai pedoman di skill yang sama.
+   - Kerapian Word: jalankan `skills/format_kampus/scripts/audit_rapi.py` —
+     disiplin style, caption tabel/gambar, tanpa judul palsu.
+   - Daftar isi: bangun/perbarui dengan
+     `skills/format_kampus/scripts/buat_daftar_isi.py` dari hasil render terakhir —
+     jangan pernah mengetik daftar isi manual.
 
 ## Bahasa dan Gaya
 
 - Ikuti bahasa pengguna; baku akademik untuk naskah, santai untuk percakapan.
+  Standar ragam akademik Indonesia (EYD, tanpa orang pertama, istilah konsisten)
+  diatur di `skills/bahasa_akademik/` dan berlaku untuk semua naskah.
 - Istilah asing yang belum ada padanannya ditulis miring sesuai kaidah umum skripsi
   Indonesia.
 - Sitasi dan daftar pustaka mengikuti gaya yang diminta pengguna/pedoman (APA, IEEE,

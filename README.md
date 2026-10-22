@@ -22,6 +22,20 @@ ke panduan itu, bukan sebaliknya:
    pemeriksaan atribut font tema pada XML, penyebab klasik dokumen tampil dengan
    font yang salah di Microsoft Word.
 
+## Mutu Naskah: Bahasa Akademik, Kerapian Word, Daftar Isi
+
+Tiga gerbang mutu menjaga hasil akhir seperti skripsi pada umumnya:
+
+- **Bahasa akademik** (`skills/bahasa_akademik/`): pedoman ragam baku EYD plus
+  pemeriksa otomatis yang menandai kata ganti orang pertama, kata tidak baku,
+  ragam lisan, dan pleonasme sebelum dokumen dinyatakan selesai.
+- **Kerapian Word** (`format_kampus`): template kini membawa judul anti-yatim
+  (*keep with next*) dan style daftar isi berdot leader; auditor kerapian
+  menangkap judul palsu, paragraf kosong berlebih, dan tabel/gambar tanpa caption.
+- **Daftar isi otomatis** (`format_kampus`): daftar isi dibangun dari judul
+  dokumen dan nomor halaman hasil render — field TOC Word, titik pemimpin rapi,
+  nomor halaman sesuai skema bagian (Romawi/Arab). Bukan ketikan manual.
+
 Preset contoh fiksi tersedia di `skills/format_kampus/presets/`; profil kampus
 nyata dibuat dari panduan masing-masing pengguna dan tersimpan di proyeknya.
 
@@ -31,7 +45,8 @@ nyata dibuat dari panduan masing-masing pengguna dan tersimpan di proyeknya.
 
 | Skill | Fungsi |
 |---|---|
-| `format_kampus` | Mengubah panduan skripsi kampus mana pun menjadi profil format YAML yang mengikat, menghasilkan template DOCX darinya, dan mengaudit dokumen jadi terhadap profil (termasuk deteksi atribut font tema) |
+| `format_kampus` | Mengubah panduan skripsi kampus mana pun menjadi profil format YAML yang mengikat, menghasilkan template DOCX darinya, dan mengaudit dokumen jadi terhadap profil (termasuk deteksi atribut font tema), kerapian Word, dan daftar isi |
+| `bahasa_akademik` | Pedoman bahasa akademik Indonesia (EYD) + pemeriksa otomatis ragam baku untuk naskah skripsi |
 
 ### Riset dan penulisan paper
 

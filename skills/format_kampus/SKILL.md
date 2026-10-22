@@ -69,6 +69,21 @@ hasil render dokumen (PDF/gambar):
 - Laporkan hasil audit apa adanya. Dokumen belum selesai sebelum audit lulus atau
   penyimpangannya disetujui eksplisit oleh pengguna.
 
+### 6. Kerapian Word dan daftar isi
+
+Dokumen yang lulus profil pun bisa tidak rapi. Standar kerapian bundel ada di
+`references/kerapian-word-dan-daftar-isi.md` (disiplin style, caption, anatomi
+daftar isi skripsi). Dua alat menegakkannya:
+
+- `scripts/audit_rapi.py dokumen.docx` — memeriksa paragraf kosong berlebih,
+  judul palsu (ditebalkan manual, bukan style Heading), loncat tingkat judul,
+  tabel/gambar tanpa caption, dan spasi ganda. Jalankan bersama audit profil.
+- `scripts/buat_daftar_isi.py dokumen.docx profil-kampus.yaml [--pdf render.pdf]` —
+  membangun atau memperbarui daftar isi dari judul dokumen dan nomor halaman
+  hasil render: field TOC Word dengan entri tercache yang benar, titik pemimpin
+  dari tab stop kanan, dan nomor sesuai skema profil. Jalankan setiap kali
+  paginasi berubah; jangan mengetik daftar isi secara manual.
+
 ## Preset
 
 Folder `presets/` adalah registry profil kampus yang sudah jadi (daftarnya di

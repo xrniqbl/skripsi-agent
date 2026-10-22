@@ -77,6 +77,7 @@ def main():
     ss = fon.get('sub_subbab') or {}
     terapkan_style(d.styles['Normal'], nama_font, fon.get('isi_pt', 12),
                    spasi=spa.get('isi', 1.5))
+    d.styles['Normal'].paragraph_format.widow_control = True
     terapkan_style(d.styles['Heading 1'], nama_font, jb.get('pt', 14),
                    tebal=jb.get('tebal', True), kapital=jb.get('kapital', True),
                    rata=jb.get('rata', 'tengah'), spasi=spa.get('judul', 1.5))
@@ -84,6 +85,31 @@ def main():
                    tebal=sb.get('tebal', True), spasi=spa.get('judul', 1.5))
     terapkan_style(d.styles['Heading 3'], nama_font, ss.get('pt', 12),
                    tebal=ss.get('tebal', True), spasi=spa.get('judul', 1.5))
+    # kerapian: judul tidak yatim di kaki halaman
+    for nama_style in ('Heading 1', 'Heading 2', 'Heading 3'):
+        pf = d.styles[nama_style].paragraph_format
+        pf.keep_with_next = True
+        pf.keep_together = True
+        pf.widow_control = True
+    # style daftar isi: titik pemimpin ke tab stop kanan selebar teks
+    from docx.enum.style import WD_STYLE_TYPE
+    from docx.oxml import OxmlElement
+    lebar_teks_twips = int((w - float(mar.get('kiri', 4)) - float(mar.get('kanan', 3))) * 567)
+    for tingkat, indent_cm, tebal in (('TOC 1', 0.0, True), ('TOC 2', 0.6, False), ('TOC 3', 1.2, False)):
+        try:
+            st = d.styles[tingkat]
+        except KeyError:
+            st = d.styles.add_style(tingkat, WD_STYLE_TYPE.PARAGRAPH)
+            st.base_style = d.styles['Normal']
+        terapkan_style(st, nama_font, fon.get('isi_pt', 12), tebal=tebal, spasi=1.0)
+        pf = st.paragraph_format
+        pf.left_indent = Cm(indent_cm)
+        pf.space_after = Pt(2)
+        ppr = st.element.get_or_add_pPr()
+        tabs = OxmlElement('w:tabs')
+        tab = OxmlElement('w:tab')
+        tab.set(qn('w:val'), 'right'); tab.set(qn('w:leader'), 'dot'); tab.set(qn('w:pos'), str(lebar_teks_twips))
+        tabs.append(tab); ppr.append(tabs)
 
     d.add_heading('Judul Bab Contoh', level=1)
     d.add_heading('Subbab Contoh', level=2)

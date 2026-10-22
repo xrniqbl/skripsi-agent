@@ -79,6 +79,58 @@ with tempfile.TemporaryDirectory() as tmp:
         r1.returncode == 0 and r2 is not None and r2.returncode == 0,
         (r1.stderr or '')[-200:] + ((r2.stderr or '')[-200:] if r2 else ''))
 
+ba = os.path.join(ROOT, 'skills', 'bahasa_akademik')
+with tempfile.TemporaryDirectory() as tmp:
+    buruk = os.path.join(tmp, 'buruk.md')
+    baik = os.path.join(tmp, 'baik.md')
+    open(buruk, 'w', encoding='utf8').write(
+        'Saya melakukan analisa dengan metoda ini agar supaya hasilnya sangat bagus sekali.\n')
+    open(baik, 'w', encoding='utf8').write(
+        'Penelitian ini menganalisis data dengan metode yang telah ditentukan.\n')
+    rb = subprocess.run([sys.executable, os.path.join(ba, 'scripts', 'cek_bahasa.py'), buruk],
+                        capture_output=True, text=True)
+    rk = subprocess.run([sys.executable, os.path.join(ba, 'scripts', 'cek_bahasa.py'), baik],
+                        capture_output=True, text=True)
+    cek('pemeriksa bahasa akademik (buruk gagal, baik lulus)',
+        rb.returncode == 1 and rk.returncode == 0,
+        f'kode {rb.returncode}/{rk.returncode}')
+
+with tempfile.TemporaryDirectory() as tmp:
+    tpl = os.path.join(tmp, 'tpl.docx')
+    preset = os.path.join(fk, 'presets', 'universitas-contoh.yaml')
+    r1 = subprocess.run([sys.executable, os.path.join(fk, 'scripts', 'buat_template_docx.py'),
+                         preset, tpl], capture_output=True, text=True)
+    r2 = subprocess.run([sys.executable, os.path.join(fk, 'scripts', 'audit_rapi.py'), tpl],
+                        capture_output=True, text=True) if r1.returncode == 0 else None
+    cek('audit kerapian lulus pada template', r2 is not None and r2.returncode == 0,
+        (r2.stdout or '')[-160:] if r2 else 'generator gagal')
+    if r1.returncode == 0:
+        from docx import Document
+        d = Document(tpl)
+        xml = d.styles['TOC 1'].element.xml
+        cek('style TOC 1 berdot leader + judul keep-with-next',
+            'leader="dot"' in xml and 'keepNext' in d.styles['Heading 1'].element.xml)
+
+    if r1.returncode == 0 and subprocess.run(['which', 'soffice'], capture_output=True).returncode == 0:
+        from docx import Document as Doc2
+        mini = os.path.join(tmp, 'mini.docx')
+        d = Doc2(tpl)
+        d.add_heading('DAFTAR ISI', level=1)
+        d.add_heading('BAB I PENDAHULUAN', level=1)
+        d.add_heading('1.1 Latar Belakang', level=2)
+        d.add_paragraph('Isi latar belakang penelitian.')
+        d.save(mini)
+        r3 = subprocess.run([sys.executable, os.path.join(fk, 'scripts', 'buat_daftar_isi.py'),
+                             mini, preset], capture_output=True, text=True)
+        isi = ''
+        if r3.returncode == 0:
+            isi = Doc2(mini).element.xml
+        cek('pembuat daftar isi berjalan (field TOC + entri bertab)',
+            r3.returncode == 0 and 'TOC' in isi and '<w:tab' in isi,
+            (r3.stdout + r3.stderr)[-160:])
+    else:
+        cek('pembuat daftar isi berjalan (field TOC + entri bertab)', True, 'dilewati: soffice tidak ada')
+
 TERLARANG = ('komenin', 'adhirajasa', 'komenin.id')
 temuan = []
 for base, _dirs, files in os.walk(ROOT):
