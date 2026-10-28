@@ -105,6 +105,100 @@ with tempfile.TemporaryDirectory() as tmp:
         r3.returncode == 1 and 'GALAT' in (r3.stdout + r3.stderr),
         f'kode {r3.returncode}')
 
+# --- bab_iv_v ---
+bv = os.path.join(ROOT, 'skills', 'bab_iv_v')
+baik45 = os.path.join(bv, 'tests', 'naskah_baik.md')
+buruk45 = os.path.join(bv, 'tests', 'naskah_buruk.md')
+r = subprocess.run([sys.executable, os.path.join(bv, 'scripts', 'peta_bab45.py'),
+                    baik45, '--periksa'], capture_output=True, text=True)
+cek('uji asap bab_iv_v: naskah baik lulus tanpa galat',
+    r.returncode == 0 and '0 galat' in r.stdout, (r.stdout or '')[-160:])
+
+r = subprocess.run([sys.executable, os.path.join(bv, 'scripts', 'peta_bab45.py'),
+                    buruk45, '--periksa'], capture_output=True, text=True)
+cek('uji asap bab_iv_v: tafsir di bagian hasil ditolak',
+    r.returncode == 1 and 'tafsir_di_hasil' in r.stdout, f'kode {r.returncode}')
+
+r = subprocess.run([sys.executable, os.path.join(bv, 'scripts', 'peta_bab45.py'), '--peta'],
+                   capture_output=True, text=True)
+cek('uji asap bab_iv_v: --peta mencetak kerangka',
+    r.returncode == 0 and 'Jawaban satu kalimat' in r.stdout)
+
+# --- sidang ---
+sd = os.path.join(ROOT, 'skills', 'sidang')
+r = subprocess.run([sys.executable, os.path.join(sd, 'scripts', 'audit_sidang.py'),
+                    baik45, '--pertanyaan'], capture_output=True, text=True)
+cek('uji asap sidang: pertanyaan penguji dibangkitkan',
+    r.returncode == 0 and 'Kelompok WAJIB' in r.stdout, (r.stdout or '')[-160:])
+
+r = subprocess.run([sys.executable, os.path.join(sd, 'scripts', 'audit_sidang.py'),
+                    baik45, '--kartu-angka'], capture_output=True, text=True)
+cek('uji asap sidang: kartu angka memuat nilai utuh',
+    r.returncode == 0 and 'β = 0,412' in r.stdout, (r.stdout or '')[-160:])
+
+r = subprocess.run([sys.executable, os.path.join(sd, 'scripts', 'audit_sidang.py'),
+                    buruk45], capture_output=True, text=True)
+cek('uji asap sidang: naskah dengan simpulan kosong ditolak',
+    r.returncode == 1 and 'simpulan_kosong' in r.stdout, f'kode {r.returncode}')
+
+# --- revisi_pembimbing ---
+rp = os.path.join(ROOT, 'skills', 'revisi_pembimbing')
+with tempfile.TemporaryDirectory() as tmp:
+    tabel = os.path.join(tmp, 'rev.md')
+    r1 = subprocess.run([sys.executable, os.path.join(rp, 'scripts', 'parse_revisi.py'),
+                         os.path.join(rp, 'tests', 'catatan_mentah.md'), '--out', tabel],
+                        capture_output=True, text=True)
+    isi = open(tabel, encoding='utf8').read() if os.path.isfile(tabel) else ''
+    cek('uji asap revisi_pembimbing: catatan dipecah + klasifikasi',
+        r1.returncode == 0 and 'Terdeteksi 10 butir' in r1.stdout
+        and 'R-01' in isi and 'kritis' in isi,
+        (r1.stderr or '')[-160:])
+
+    r2 = subprocess.run([sys.executable, os.path.join(rp, 'scripts', 'parse_revisi.py'),
+                         tabel, '--verifikasi', baik45], capture_output=True, text=True)
+    cek('uji asap revisi_pembimbing: butir kritis belum selesai ditolak',
+        r2.returncode == 1 and 'KRITIS' in r2.stdout, f'kode {r2.returncode}')
+
+r3 = subprocess.run([sys.executable, os.path.join(rp, 'scripts', 'parse_revisi.py'),
+                     os.path.join(rp, 'tests', 'revisi_terisi.md'),
+                     '--verifikasi', baik45], capture_output=True, text=True)
+cek('uji asap revisi_pembimbing: tabel terisi lulus verifikasi',
+    r3.returncode == 0 and 'lolos verifikasi' in r3.stdout, (r3.stdout or '')[-160:])
+
+# --- proposal_skripsi/verify_doi.py: hanya uji mode offline (argumen/format) ---
+ps = os.path.join(ROOT, 'skills', 'proposal_skripsi')
+r = subprocess.run([sys.executable, os.path.join(ps, 'scripts', 'verify_doi.py')],
+                   capture_output=True, text=True)
+cek('uji asap verify_doi: menolak tanpa argumen', r.returncode == 2, f'kode {r.returncode}')
+r = subprocess.run([sys.executable, os.path.join(ps, 'scripts', 'verify_doi.py'), '--help'],
+                   capture_output=True, text=True)
+cek('uji asap verify_doi: --help valid', r.returncode == 0)
+
+# --- dependensi: impor wajib harus tercatat di requirements ---
+r = subprocess.run([sys.executable, os.path.join(ROOT, 'scripts', 'cek_dependensi.py'),
+                    '--json', os.path.join(ROOT, '.dep-check.json')],
+                   capture_output=True, text=True)
+try:
+    import json as _json
+    dep = _json.load(open(os.path.join(ROOT, '.dep-check.json'), encoding='utf8'))
+    os.remove(os.path.join(ROOT, '.dep-check.json'))
+except Exception:  # noqa: BLE001
+    dep = {}
+cek('semua impor pihak ketiga tercatat di requirements',
+    not dep.get('tak_tercatat'),
+    'belum tercatat: ' + ', '.join(dep.get('tak_tercatat', [])) if dep.get('tak_tercatat')
+    else f"{len(dep.get('dependensi', []))} modul")
+cek('dependensi wajib terpasang',
+    not dep.get('kurang_wajib'),
+    'kurang: ' + ', '.join(dep.get('kurang_wajib', [])) if dep.get('kurang_wajib') else '')
+
+# --- tidak ada duplikasi pohon shared/ ---
+shared = os.path.join(ROOT, 'skills', 'shared')
+ars = os.path.join(ROOT, 'skills', 'ars_shared_files')
+cek('tidak ada duplikasi skills/shared vs ars_shared_files',
+    not (os.path.isdir(shared) and os.path.isdir(ars)),
+    'dua salinan byte-identik membingungkan rujukan path' if os.path.isdir(ars) else '')
+
 ba = os.path.join(ROOT, 'skills', 'bahasa_akademik')
 with tempfile.TemporaryDirectory() as tmp:
     buruk = os.path.join(tmp, 'buruk.md')

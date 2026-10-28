@@ -65,15 +65,50 @@ akan mengikuti panduan proseduralnya saja.
    file sesuai mekanisme platform Anda).
 3. Agent akan menelusuri sub-skill di `skills/` sesuai tahap pekerjaan.
 
-## 5. Dependensi Skrip Python (opsional, untuk skill ber-skrip)
+## 5. Dependensi Skrip Python
 
-Sebagian skill membawa skrip bantu. Untuk memakai fungsi penuhnya:
+Sebagian skill membawa skrip bantu. Pasang dengan venv, jangan ke Python sistem:
 
 ```bash
-pip install python-docx lxml pyyaml scipy
-# ekspor DOCX proposal_skripsi membutuhkan pandoc:
-# https://pandoc.org/installing.html
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+# periksa apakah semua impor tercatat dan terpasang:
+.venv/bin/python scripts/cek_dependensi.py
 ```
+
+`requirements.txt` berisi dependensi wajib (python-docx, lxml, PyYAML, openpyxl, scipy).
+Ada dua berkas tambahan:
+
+| Berkas | Untuk apa |
+|---|---|
+| `requirements.txt` | wajib — dipakai sebagian besar skrip DOCX/YAML/statistik |
+| `requirements-office.txt` | opsional — hanya `skills/office_word_files` (server MCP Word) |
+| `requirements-dev.txt` | opsional — `pytest` untuk menjalankan tes |
+
+### Alat sistem (bukan paket Python)
+
+Beberapa skrip memanggil program luar. Kalau tidak ada, skrip gagal dengan pesan jelas
+(bukan traceback):
+
+| Alat | Dibutuhkan oleh | Pasang |
+|---|---|---|
+| `soffice` (LibreOffice) | `buat_daftar_isi.py`, konversi PDF | `apt-get install libreoffice` |
+| `pdfinfo`, `pdftotext` (poppler-utils) | `audit_halaman.py` | `apt-get install poppler-utils` |
+| `pandoc` | ekspor DOCX proposal_skripsi | https://pandoc.org/installing.html |
+
+### Menjalankan tes
+
+```bash
+.venv/bin/python tests/tes_bundel.py          # seluruh bundel
+bash skills/topik_skripsi/tests/run_tests.sh  # per skill
+bash skills/bab_iv_v/tests/run_tests.sh
+bash skills/sidang/tests/run_tests.sh
+bash skills/revisi_pembimbing/tests/run_tests.sh
+bash skills/format_kampus/tests/run_tests.sh
+```
+
+Setiap tes keluar kode 1 bila ada yang gagal, jadi bisa dipakai di CI.
 
 Setelah install, jalankan test bawaan masing-masing skill (folder `tests/` bila ada)
 untuk memastikan lingkungan lengkap sebelum dipakai pada dokumen penting.

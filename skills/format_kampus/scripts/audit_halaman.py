@@ -13,6 +13,7 @@ Lembar judul (halaman 1) dilewati: teks sampul tidak dapat dibedakan dari
 nomor halaman oleh ekstraksi teks — periksa visual bila perlu.
 """
 import re
+import shutil
 import subprocess
 import sys
 
@@ -44,7 +45,28 @@ def slot(ls):
     return atas, bawah
 
 
+
+def _usage(msg: str = "", kode: int = 0) -> None:
+    if msg:
+        print(msg, file=sys.stderr)
+    print(__doc__.strip(), file=sys.stderr if kode else sys.stdout)
+    raise SystemExit(kode)
+
+
+def _butuh(n: int, contoh: str) -> None:
+    if len(sys.argv) - 1 < n:
+        _usage(f"Kurang argumen. Contoh: {contoh}", 2)
+
 def main():
+    if '-h' in sys.argv or '--help' in sys.argv:
+        _usage()
+    _butuh(2, 'python3 audit_halaman.py dokumen.pdf profil-kampus.yaml')
+    for alat in ('pdfinfo', 'pdftotext'):
+        if not shutil.which(alat):
+            print(f"GAGAL: '{alat}' tidak ditemukan di PATH.\n"
+                  f"  audit_halaman.py butuh poppler-utils.\n"
+                  f"  Pasang: apt-get install poppler-utils", file=sys.stderr)
+            sys.exit(2)
     pdf = sys.argv[1]
     profil = yaml.safe_load(open(sys.argv[2], encoding='utf8'))
     ph = profil.get('penomoran_halaman') or {}

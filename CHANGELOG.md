@@ -3,6 +3,50 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.1.0] — 2026-10-28
+
+### Ditambahkan
+- **`bab_iv_v`** — menutup lubang terbesar bundel: sebelumnya BAB IV dan V hanya
+  diringkas dalam 6 baris tabel di `skripsi_writing`. Skill ini menangani pemisahan
+  hasil vs pembahasan, pola pembahasan 4 paragraf (jawaban → perbandingan sama/beda →
+  mekanisme → implikasi+batas), penanganan hasil tidak signifikan (4 penyebab yang sah),
+  dan aturan simpulan 1:1 dengan rumusan masalah. Pemeriksa `peta_bab45.py` mendeteksi
+  kata tafsir di bagian Hasil, jumlah simpulan tidak sama, angka tanpa sumber, effect
+  size hilang, dan saran tanpa pelaku.
+- **`sidang`** — persiapan seminar proposal, seminar hasil, dan sidang akhir. Kerangka
+  slide per jenis (10/15/20 menit), bank 60+ pertanyaan penguji per kelompok, teknik
+  menjawab 3-kalimat, kartu 10 angka kunci. `audit_sidang.py` membangkitkan pertanyaan
+  dari naskah sendiri (R², n kecil, klaim generalisasi, kata lemah).
+- **`revisi_pembimbing`** — mengubah catatan pembimbing (tulisan tangan, komentar Word,
+  WhatsApp) menjadi daftar kerja terlacak. `parse_revisi.py` memecah + mengklasifikasi
+  prioritas, lalu memverifikasi bahwa butir "selesai" punya bukti terukur dan bukti itu
+  benar-benar ada di naskah.
+- **`proposal_skripsi/scripts/verify_doi.py`** — penegak aturan "DOI wajib resolve" yang
+  selama ini hanya tertulis di SKILL.md tanpa alat. Memeriksa Crossref + DataCite +
+  doi.org, memberi empat verdict, dan menandai DOI yang kemungkinan dikarang.
+- **`requirements.txt`** (+ `-office`, `-dev`) dan `scripts/cek_dependensi.py` —
+  mendeteksi impor pihak ketiga yang belum tercatat atau belum terpasang.
+- `tests/run_tests.sh` untuk `format_kampus`, `bab_iv_v`, `sidang`, `revisi_pembimbing`
+  (total 78 pemeriksaan baru).
+
+### Diubah
+- **Duplikasi `skills/ars_shared_files/` dihapus.** Isinya byte-identik dengan
+  `skills/shared/` (173 file, 3 MB dari 11 MB repo). Rujukan path di 5 SKILL.md `ars_*`
+  diseragamkan ke `skills/shared/`.
+- `SKILL.md` root: router ditambah 4 baris tahap (DOI, BAB IV/V, sidang, revisi).
+- `README.md`: bagian "Peta Alur Lengkap: Nol Sampai Sidang" + tabel pemeriksa per tahap.
+- `INSTALL.md`: dependensi per kelompok, tabel alat sistem (soffice/poppler/pandoc),
+  perintah tes.
+- `tests/tes_bundel.py`: 16 → 30 pemeriksaan, mencakup empat skill baru, bagian
+  dependensi, dan penjaga anti-duplikasi.
+
+### Diperbaiki
+- `format_kampus/scripts/*.py` — lima skrip tidak punya `--help` dan gagal dengan
+  `IndexError` polos saat dipanggil tanpa argumen. Sekarang semua punya usage + kode
+  keluar 2.
+- `buat_daftar_isi.py` dan `audit_halaman.py` — bila `soffice`/`poppler` tidak ada,
+  dulu gagal dengan traceback `FileNotFoundError`. Sekarang pesan jelas + cara pasang.
+
 ## [2.0.0] — 2026-10-28
 
 ### Ditambahkan

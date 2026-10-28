@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "file": "/home/hatch/workspace/custom-skills/proposal_skripsi/tests/sample_dataset.csv",
+      "file": "/root/skripsi-agent/skills/proposal_skripsi/tests/sample_dataset.csv",
       "delimiter": ",",
       "n_rows": 30,
       "n_cols": 15,
@@ -57,9 +57,9 @@
           "q3": 4.0,
           "skewness": -0.17,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8699,
-          "shapiro_p": 0.0017,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -78,9 +78,9 @@
           "q3": 4.0,
           "skewness": -0.187,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8782,
-          "shapiro_p": 0.0026,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -99,9 +99,9 @@
           "q3": 4.0,
           "skewness": -0.235,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8784,
-          "shapiro_p": 0.0026,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -120,9 +120,9 @@
           "q3": 4.0,
           "skewness": -0.323,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8717,
-          "shapiro_p": 0.0018,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -141,9 +141,9 @@
           "q3": 4.75,
           "skewness": -0.236,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8572,
-          "shapiro_p": 0.0009,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -162,9 +162,9 @@
           "q3": 4.75,
           "skewness": -0.209,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8697,
-          "shapiro_p": 0.0016,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -183,9 +183,9 @@
           "q3": 4.75,
           "skewness": -0.515,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8504,
-          "shapiro_p": 0.0006,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -204,9 +204,9 @@
           "q3": 5.0,
           "skewness": -0.266,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8539,
-          "shapiro_p": 0.0008,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -225,9 +225,9 @@
           "q3": 5.0,
           "skewness": -0.349,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8561,
-          "shapiro_p": 0.0008,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -246,9 +246,9 @@
           "q3": 4.0,
           "skewness": -0.374,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8688,
-          "shapiro_p": 0.0016,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -267,9 +267,9 @@
           "q3": 4.0,
           "skewness": -0.195,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.873,
-          "shapiro_p": 0.002,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -288,9 +288,9 @@
           "q3": 5.0,
           "skewness": -0.489,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8565,
-          "shapiro_p": 0.0009,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": 4
         },
         {
@@ -329,9 +329,9 @@
           "q3": 3.0,
           "skewness": 0.845,
           "normalitas_skew": "normal",
-          "shapiro_stat": 0.8768,
-          "shapiro_p": 0.0024,
-          "normalitas_metode": "shapiro-wilk",
+          "shapiro_stat": null,
+          "shapiro_p": null,
+          "normalitas_metode": "perkiraan (skewness-kurtosis)",
           "skala_likert": null
         }
       ],

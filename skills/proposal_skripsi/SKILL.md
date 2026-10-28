@@ -451,6 +451,33 @@ Opsi: `--gaya apa|vancouver|ieee`, `--urutkan tahun|penulis|judul|input`,
 Field kosong **tidak ditebak**; penomoran `[L-n]` mengikuti urutan akhir daftar pustaka,
 bukan urutan file. Alur lengkap: `references/paper-review-integration.md`.
 
+### 6.1b Verifikasi DOI (penegak aturan "DOI wajib resolve")
+
+Aturan di atas menuntut setiap DOI benar-benar dapat di-resolve. Tanpa alat, itu
+diperiksa manual — dan DOI karangan yang formatnya benar akan lolos. Jalankan:
+
+```bash
+# periksa semua DOI yang muncul di naskah / Daftar Pustaka
+python3 scripts/verify_doi.py outputs/proposal_skripsi.md --out outputs/laporan_doi.md
+
+# periksa entri tertentu saja
+python3 scripts/verify_doi.py --doi 10.1016/j.ijinfomgt.2023.102642
+```
+
+Empat verdict:
+
+| Verdict | Arti | Tindakan |
+|---|---|---|
+| `VALID` | terdaftar di Crossref/DataCite dan handle doi.org resolve | lolos |
+| `TIDAK ADA` | tidak ditemukan di Crossref, DataCite, maupun doi.org | **hapus atau ganti** — indikasi kuat dikarang |
+| `MENDUGA` | handle resolve tetapi tanpa metadata Crossref/DataCite | verifikasi manual (DOI lama/registrar lain) |
+| `GAGAL` | jaringan gagal | jangan simpulkan apa pun; ulangi |
+
+Kode keluar 1 bila ada `TIDAK ADA`/`MENDUGA`, 3 bila semua gagal karena jaringan.
+Gunakan `--cache .doi_cache.json` agar pemeriksaan ulang tidak memanggil API lagi.
+**Jangan pernah "memperbaiki" DOI dengan mengubah digit** — cari ulang di Google Scholar
+atau situs jurnal, atau ganti dengan sumber yang benar-benar dibaca.
+
 ### 6.2 Quality gate akhir (semua wajib)
 
 - [ ] Judul, identitas, dan jenjang konsisten dengan kontrak Step 0
@@ -489,6 +516,9 @@ python3 scripts/proposal_doctor.py outputs/proposal_skripsi.md \
 
 # 5) kesesuaian struktur dengan pedoman kampus
 python3 scripts/apply_campus_template.py check ugm outputs/proposal_skripsi.md --lengkap
+
+# 6) verifikasi DOI — jangan lewati bila daftar pustaka memuat DOI
+python3 scripts/verify_doi.py outputs/proposal_skripsi.md --out outputs/laporan_doi.md
 ```
 
 | Pemeriksa | Menangkap |
@@ -497,6 +527,7 @@ python3 scripts/apply_campus_template.py check ugm outputs/proposal_skripsi.md -
 | `plagiarism_check.py` | frasa identik ≥7 kata berurutan — duplikasi dalam naskah sendiri, dan tumpang tindih dengan berkas sumber. **Temuan adalah sinyal, bukan bukti**; setiap temuan wajib diverifikasi manual |
 | `proposal_doctor.py` | subbab wajib BAB I–III, `[L-n]`/`[D:kolom]` menggantung, `[isi ...]` tersisa, entri daftar pustaka tak dikenal, kolom dataset yang disebut tapi tak ada, angka hard-code tanpa sumber, DOCX tidak sinkron |
 | `apply_campus_template.py check` | subbab wajib per preset kampus + penanda isi khusus (`latar_belakang`, `rumusan_masalah`, `populasi_sampel`, `uji_statistik_cocok`, dst) |
+| `verify_doi.py` | DOI yang tidak resolve di Crossref/DataCite/doi.org — indikasi DOI dikarang |
 
 Temuan kategori selain `galat` boleh tersisa **bila ada alasan naratif** yang ditulis user.
 

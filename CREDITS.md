@@ -14,6 +14,9 @@ yang berlaku. Repo ini adalah agregasi untuk kemudahan install, bukan klaim kepe
 | `office_skripsi`, `office_skripsi_docx`, `office_skripsi_pdf`, `office_skripsi_pptx`, `office_skripsi_spreadsheet` | andypratama3/office-skripsi | MIT |
 | `proposal_skripsi` | bimajanuri/proposal-skripsi-skill | MIT |
 | `topik_skripsi` | Karya asli bundel ini (tahap fenomena → masalah → gap → FINER → judul) | MIT |
+| `bab_iv_v` | Karya asli bundel ini (BAB IV hasil/pembahasan + BAB V simpulan) | MIT |
+| `sidang` | Karya asli bundel ini (slide, bank pertanyaan penguji, teknik menjawab) | MIT |
+| `revisi_pembimbing` | Karya asli bundel ini (catatan revisi → daftar kerja terlacak) | MIT |
 | `skripsi_pacil` | wahyuabrory/skripsi-pacil | MIT |
 | `skripsi_writing`, `office_word_mcp`, `jurnal_writing`, `jurnal_submit_pack`, `office_word_files` | andypratama3/office-word | MIT |
 

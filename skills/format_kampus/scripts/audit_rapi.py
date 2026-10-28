@@ -23,7 +23,22 @@ def catat(nama, ok, detail='', keras=True):
         (gagal if keras else ingat).append(nama)
 
 
+
+def _usage(msg: str = "", kode: int = 0) -> None:
+    if msg:
+        print(msg, file=sys.stderr)
+    print(__doc__.strip(), file=sys.stderr if kode else sys.stdout)
+    raise SystemExit(kode)
+
+
+def _butuh(n: int, contoh: str) -> None:
+    if len(sys.argv) - 1 < n:
+        _usage(f"Kurang argumen. Contoh: {contoh}", 2)
+
 def main():
+    if '-h' in sys.argv or '--help' in sys.argv:
+        _usage()
+    _butuh(1, 'python3 audit_rapi.py dokumen.docx')
     doc = Document(sys.argv[1])
     paras = doc.paragraphs
 

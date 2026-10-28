@@ -1,0 +1,5 @@
+# Dependensi pengembangan / pengujian
+#
+#   .venv/bin/pip install -r requirements-dev.txt
+
+pytest>=7.0

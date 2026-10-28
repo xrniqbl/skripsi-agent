@@ -14,6 +14,7 @@ seperti di badan dokumen, dan judul DAFTAR ISI tidak ikut terdaftar.
 """
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -67,7 +68,22 @@ def fld(kind, instr=None):
     return r
 
 
+
+def _usage(msg: str = "", kode: int = 0) -> None:
+    if msg:
+        print(msg, file=sys.stderr)
+    print(__doc__.strip(), file=sys.stderr if kode else sys.stdout)
+    raise SystemExit(kode)
+
+
+def _butuh(n: int, contoh: str) -> None:
+    if len(sys.argv) - 1 < n:
+        _usage(f"Kurang argumen. Contoh: {contoh}", 2)
+
 def main():
+    if '-h' in sys.argv or '--help' in sys.argv:
+        _usage()
+    _butuh(2, 'python3 buat_daftar_isi.py dokumen.docx profil-kampus.yaml [--pdf render.pdf]')
     path = sys.argv[1]
     profil = yaml.safe_load(open(sys.argv[2], encoding='utf8'))
     ph = profil.get('penomoran_halaman') or {}
@@ -77,10 +93,20 @@ def main():
         pdf = sys.argv[sys.argv.index('--pdf') + 1]
     tmpdir = None
     if not pdf:
+        if not shutil.which('soffice'):
+            print("GAGAL: soffice tidak ditemukan di PATH.\n"
+                  "  buat_daftar_isi.py butuh LibreOffice untuk merender nomor halaman.\n"
+                  "  Pasang: apt-get install libreoffice  (atau libreoffice-core)\n"
+                  "  Alternatif: render sendiri lalu berikan --pdf render.pdf",
+                  file=sys.stderr)
+            sys.exit(2)
         tmpdir = tempfile.mkdtemp()
         subprocess.run(['soffice', '--headless', '--convert-to', 'pdf', path, '--outdir', tmpdir],
                        capture_output=True)
         pdf = os.path.join(tmpdir, os.path.splitext(os.path.basename(path))[0] + '.pdf')
+        if not os.path.isfile(pdf):
+            print(f"GAGAL: soffice tidak menghasilkan PDF ({pdf}).", file=sys.stderr)
+            sys.exit(2)
     total, isi, baris = buat(pdf)
 
     bab_pertama = next((n for n in range(1, total + 1)

@@ -54,7 +54,22 @@ def terapkan_style(style, nama_font, pt, tebal=None, kapital=False, rata=None, s
         pf.line_spacing = float(spasi)
 
 
+
+def _usage(msg: str = "", kode: int = 0) -> None:
+    if msg:
+        print(msg, file=sys.stderr)
+    print(__doc__.strip(), file=sys.stderr if kode else sys.stdout)
+    raise SystemExit(kode)
+
+
+def _butuh(n: int, contoh: str) -> None:
+    if len(sys.argv) - 1 < n:
+        _usage(f"Kurang argumen. Contoh: {contoh}", 2)
+
 def main():
+    if '-h' in sys.argv or '--help' in sys.argv:
+        _usage()
+    _butuh(2, 'python3 buat_template_docx.py profil-kampus.yaml template-kampus.docx')
     profil = yaml.safe_load(open(sys.argv[1], encoding='utf8'))
     keluar = sys.argv[2]
     dok = profil.get('dokumen') or {}

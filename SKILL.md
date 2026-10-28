@@ -46,6 +46,10 @@ terkunci:
 | Belum punya topik / cari fenomena / uji judul / nilai kelayakan topik | `skills/topik_skripsi/` |
 | Panduan/format/template kampus → profil format + template DOCX + audit dokumen | `skills/format_kampus/` |
 | Memeriksa/menyunting bahasa naskah agar baku akademik (EYD) + pemeriksa otomatis | `skills/bahasa_akademik/` |
+| Verifikasi DOI / entri Daftar Pustaka yang mungkin dikarang | `skills/proposal_skripsi/scripts/verify_doi.py` |
+| Data sudah terkumpul → menulis BAB IV hasil & pembahasan, BAB V simpulan & saran | `skills/bab_iv_v/` |
+| Akan seminar/sidang → slide, daftar pertanyaan penguji, latihan jawab | `skills/sidang/` |
+| Ada catatan revisi pembimbing/penguji → daftar kerja + verifikasi bukti | `skills/revisi_pembimbing/` |
 | Riset topik, tinjauan literatur mendalam, laporan bersitasi | `skills/deep_research/` atau `skills/ars_deep_research/` |
 | Menyusun proposal skripsi/tesis Bab I–III dari bahan lokal | `skills/proposal_skripsi/` |
 | Menulis skripsi gaya Sistem Informasi (IEEE, audit konsistensi, persiapan sidang) | `skills/skripsi_pacil/` |

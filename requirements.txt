@@ -1,0 +1,26 @@
+# Dependensi Python bundel Skripsi Agent
+#
+# Jalankan:
+#   python3 -m venv .venv
+#   .venv/bin/pip install -r requirements.txt
+#
+# Periksa kecocokan impor vs yang terpasang:
+#   .venv/bin/python scripts/cek_dependensi.py
+#
+# Versi diberi batas bawah, bukan pin, supaya tidak cepat basi.
+
+# --- inti: dipakai sebagian besar skrip DOCX/YAML ---
+python-docx>=1.1.0
+lxml>=5.0.0
+PyYAML>=6.0
+
+# --- pengolahan dataset & statistik (proposal_skripsi) ---
+openpyxl>=3.1.0
+scipy>=1.11.0
+
+# --- opsional: hanya untuk skills/office_word_files (server MCP Word) ---
+# Pakai `pip install -r requirements-office.txt` bila membutuhkan server itu.
+# dotenv (python-dotenv), fastmcp, mcp, msoffcrypto-tool, docx2pdf
+
+# --- pengembangan ---
+# pytest>=7.0

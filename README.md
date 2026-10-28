@@ -22,11 +22,44 @@ FASE 6  kontrak_topik.json → serahkan ke proposal_skripsi sebagai STEP 0
 ```
 
 Keluarannya `kontrak_topik.json` yang mengisi seluruh parameter Step 0 di
-`proposal_skripsi`, jadi tidak ada klarifikasi ulang dari nol. Tiga skripnya bisa dijalankan
+`proposal_skripsi`, jadi tidak ada klarifikasi ulang dari nol. Empat skripnya bisa dijalankan
 sendiri: `peta_fenomena.py`, `skor_topik.py`, `judul_check.py`, `literature_probe.py`.
 
 Bila pengguna **sudah** punya topik yang disetujui pembimbing, lewati `topik_skripsi` dan
 langsung ke Langkah Nol di bawah.
+
+## Peta Alur Lengkap: Nol Sampai Sidang
+
+```text
+topik_skripsi      fenomena → masalah → gap → FINER → judul → kontrak_topik.json
+      ↓
+format_kampus      panduan kampus → profil format YAML + template DOCX
+      ↓
+proposal_skripsi   BAB I–III, sitasi, uji statistik, audit  (+ verify_doi.py)
+      ↓
+deep_research      tinjauan literatur bersitasi
+      ↓
+bab_iv_v           BAB IV hasil & pembahasan, BAB V simpulan & saran
+      ↓
+bahasa_akademik    pemeriksa EYD/PUEBI
+      ↓
+revisi_pembimbing  catatan pembimbing → daftar kerja terlacak + verifikasi bukti
+      ↓
+sidang             slide, daftar pertanyaan penguji, kartu angka, latihan
+```
+
+Tiap tahap punya skrip pemeriksa sendiri, dan semuanya keluar dengan kode bukan-nol bila
+ada yang gagal — jadi bisa dipakai di alur otomatis, bukan hanya dibaca manusia.
+
+| Tahap | Pemeriksa |
+|---|---|
+| Topik | `peta_fenomena.py` `skor_topik.py` `judul_check.py` `literature_probe.py` |
+| Format | `buat_template_docx.py` `audit_docx.py` `audit_rapi.py` `buat_daftar_isi.py` `audit_halaman.py` |
+| Proposal | `proposal_doctor.py` `verify_doi.py` `stats_tests.py` |
+| BAB IV/V | `peta_bab45.py` |
+| Revisi | `parse_revisi.py` |
+| Sidang | `audit_sidang.py` |
+| Bahasa | `cek_bahasa.py` |
 
 ## Fitur Utama: Adaptasi Format Kampus Otomatis
 

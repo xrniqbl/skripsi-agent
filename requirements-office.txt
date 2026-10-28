@@ -1,0 +1,15 @@
+# Dependensi opsional — HANYA untuk skills/office_word_files (server MCP Word)
+#
+# Skill lain tidak membutuhkan ini. Pasang hanya kalau lo memakai server
+# word_document_server:
+#
+#   .venv/bin/pip install -r requirements-office.txt
+#
+# Server ini jalan sebagai proses MCP terpisah, bukan dipanggil langsung oleh
+# skrip skripsi.
+
+python-dotenv>=1.0.0
+fastmcp>=0.4.0
+mcp>=1.0.0
+msoffcrypto-tool>=5.0.0
+docx2pdf>=0.1.8

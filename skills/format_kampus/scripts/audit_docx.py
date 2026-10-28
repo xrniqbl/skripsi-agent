@@ -28,7 +28,22 @@ def cm(nilai):
     return round(nilai / 360000, 2)  # EMU -> cm
 
 
+
+def _usage(msg: str = "", kode: int = 0) -> None:
+    if msg:
+        print(msg, file=sys.stderr)
+    print(__doc__.strip(), file=sys.stderr if kode else sys.stdout)
+    raise SystemExit(kode)
+
+
+def _butuh(n: int, contoh: str) -> None:
+    if len(sys.argv) - 1 < n:
+        _usage(f"Kurang argumen. Contoh: {contoh}", 2)
+
 def main():
+    if '-h' in sys.argv or '--help' in sys.argv:
+        _usage()
+    _butuh(2, 'python3 audit_docx.py dokumen.docx profil-kampus.yaml')
     doc = Document(sys.argv[1])
     profil = yaml.safe_load(open(sys.argv[2], encoding='utf8'))
     dok = profil.get('dokumen') or {}
