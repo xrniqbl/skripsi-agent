@@ -33,6 +33,12 @@ PETA = {
     "dotenv": "python-dotenv",
     "msoffcrypto": "msoffcrypto-tool",
     "pytest": "pytest",
+    # nama impor berbeda dari nama paket di PyPI — tanpa pemetaan ini
+    # "PIL terpasang tapi tidak tercatat" muncul sebagai temuan palsu.
+    "PIL": "Pillow",
+    "fastmcp": "fastmcp",
+    "mcp": "mcp",
+    "docx2pdf": "docx2pdf",
 }
 
 RE_IMPOR = re.compile(

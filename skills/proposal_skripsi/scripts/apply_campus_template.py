@@ -27,7 +27,9 @@ CEK = {
     "rumusan_masalah": r"rumusan\s+masalah",
     "tujuan": r"tujuan\s+penelitian",
     "manfaat": r"manfaat\s+penelitian",
-    "batasan": r"batasan\s+masalah|ruas\s+lingkup",
+    # "ruas lingkup" adalah salah ketik lama (seharusnya "ruang lingkup") dan
+    # membuat subbab "Ruang Lingkup" tidak pernah terdeteksi -> peringatan palsu.
+    "batasan": r"batasan\s+masalah|ruang\s+lingkup|ruang\s+lingkup\s+penelitian",
     "data_empat_lapisan": None,
     "celah_penelitian": r"(celah|gap|kekosongan|belum diteliti|tidak banyak)",
     "tabel_penelitian_terdahulu": r"tabel\s+\d+\.\d+|penelitian\s+terdahulu",
@@ -40,6 +42,21 @@ CEK = {
     "uji_statistik_cocok": r"(regresi|anova|chi-?square|t-?test|uji\s+\w+|analisis\s+\w+)",
     "hasil_uji_tabel": r"tabel\s+\d+\.\d+|hasil\s+(pengujian|analisis|uji)",
     "semua_penanda_terdaftar": None,
+    # --- tambahan untuk preset yang memakai nama subbab panduan ARS FTI ---
+    # (Identifikasi Masalah, Landasan Pemikiran, dst.). Tanpa entri di sini,
+    # kunci cek pada preset diabaikan diam-diam sehingga pemeriksaan isi lolos.
+    "identifikasi_masalah": r"identifikasi\s+masalah|rumusan\s+masalah",
+    "landasan_teori": r"(teori|konsep|landasan|tinjauan\s+pustaka)",
+    "penelitian_terdahulu": r"(penelitian\s+terdahulu|tinjauan\s+studi|studi\s+terdahulu|"
+                            r"tabel\s+\d+\.\d+)",
+    "objek_penelitian": r"objek\s+penelitian",
+    "alur_penelitian": r"(alur\s+penelitian|flowchart|diagram\s+alur|gambar\s+\d+\.\d+)",
+    "alat_bahan": r"(alat\s+dan\s+bahan|perangkat\s+keras|perangkat\s+lunak|dataset)",
+    "hasil_penelitian": r"(hasil\s+penelitian|penyajian\s+hasil|hasil\s+\w+)",
+    "pembahasan": r"(pembahasan|diskusi|interpretasi)",
+    "implikasi": r"(implikasi|signifikansi|dampak)",
+    "kesimpulan": r"(kesimpulan|simpulan)",
+    "saran": r"saran",
 }
 
 

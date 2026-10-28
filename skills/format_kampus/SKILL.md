@@ -84,6 +84,30 @@ daftar isi skripsi). Dua alat menegakkannya:
   dari tab stop kanan, dan nomor sesuai skema profil. Jalankan setiap kali
   paginasi berubah; jangan mengetik daftar isi secara manual.
 
+### 7. Periksa isi yang diikat panduan, bukan hanya rupa
+
+Tiga pemeriksa terakhir menutup hal yang tidak terlihat dari DOCX: urutan bagian,
+isi Daftar Pustaka, dan aturan bahasa. Semua menerima `.md`, `.txt`, `.docx`,
+atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otomatis.
+
+- `scripts/periksa_sistematika.py naskah profil-kampus.yaml [--abaikan-opsional]`
+  — mencocokkan naskah dengan `sistematika:` profil: kelengkapan dan URUTAN
+  bagian awal/akhir, keberadaan setiap bab dan subbab, format penomoran subbab
+  (`2.1.` vs `2.1`), dan penomoran caption (`Tabel IV.1`, bukan `Tabel 4.1`).
+  Bagian yang di panduan ditandai "*jika ada" (Daftar Simbol/Gambar/Tabel,
+  Surat Keterangan Riset) dilaporkan sebagai peringatan bila `--abaikan-opsional`.
+- `scripts/periksa_pustaka.py naskah [--tahun-acuan 2026] [--min-jurnal 10]`
+  — Daftar Pustaka terhadap `sitasi:` profil: urutan abjad, `et al.`/`dkk`,
+  gelar akademik, usia terbitan, jumlah jurnal, larangan Blogspot/Wordpress/
+  Wikipedia, tanggal unduh sumber web, dan sitasi dalam teks yang tidak punya
+  entri (atau sebaliknya).
+- `skills/bahasa_akademik/scripts/cek_bahasa.py naskah` — ragam baku, kata tidak
+  baku, singkatan tidak resmi (dll/dst/dsb/ybs), kata ulang berangka (`kata2`),
+  garis miring sebagai "atau", dan "daripada" sebagai "dari".
+
+Ketiganya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
+jangan memperbaiki otomatis tanpa membaca kalimatnya.
+
 ## Preset
 
 Folder `presets/` adalah registry profil kampus yang sudah jadi (daftarnya di
@@ -96,8 +120,12 @@ Folder `presets/` adalah registry profil kampus yang sudah jadi (daftarnya di
 3. Bila belum ada, ekstrak dari panduan pengguna seperti biasa; tawarkan menyimpan
    hasilnya sebagai preset baru mengikuti aturan di `presets/INDEX.md`.
 
-Registry saat ini baru berisi satu contoh FIKSI (`universitas-contoh.yaml`) sebagai
-acuan bentuk isian — bukan ketentuan kampus nyata mana pun.
+Registry berisi satu contoh FIKSI (`universitas-contoh.yaml`) sebagai acuan bentuk
+isian, dan satu preset NYATA: `ars-fti.yaml` untuk Fakultas Teknologi Informasi
+Universitas Adhirajasa Reswara Sanjaya (Panduan Penyusunan Laporan Skripsi,
+Revisi 2025). Preset nyata mengikat: spasi isi 2 (bukan 1,5), caption angka
+Romawi per bab, subbab "1.2. Identifikasi Masalah" (bukan "Rumusan Masalah"),
+BAB II "Landasan Pemikiran".
 
 ## Batasan
 

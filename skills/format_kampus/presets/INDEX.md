@@ -8,6 +8,7 @@ panduan bisa berubah antar edisi.
 | Berkas | Kampus | Sumber panduan | Status |
 |---|---|---|---|
 | `universitas-contoh.yaml` | Universitas Contoh | — (fiktif, hanya contoh bentuk isian) | FIKSI |
+| `ars-fti.yaml` | Universitas Adhirajasa Reswara Sanjaya — Fakultas Teknologi Informasi | Panduan Penyusunan Laporan Skripsi FTI, Revisi Tahun 2025 (42 halaman) | NYATA |
 
 ## Menambah preset kampus nyata
 

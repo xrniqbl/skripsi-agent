@@ -14,6 +14,9 @@ python-docx>=1.1.0
 lxml>=5.0.0
 PyYAML>=6.0
 
+# --- pemrosesan gambar (deteksi latar logo, cap) ---
+Pillow>=10.0.0
+
 # --- pengolahan dataset & statistik (proposal_skripsi) ---
 openpyxl>=3.1.0
 scipy>=1.11.0

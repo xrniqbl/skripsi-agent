@@ -1,0 +1,32 @@
+LEMBAR JUDUL
+KATA PENGANTAR
+ABSTRACT
+DAFTAR ISI
+RINGKASAN
+
+# BAB I PENDAHULUAN
+## 1.1 Latar Belakang
+Teks.
+## 1.2 Rumusan Masalah
+Teks.
+
+# BAB II TINJAUAN PUSTAKA
+## 2.1 Landasan Teori
+Teks.
+
+# BAB III METODE PENELITIAN
+## 3.1 Metode
+Teks.
+
+# BAB IV HASIL DAN PEMBAHASAN
+## 4.1 Hasil
+Tabel 4.1. Hasil Pengujian
+Gambar 4.1. Arsitektur
+
+# BAB V KESIMPULAN DAN SARAN
+## 5.1 Kesimpulan
+Teks.
+
+DAFTAR PUSTAKA
+LAMPIRAN
+DAFTAR RIWAYAT HIDUP

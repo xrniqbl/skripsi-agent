@@ -56,7 +56,8 @@ PROFIL="presets/universitas-contoh.yaml"
 cek "preset contoh ada" test -f "$PROFIL"
 
 # semua skrip punya --help valid dan menolak tanpa argumen
-for s in audit_docx audit_halaman audit_rapi buat_daftar_isi buat_template_docx; do
+for s in audit_docx audit_halaman audit_rapi buat_daftar_isi buat_template_docx \
+         periksa_pustaka periksa_sistematika; do
     cek "help valid: $s" $PY "scripts/$s.py" --help
     cek_tolak "$s menolak pemanggilan tanpa argumen" $PY "scripts/$s.py"
 done
@@ -70,6 +71,13 @@ cek "template tercipta" test -s "$TMP/template.docx"
 cek "audit_docx lulus pada template hasil generator" \
     $PY scripts/audit_docx.py "$TMP/template.docx" "$PROFIL"
 cek_isi "audit_docx memeriksa font tema" "font tema"
+
+# 2b. preset nyata (ars-fti) harus menghasilkan template yang lolos audit
+cek "generator memakai preset ars-fti" \
+    $PY scripts/buat_template_docx.py presets/ars-fti.yaml "$TMP/ars.docx"
+cek "audit_docx lulus pada preset ars-fti" \
+    $PY scripts/audit_docx.py "$TMP/ars.docx" presets/ars-fti.yaml
+cek_isi "preset ars-fti memakai spasi 2" "2.0"
 
 # 3. kerapian
 cek "audit_rapi lulus pada template" \
@@ -91,7 +99,37 @@ cek_tolak "generator menolak profil YAML rusak" \
 cek_tolak "generator menolak profil tidak ada" \
     $PY scripts/buat_template_docx.py "$TMP/nope.yaml" "$TMP/x.docx"
 
-# 6. daftar isi — butuh soffice
+# 6. periksa_pustaka — ketentuan 4.10
+cek "help valid: periksa_pustaka" $PY scripts/periksa_pustaka.py --help
+cek_tolak "periksa_pustaka menolak tanpa argumen" $PY scripts/periksa_pustaka.py
+cek "periksa_pustaka lulus pada naskah bersih" \
+    $PY scripts/periksa_pustaka.py tests/naskah_pustaka_bersih.md \
+    --tahun-acuan 2026 --min-jurnal 2
+cek_tolak "periksa_pustaka menolak naskah buruk" \
+    $PY scripts/periksa_pustaka.py tests/naskah_pustaka_buruk.md --tahun-acuan 2026
+cek_isi "periksa_pustaka menangkap et al" "pakai_etal"
+cek_isi "periksa_pustaka menangkap gelar akademik" "ada_gelar"
+cek_isi "periksa_pustaka menangkap sumber blogspot" "sumber_blogspot"
+cek_isi "periksa_pustaka menangkap usia referensi" "referensi_terlalu_tua"
+cek_isi "periksa_pustaka menangkap web tanpa tanggal unduh" "web_tanpa_tanggal_unduh"
+cek_isi "periksa_pustaka menangkap sitasi tanpa entri" "sitasi_tanpa_entri"
+
+# 7. periksa_sistematika — sistematika kampus
+cek "help valid: periksa_sistematika" $PY scripts/periksa_sistematika.py --help
+cek_tolak "periksa_sistematika menolak tanpa argumen" $PY scripts/periksa_sistematika.py
+cek "preset ars-fti ada" test -f presets/ars-fti.yaml
+cek "periksa_sistematika lulus pada naskah patuh" \
+    $PY scripts/periksa_sistematika.py tests/naskah_sistematika_baik.md \
+    presets/ars-fti.yaml --abaikan-opsional
+cek_tolak "periksa_sistematika menolak naskah menyimpang" \
+    $PY scripts/periksa_sistematika.py tests/naskah_sistematika_buruk.md \
+    presets/ars-fti.yaml --abaikan-opsional
+cek_isi "periksa_sistematika menangkap subbab hilang" "subbab_hilang"
+cek_isi "periksa_sistematika menangkap urutan bagian awal" "awal_urutan"
+cek_isi "periksa_sistematika menangkap caption angka Arab" "caption_angka_arab"
+cek_isi "periksa_sistematika menangkap penomoran tanpa titik" "penomoran_tanpa_titik"
+
+# 8. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
     cek "buat_daftar_isi berjalan" \
         $PY scripts/buat_daftar_isi.py "$TMP/template.docx" "$PROFIL"

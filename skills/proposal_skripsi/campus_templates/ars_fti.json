@@ -1,0 +1,276 @@
+{
+  "kampus": "Universitas Adhirajasa Reswara Sanjaya",
+  "singkat": "ARS",
+  "jenjang": [
+    "skripsi"
+  ],
+  "verifikasi": "Angka format dan sistematika diambil langsung dari 'Panduan Penyusunan Laporan Skripsi, Fakultas Teknologi Informasi, Universitas Adhirajasa Reswara Sanjaya — Revisi Tahun 2025' (42 halaman), berlaku untuk S1 Sistem Informasi dan S1 Teknik Informatika. Sitasi: panduan menyebut APA tetapi SELURUH contoh memakai format (Nama, Tahun:Halaman) dengan titik dua — ikuti contoh panduan, jangan 'memperbaiki' ke APA 7 tanpa bertanya ke pembimbing.",
+  "sumber": {
+    "status": "pedoman-resmi",
+    "dokumen": "Panduan Penyusunan Laporan Skripsi FTI ARS University, Revisi Tahun 2025",
+    "url": "https://bit.ly/TemplateSkripsiFTI (template resmi yang dirujuk panduan; berkas panduan diberikan pengguna)",
+    "scope": "Fakultas Teknologi Informasi — S1 Sistem Informasi dan S1 Teknik Informatika",
+    "tahun": 2025,
+    "catatan": "Spasi isi WAJIB 2 (double) menurut 4.2 butir 3 — bukan 1,5. Margin kiri 4 cm, atas/bawah/kanan 3 cm. Naskah minimal 70 halaman; saat sidang minimal 30 halaman cetak tidak termasuk cover/judul/kata pengantar/daftar isi/daftar pustaka/lampiran, rangkap 3. Penomoran caption memakai angka Romawi kapital per bab (Tabel IV.1). Daftar pustaka: semua nama pengarang ditulis lengkap (TANPA et al/dkk), minimal 10 jurnal/prosiding, wajib 2 di antaranya karya dosen ARS, usia maksimal 5 tahun, dilarang Blogspot/Wordpress/Wikipedia."
+  },
+  "gaya_dokumen": {
+    "ukuran_halaman": "A4 (21 cm x 29,7 cm), 80 g",
+    "margin": {
+      "atas": "3 cm",
+      "bawah": "3 cm",
+      "kiri": "4 cm",
+      "kanan": "3 cm"
+    },
+    "font_isi": "Times New Roman 12 pt",
+    "font_judul": "Times New Roman 14 pt tebal, kapital, rata tengah (judul bab)",
+    "spasi": "2 (double)",
+    "rata_kanan_kiri": "justify",
+    "penomoran_halaman": "bagian awal: romawi kecil (i, ii, iii) tengah bawah, 2 cm dari bawah, lembar judul dihitung tanpa nomor; bagian pokok: angka arab mulai 1, awal bab tengah bawah, halaman lain pojok kanan atas; bagian akhir: arab lanjutan tengah bawah",
+    "nomor_bab": "BAB I, BAB II, BAB III, BAB IV, BAB V (kapital, 14 pt, tebal, tengah)",
+    "catatan_tambahan": "Penomoran subbab memakai titik penutup: '2.1.' lalu '2.1.1.' lalu 'A.' lalu '1.' lalu 'a.' lalu '1)' lalu 'a)'. Hanya halaman muka (tidak bolak-balik). Isi tabel dan gambar boleh menyesuaikan spasi/ukuran huruf. Istilah asing dimiringkan. Singkatan tidak resmi (dll, dst, dsb, ybs) dilarang. Garis miring sebagai 'atau' dilarang."
+  },
+  "sitasi": "APA (contoh panduan memakai format (Nama, Tahun:Halaman) dengan titik dua)",
+  "daftar_pustaka": "heading \"DAFTAR PUSTAKA\"; tiap entri 1 spasi, jarak antar entri 2 spasi; urut abjad; wajib reference manager (Mendeley/Zotero)",
+  "kelengkapan": [
+    "Lembar Judul",
+    "Persembahan",
+    "Surat Pernyataan Keaslian Skripsi",
+    "Surat Pernyataan Persetujuan Publikasi Karya Ilmiah",
+    "Lembar Persetujuan",
+    "Lembar Pengesahan",
+    "Panduan Penggunaan Hak Cipta",
+    "Kata Pengantar",
+    "Ringkasan (150-250 kata, kata kunci maks 5)",
+    "Abstract",
+    "Daftar Isi",
+    "Daftar Simbol (opsional)",
+    "Daftar Gambar (opsional)",
+    "Daftar Tabel (opsional)",
+    "Daftar Lampiran (opsional)",
+    "BAB I PENDAHULUAN",
+    "BAB II LANDASAN PEMIKIRAN",
+    "BAB III METODE PENELITIAN",
+    "BAB IV HASIL DAN PEMBAHASAN",
+    "BAB V PENUTUP",
+    "Daftar Pustaka",
+    "Daftar Riwayat Hidup",
+    "Lembar Konsultasi Bimbingan",
+    "Surat Keterangan Riset (opsional)",
+    "Lampiran"
+  ],
+  "struktur": [
+    {
+      "id": "frontmatter",
+      "judul": "Bagian Awal",
+      "wajib": true,
+      "wadah": true,
+      "subbab": [
+        {
+          "judul": "Lembar Judul",
+          "wajib": true,
+          "catatan": "Judul 14 pt kapital spasi 1,5; logo ARS warna default; kata SKRIPSI 18 pt; kalimat 'Diajukan ...dst' 12 pt; nama & NIM 14 pt spasi 1,5; prodi/universitas/kota/tahun 12 pt spasi 1,5. Nama institusi sesuai Forlap Dikti: Universitas Adhirajasa Reswara Sanjaya."
+        },
+        {
+          "judul": "Persembahan",
+          "wajib": true,
+          "catatan": "Subjektif, bahasa sopan dan singkat."
+        },
+        {
+          "judul": "Surat Pernyataan Keaslian Skripsi",
+          "wajib": true,
+          "catatan": "Ditandatangani di atas materai oleh mahasiswa."
+        },
+        {
+          "judul": "Surat Pernyataan Persetujuan Publikasi Karya Ilmiah",
+          "wajib": true,
+          "catatan": "Ditandatangani di atas materai oleh mahasiswa."
+        },
+        {
+          "judul": "Lembar Persetujuan",
+          "wajib": true,
+          "catatan": "Ditandatangani dosen pembimbing + tanggal persetujuan."
+        },
+        {
+          "judul": "Lembar Pengesahan",
+          "wajib": true,
+          "catatan": "Ditandatangani dewan penguji dan dekan/kaprodi setelah sidang dan revisi."
+        },
+        {
+          "judul": "Panduan Penggunaan Hak Cipta",
+          "wajib": true,
+          "catatan": "Informasi hak distribusi, publikasi, dan batasan penggunaan."
+        },
+        {
+          "judul": "Kata Pengantar",
+          "wajib": true,
+          "catatan": "Boleh memakai kata ganti 'penulis'. Ucapan terima kasih kepada Dekan, Kaprodi, Pembimbing, Penguji."
+        },
+        {
+          "judul": "Ringkasan",
+          "wajib": true,
+          "catatan": "Bahasa Indonesia, 150-250 kata, memuat masalah & dampaknya, metode, hasil, dan pihak yang memanfaatkan. Kata kunci maksimal 5, dipisah koma."
+        },
+        {
+          "judul": "Abstract",
+          "wajib": true,
+          "catatan": "Terjemahan Ringkasan ke Bahasa Inggris."
+        },
+        {"judul": "Daftar Isi", "wajib": true},
+        {"judul": "Daftar Simbol", "wajib": false, "catatan": "Jika diperlukan."},
+        {"judul": "Daftar Gambar", "wajib": false, "catatan": "Jika diperlukan."},
+        {"judul": "Daftar Tabel", "wajib": false, "catatan": "Jika diperlukan."},
+        {"judul": "Daftar Lampiran", "wajib": false, "catatan": "Jika diperlukan."}
+      ]
+    },
+    {
+      "id": "bab1",
+      "judul": "BAB I PENDAHULUAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "1.1. Latar Belakang",
+          "wajib": true,
+          "cek": ["latar_belakang", "data_empat_lapisan", "celah_penelitian"],
+          "catatan": "Mengerucut: paparan umum bidang → permasalahan spesifik. Wajib memuat fakta/data/fenomena pendukung urgensi dan gap penelitian sebelumnya."
+        },
+        {
+          "judul": "1.2. Identifikasi Masalah",
+          "wajib": true,
+          "cek": ["identifikasi_masalah"],
+          "catatan": "PENTING: panduan ARS memakai 'Identifikasi Masalah', BUKAN 'Rumusan Masalah'. Ditulis eksplisit, boleh berupa daftar poin. Butir di sini wajib dijawab satu-per-satu di BAB IV dan dipetakan 1:1 ke Kesimpulan."
+        },
+        {
+          "judul": "1.3. Tujuan Penelitian",
+          "wajib": true,
+          "cek": ["tujuan"],
+          "catatan": "Spesifik, terukur, dapat dijawab metode yang dipakai."
+        },
+        {
+          "judul": "1.4. Manfaat Penelitian",
+          "wajib": true,
+          "cek": ["manfaat"],
+          "catatan": "Manfaat akademik dan praktis, sebut pihak yang memperoleh dampak."
+        },
+        {
+          "judul": "1.5. Ruang Lingkup",
+          "wajib": true,
+          "cek": ["batasan"],
+          "catatan": "Batasan objek, metode, waktu, lokasi, parameter; sebutkan juga yang DI LUAR cakupan."
+        }
+      ]
+    },
+    {
+      "id": "bab2",
+      "judul": "BAB II LANDASAN PEMIKIRAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "2.1. Tinjauan Pustaka",
+          "wajib": true,
+          "cek": ["landasan_teori"],
+          "catatan": "Teori umum → spesifik. Referensi maksimal 5 tahun terakhir (kecuali teori dasar yang masih dipakai luas). Prioritas jurnal bereputasi dan buku akademik."
+        },
+        {
+          "judul": "2.2. Tinjauan Studi",
+          "wajib": true,
+          "cek": ["penelitian_terdahulu", "celah_penelitian"],
+          "catatan": "Ringkas tiap studi: masalah, tujuan, metode, hasil, kelebihan, kelemahan. Bandingkan untuk menunjukkan celah yang diisi penelitian ini. Referensi maksimal 5 tahun terakhir."
+        }
+      ]
+    },
+    {
+      "id": "bab3",
+      "judul": "BAB III METODE PENELITIAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "3.1. Objek Penelitian",
+          "wajib": true,
+          "cek": ["objek_penelitian"],
+          "catatan": "Entitas/lembaga/organisasi/sistem/proses/fenomena. Jelaskan profil, alasan pemilihan, relevansi, dan keterkaitan dengan masalah."
+        },
+        {
+          "judul": "3.2. Alur Penelitian",
+          "wajib": true,
+          "cek": ["alur_penelitian"],
+          "catatan": "Wajib diagram alur (flowchart) + deskripsi tiap tahap. Tahap baku panduan: identifikasi masalah → pengumpulan data → analisis data/pengembangan sistem → uji dan evaluasi → kesimpulan dan saran."
+        },
+        {
+          "judul": "3.3. Alat dan Bahan Penelitian",
+          "wajib": true,
+          "cek": ["alat_bahan"],
+          "catatan": "Alat: hardware/software/instrumen (sebut versi). Bahan: dataset, modul, framework, atau sumber data (sebut asal: survei, Kaggle, UCI, dsb). Rinci agar dapat direplikasi."
+        }
+      ]
+    },
+    {
+      "id": "bab4",
+      "judul": "BAB IV HASIL DAN PEMBAHASAN",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "4.1. Penyajian Hasil Penelitian",
+          "wajib": true,
+          "cek": ["hasil_penelitian"],
+          "catatan": "Objektif, TANPA interpretasi subjektif. Data dalam tabel/grafik/diagram. Kuantitatif: angka, statistik, uji hipotesis. Kualitatif: kutipan wawancara, pola temuan. Harus menjawab tiap butir Identifikasi Masalah."
+        },
+        {
+          "judul": "4.2. Pembahasan Hasil",
+          "wajib": true,
+          "cek": ["pembahasan"],
+          "catatan": "Jelaskan MENGAPA hasil demikian, implikasinya, dan bandingkan dengan penelitian sebelumnya (sama/beda + penyebabnya). Sertakan kelebihan, kekurangan, dan keterbatasan pengujian."
+        },
+        {
+          "judul": "4.3. Implikasi dan Signifikansi Hasil",
+          "wajib": true,
+          "cek": ["implikasi"],
+          "catatan": "Dampak akademik dan praktis; skenario nyata penerapan sistem/metode."
+        }
+      ]
+    },
+    {
+      "id": "bab5",
+      "judul": "BAB V PENUTUP",
+      "wajib": true,
+      "subbab": [
+        {
+          "judul": "5.1. Kesimpulan",
+          "wajib": true,
+          "cek": ["kesimpulan"],
+          "catatan": "Menjawab tujuan/identifikasi masalah, urutan sama, jumlah butir sama. Objektif — tidak boleh ada interpretasi baru. Nyatakan hipotesis diterima/ditolak bila ada."
+        },
+        {
+          "judul": "5.2. Saran",
+          "wajib": true,
+          "cek": ["saran"],
+          "catatan": "Dua jenis: (1) pengembangan penelitian selanjutnya, (2) penerapan hasil untuk industri/organisasi/pengguna. Konstruktif dan realistis."
+        }
+      ]
+    },
+    {
+      "id": "backmatter",
+      "judul": "Bagian Akhir",
+      "wajib": true,
+      "wadah": true,
+      "subbab": [
+        {
+          "judul": "Daftar Pustaka",
+          "wajib": true,
+          "catatan": "Semua yang diacu wajib ada; yang tidak diacu tidak boleh ada. Nama belakang dulu. SEMUA pengarang ditulis (tanpa et al/dkk). Minimal 10 jurnal/prosiding, 2 di antaranya dosen ARS. Usia maks 5 tahun. Dilarang Blogspot/Wordpress/Wikipedia."
+        },
+        {"judul": "Daftar Riwayat Hidup", "wajib": true},
+        {
+          "judul": "Lembar Konsultasi Bimbingan",
+          "wajib": true,
+          "catatan": "Minimal 8 kali bimbingan per dosen pembimbing, tanda tangan asli (bukan scan)."
+        },
+        {"judul": "Surat Keterangan Riset", "wajib": false, "catatan": "Jika diperlukan."},
+        {
+          "judul": "Lampiran",
+          "wajib": true,
+          "catatan": "Nomor halaman tengah bawah melanjutkan naskah; pojok kanan atas diberi kode lampiran (Lampiran A1, A2, B1, ...)."
+        }
+      ]
+    }
+  ]
+}

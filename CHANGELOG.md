@@ -3,6 +3,63 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.2.0] — 2026-10-28
+
+### Konteks
+Panduan resmi Fakultas Teknologi Informasi Universitas Adhirajasa Reswara Sanjaya
+(ARS), Revisi 2025, 42 halaman. Membaca panduan itu memunculkan enam ketentuan
+yang membuat alat bundel ini gagal atau memberi hasil menyesatkan.
+
+### Ditambahkan
+- **Preset nyata `format_kampus/presets/ars-fti.yaml`** — profil format lengkap
+  dari panduan FTI ARS 2025: margin 4/3/3/3 cm, TNR 12, **spasi isi 2** (bukan
+  1,5), caption angka Romawi per bab, 15 bagian awal, sistematika lima bab, aturan
+  sitasi APA-gaya-panduan, aturan daftar pustaka, ketentuan sidang. Setiap angka
+  dikutip dengan nomor butir panduan; empat konflik internal panduan dicatat di
+  `catatan_konflik` alih-alih ditebak.
+- **Preset `proposal_skripsi/campus_templates/ars_fti.json`** — preset yang sama
+  dalam format yang dibaca `apply_campus_template.py`, termasuk catatan isi per
+  subbab.
+- **`format_kampus/scripts/periksa_sistematika.py`** — memeriksa kelengkapan DAN
+  URUTAN bagian awal/akhir, keberadaan setiap bab dan subbab, format penomoran
+  subbab (`2.1.` vs `2.1`), serta penomoran caption (`Tabel IV.1` vs `Tabel 4.1`).
+  Sebelumnya tidak ada satu pun alat yang memeriksa sistematika.
+- **`format_kampus/scripts/periksa_pustaka.py`** — Daftar Pustaka terhadap
+  ketentuan 4.10: urutan abjad, larangan `et al.`/`dkk`, gelar akademik, usia
+  terbitan, jumlah jurnal, larangan Blogspot/Wordpress/Wikipedia, tanggal unduh
+  sumber web, dan sitasi teks yang tidak punya entri.
+- Tes: `format_kampus` 25 → 49 pemeriksaan; `bahasa_akademik` kini punya tes
+  (12 pemeriksaan).
+
+### Diperbaiki
+- **`bab_iv_v/peta_bab45.py` gagal total pada naskah yang patuh panduan.** Pola
+  rumusan masalah hanya mengenal "Rumusan/Perumusan Masalah/Pertanyaan Penelitian",
+  sedangkan panduan ARS memakai **"Identifikasi Masalah"** — akibatnya 0 butir
+  rumusan terdeteksi dan pemeriksaan 1:1 dengan simpulan tidak pernah berjalan.
+  Ditambah: nomor subbab berpola `4.1.` (bertitik) tidak dikenali `RE_SUBBAB`.
+  Keduanya diperbaiki. Ditambahkan pula `SUBBAB_GENERIK`: bila judul subbab
+  ditetapkan panduan (Penyajian Hasil Penelitian / Pembahasan / Implikasi), naskah
+  tidak lagi dituduh "cakupan rendah" — dilaporkan sebagai `pemetaan_tidak_terverifikasi`.
+- **`bahasa_akademik/cek_bahasa.py` tidak memeriksa aturan 4.8/4.9.** Naskah
+  berisi "dll", "dst", "kata2", "PKL/riset", dan "daripada" lolos tanpa temuan.
+  Sekarang keempatnya ditangkap, plus `--help`/`--ringkas` dan kode keluar 2 untuk
+  argumen salah (sebelumnya `IndexError`).
+- **`proposal_skripsi/apply_campus_template.py`**: kunci cek `batasan` memakai
+  salah ketik `ruas\s+lingkup` sehingga subbab "Ruang Lingkup" tidak pernah
+  terdeteksi; kunci cek untuk subbab ARS (`identifikasi_masalah`, `landasan_teori`,
+  `penelitian_terdahulu`, dst.) tidak ada sehingga pemeriksaan isi dilewati diam-diam.
+- **`scripts/cek_dependensi.py`** tidak punya pemetaan `PIL → Pillow`, sehingga
+  melaporkan "tidak tercatat" padahal sudah ada di requirements.
+- **Penjaga konten `tests/tes_bundel.py`** memakai kata terlarang yang mencakup
+  nama kampus — padahal preset kampus WAJIB menyebut nama kampusnya. Daftar
+  dipersempit ke identitas pribadi (nama orang, alamat, nomor telepon, nama proyek
+  pribadi). Identitas pribadi juga dibersihkan dari contoh/`default` pada
+  `scripts/buat_dokumen_usaha.py`.
+
+### Catatan
+Preset `ars-fti` mengikat perilaku alat lain: `format_kampus` menghasilkan template
+dengan spasi 2, dan `proposal_skripsi` memakai `ars_fti` sebagai preset kampus.
+
 ## [2.1.0] — 2026-10-28
 
 ### Ditambahkan

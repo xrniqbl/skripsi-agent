@@ -33,13 +33,33 @@ RE_BAB5 = re.compile(
     r"^#{1,3}\s*(BAB\s+V|BAB\s+5|SIMPULAN|KESIMPULAN|PENUTUP)\b", re.I | re.M)
 RE_BAB_LAIN = re.compile(
     r"^#{1,3}\s*(BAB\s+(?:I|II|III|VI|1|2|3|6)\b|DAFTAR\s+PUSTAKA|LAMPIRAN)\b", re.I | re.M)
+# Nama bagian rumusan berbeda antar kampus. ARS FTI memakai "Identifikasi
+# Masalah"; kampus lain "Rumusan/Perumusan Masalah" atau "Pertanyaan Penelitian".
+# Ketiganya menandai bagian yang sama: daftar butir yang wajib dijawab BAB IV dan
+# dipetakan 1:1 ke simpulan. Pola membolehkan awalan nomor bab ("1.2") dan titik
+# opsional ("1.2."), karena panduan ARS menulis subbab dengan titik.
 RE_RUMUSAN = re.compile(
-    r"^#{1,4}\s*[\d.]*\s*(Rumusan\s+Masalah|Perumusan\s+Masalah|Pertanyaan\s+Penelitian)\b",
+    r"^#{1,4}\s*(?:[\dIVX]+\.?[\d.]*\s*)?"
+    r"(Rumusan\s+Masalah|Perumusan\s+Masalah|Pertanyaan\s+Penelitian|"
+    r"Identifikasi\s+Masalah)\b",
     re.I | re.M)
 RE_SIMPULAN = re.compile(r"^#{1,4}\s*[\d.]*\s*(Simpulan|Kesimpulan)\b", re.I | re.M)
 RE_SARAN = re.compile(r"^#{1,4}\s*[\d.]*\s*Saran\b", re.I | re.M)
-RE_SUBBAB = re.compile(r"^(#{2,4})\s+(4\.\d+[\.\d]*)\s*(.+)$", re.M)
+# Subbab BAB IV boleh bernomor "4.1", "4.1." (panduan ARS), atau "4.1.1".
+# Tanpa titik opsional, seluruh subbab panduan ARS tidak terdeteksi dan pemetaan
+# rumusan -> subbab gagal total padahal naskahnya benar.
+RE_SUBBAB = re.compile(r"^(#{2,4})\s+(4\.\d+[\.\d]*)\.?\s*(.+)$", re.M)
 RE_BUTIR = re.compile(r"^\s*(?:(\d+)[.)]|[-*•])\s+(.{15,})$", re.M)
+
+# Judul subbab BAB IV yang DITETAPKAN panduan kampus (bukan dipilih mahasiswa).
+# ARS FTI: "4.1. Penyajian Hasil Penelitian", "4.2. Pembahasan Hasil",
+# "4.3. Implikasi dan Signifikansi Hasil". Bila subbab memakai nama-nama ini,
+# judulnya tidak akan pernah memuat variabel rumusan — pemetaan berbasis judul
+# pasti gagal padahal naskahnya patuh panduan. Kasus ini ditangani terpisah.
+SUBBAB_GENERIK = re.compile(
+    r"(penyajian\s+hasil|hasil\s+penelitian|gambaran\s+umum|hasil\s+dan\s+pembahasan|"
+    r"pembahasan\s+hasil|pembahasan|implikasi|signifikansi|diskusi|interpretasi|"
+    r"analisis\s+hasil|temuan)", re.I)
 
 # ---------- pola isi ----------
 KATA_TAFSIR = [
@@ -191,7 +211,13 @@ def periksa(teks: str) -> dict:
         # subbab Pembahasan bukan kandidat — ia menafsirkan, bukan menjawab langsung
         judul_sub = [f"{n} {j}" for n, j in subbab
                      if not re.search(r"pembahasan|diskusi|interpretasi", j, re.I)]
+        # Bila seluruh subbab hasil memakai nama baku panduan, judul tidak bisa
+        # dipakai sebagai bukti pemetaan. Turunkan ke sub-sub (4.1.1, 4.1.2, ...)
+        # yang biasanya memang per-rumusan; kalau tidak ada juga, laporkan sebagai
+        # "tidak terverifikasi" — bukan sebagai kesalahan naskah.
+        generik = bool(judul_sub) and all(SUBBAB_GENERIK.search(j) for j in judul_sub)
         dipakai: set[str] = set()
+        belum_terverifikasi: list[int] = []
         for i, r in enumerate(rumusan, 1):
             wr = normal(r)
             skor = []
@@ -201,7 +227,9 @@ def periksa(teks: str) -> dict:
                 penalti = 0.35 if j in dipakai else 0.0
                 skor.append((rasio - penalti, j, nb))
             terbaik = max(skor, default=(0.0, "", 0))
-            if terbaik[0] < 0.25 or terbaik[2] == 0:
+            if (terbaik[0] < 0.25 or terbaik[2] == 0) and generik:
+                belum_terverifikasi.append(i)
+            elif terbaik[0] < 0.25 or terbaik[2] == 0:
                 peringatan.append({
                     "kode": "cakupan_rendah",
                     "pesan": (f"Rumusan masalah #{i} tidak jelas terpetakan ke subbab hasil "
@@ -214,6 +242,17 @@ def periksa(teks: str) -> dict:
                 dipakai.add(terbaik[1])
                 info.setdefault("peta", []).append(
                     {"rumusan": r[:140], "subbab": terbaik[1], "skor": round(terbaik[0], 2)})
+
+        if belum_terverifikasi:
+            peringatan.append({
+                "kode": "pemetaan_tidak_terverifikasi",
+                "pesan": (f"Subbab BAB IV memakai judul baku panduan kampus, sehingga "
+                          f"rumusan #{', #'.join(map(str, belum_terverifikasi))} tidak bisa "
+                          f"dipetakan dari judul subbab."),
+                "saran": ("Ini bukan kesalahan naskah bila panduan kampus memang menetapkan "
+                          "judul subbabnya. Verifikasi manual: pastikan tiap rumusan "
+                          "mendapat sub-subbab (4.1.1, 4.1.2, ...) atau blok bernomor di "
+                          "dalam Penyajian Hasil Penelitian.")})
 
     # --- 5. tafsir di bagian hasil ---
     # bagian hasil = sebelum subbab pembahasan

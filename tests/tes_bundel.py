@@ -251,7 +251,13 @@ with tempfile.TemporaryDirectory() as tmp:
     else:
         cek('pembuat daftar isi berjalan (field TOC + entri bertab)', True, 'dilewati: soffice tidak ada')
 
-TERLARANG = ('komenin', 'adhirajasa', 'komenin.id')
+# Penjaga konten: bundel tidak boleh memuat identitas PRIBADI pengguna, alamat,
+# nomor telepon, atau nama proyek pribadinya. Nama institusi publik (kampus)
+# TIDAK termasuk — preset kampus memang harus menyebut nama kampusnya.
+TERLARANG = (
+    'komenin', 'harry', 'iqbal saputra', 'gang madhayi', 'kebon kopi',
+    '6285846135623', '85846135623',
+)
 temuan = []
 for base, _dirs, files in os.walk(ROOT):
     if '.git' in base or os.path.basename(base) == 'tests':

@@ -2,9 +2,9 @@
 """Buat dokumen usaha PDF (A4) untuk lampiran verifikasi bisnis.
 
 Pemakaian:
-    python3 buat_dokumen_usaha.py --nama "Komenin" --out sku.pdf
-    python3 buat_dokumen_usaha.py --nama "Komenin" --logo https://situs.id/logo.png --out sku.pdf
-    python3 buat_dokumen_usaha.py --nama "Komenin" --jenis kop --out kop.pdf
+    python3 buat_dokumen_usaha.py --nama "Nama Usaha" --out sku.pdf
+    python3 buat_dokumen_usaha.py --nama "Nama Usaha" --logo logo.png --out sku.pdf
+    python3 buat_dokumen_usaha.py --nama "Nama Usaha" --jenis kop --out kop.pdf
 
 Jenis:
     sku     Surat Keterangan Usaha — nama usaha, alamat, telepon, bidang usaha,
@@ -159,7 +159,7 @@ def latar_logo_gelap(uri: str) -> bool:
 
 
 def inisial(nama: str) -> str:
-    """Huruf awal setiap kata: "Harry's Farm" -> "HF"."""
+    """Huruf awal setiap kata: "Nama Usaha" -> "NU"."""
     bersih = re.sub(r"['’]s\b", "", nama, flags=re.I)
     kata = [k for k in bersih.replace("'", " ").replace("’", " ")
             .replace("-", " ").split() if k]
@@ -434,13 +434,13 @@ def render(html_str: str, out_pdf: str) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description="Buat dokumen usaha PDF untuk lampiran verifikasi.",
-        epilog='contoh: python3 buat_dokumen_usaha.py --nama "Komenin" '
-               '--logo https://komenin.id/brand/komenin-robot-256.png --out sku.pdf')
+        epilog='contoh: python3 buat_dokumen_usaha.py --nama "Nama Usaha" '
+               '--logo logo.png --out sku.pdf')
     ap.add_argument("--nama", required=True, help="nama usaha persis seperti didaftarkan")
     ap.add_argument("--alamat",
-                    default="Gang Madhayi No. 22, Jalan Kebon Kopi, Cimahi 40535, Jawa Barat")
-    ap.add_argument("--telepon", default="+6285846135623")
-    ap.add_argument("--pemilik", default="Iqbal Saputra")
+                    default="Jalan Contoh No. 1, Kelurahan Contoh, Kota Contoh 40123")
+    ap.add_argument("--telepon", default="+6281234567890")
+    ap.add_argument("--pemilik", default="Nama Pemilik")
     ap.add_argument("--bidang",
                     default="Jasa Teknologi Informasi — Pembuatan dan Pengembangan Website")
     ap.add_argument("--kota", default="Cimahi")

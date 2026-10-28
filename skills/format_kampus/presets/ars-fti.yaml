@@ -1,0 +1,178 @@
+# Profil Format Kampus — Fakultas Teknologi Informasi, Universitas Adhirajasa
+# Reswara Sanjaya (ARS University).
+#
+# Sumber: "Panduan Penyusunan Laporan Skripsi, Fakultas Teknologi Informasi,
+# Universitas Adhirajasa Reswara Sanjaya — Revisi Tahun 2025" (42 halaman).
+# Berlaku untuk S1 Sistem Informasi dan S1 Teknik Informatika.
+#
+# Setiap angka di bawah dikutip dari bagian panduan yang bersangkutan (nomor bab
+# dalam tanda kurung). Yang tidak diatur panduan diisi null + catatan — TIDAK
+# dikarang. Bila panduan direvisi, periksa ulang angka yang bertanda "cocokkan".
+kampus:
+  nama: "Universitas Adhirajasa Reswara Sanjaya"
+  fakultas: "Fakultas Teknologi Informasi"
+  program_studi: "S1 Sistem Informasi; S1 Teknik Informatika"
+  sumber_panduan: "Panduan Penyusunan Laporan Skripsi FTI ARS University, Revisi Tahun 2025"
+
+dokumen:
+  ukuran_kertas: A4                    # 4.1 butir 3c: 21 cm x 29,7 cm
+  margin_cm: {kiri: 4, atas: 3, kanan: 3, bawah: 3}   # 4.2 butir 2
+  jumlah_halaman_minimal: 70           # 4.1 butir 3d
+  halaman_minimal_saat_sidang: 30      # 2.6 butir 3 — tidak termasuk cover, judul,
+                                       # kata pengantar, daftar isi, daftar pustaka, lampiran
+  cetak_satu_sisi: true                # 4.2 butir 1: hanya halaman muka, tidak bolak-balik
+
+font:
+  nama: "Times New Roman"              # 4.2 butir 4
+  isi_pt: 12
+  judul_bab: {pt: 14, tebal: true, kapital: true, rata: tengah}   # 4.4 butir 1
+  subbab: {pt: 12, tebal: true, kapital_awal: true}               # 4.4 butir 2
+  sub_subbab: {pt: 12, tebal: true}
+  judul_tabel_gambar_pt: 12            # 4.6 — tidak diatur eksplisit; ikut isi 12 pt
+
+spasi:
+  isi: 2.0                             # 4.2 butir 3: "Double (2 spasi)"
+  judul: 1.5                           # 4.3 butir 1 untuk judul cover; judul bab tidak diatur
+  tabel: 1.0                           # 4.2 butir 3: isi tabel & gambar "dapat disesuaikan"
+  daftar_pustaka: 1.0                  # 4.10 butir 7: antar-entri diberi jarak dua spasi
+  catatan_daftar_pustaka: "tiap entri 1 spasi, jarak ANTAR entri 2 spasi"
+
+sistematika:
+  bagian_awal:                          # 3.1 Tabel III.1, 3.2 bagian A
+    - "Lembar Judul"
+    - "Persembahan"
+    - "Surat Pernyataan Keaslian Skripsi"
+    - "Surat Pernyataan Persetujuan Publikasi Karya Ilmiah"
+    - "Lembar Persetujuan"
+    - "Lembar Pengesahan"
+    - "Panduan Penggunaan Hak Cipta"
+    - "Kata Pengantar"
+    - "Ringkasan"
+    - "Abstract"
+    - "Daftar Isi"
+    - "Daftar Simbol"        # opsional
+    - "Daftar Gambar"        # opsional
+    - "Daftar Tabel"         # opsional
+    - "Daftar Lampiran"      # opsional
+  bab:                                  # 3.1 Tabel III.1
+    "BAB I": ["1.1. Latar Belakang", "1.2. Identifikasi Masalah",
+              "1.3. Tujuan Penelitian", "1.4. Manfaat Penelitian",
+              "1.5. Ruang Lingkup"]
+    "BAB II": ["2.1. Tinjauan Pustaka", "2.2. Tinjauan Studi"]
+    "BAB III": ["3.1. Objek Penelitian", "3.2. Alur Penelitian",
+                "3.3. Alat dan Bahan Penelitian"]
+    "BAB IV": ["4.1. Penyajian Hasil Penelitian", "4.2. Pembahasan Hasil",
+               "4.3. Implikasi dan Signifikansi Hasil"]
+    "BAB V": ["5.1. Kesimpulan", "5.2. Saran"]
+  bagian_akhir:                         # 3.1 Tabel III.1, 3.2 bagian C
+    - "Daftar Pustaka"
+    - "Daftar Riwayat Hidup"
+    - "Lembar Konsultasi Bimbingan"
+    - "Surat Keterangan Riset"   # opsional
+    - "Lampiran"
+
+penomoran_halaman:                      # 4.5
+  bagian_awal: {format: romawi_kecil, posisi: tengah_bawah, jarak_dari_bawah_cm: 2,
+                lembar_judul_dihitung_tanpa_nomor: true}
+  bagian_pokok: {format: arab, mulai_dari: 1, awal_bab: tengah_bawah,
+                 halaman_lain: kanan_atas}
+  bagian_akhir: {format: arab_lanjutan, posisi: tengah_bawah,
+                 berlaku_untuk: ["Daftar Pustaka", "Daftar Riwayat Hidup",
+                                 "Surat Keterangan Riset", "Lampiran"]}
+
+caption:                                # 4.6
+  tabel: {posisi: di_atas_tabel, rata: tengah,
+          penomoran: "per bab, angka Romawi kapital (Tabel III.1)"}
+  gambar: {posisi: di_bawah_gambar, rata: tengah,
+           penomoran: "per bab, angka Romawi kapital (Gambar III.1)"}
+  contoh: "Tabel IV.1. Operator Perbandingan (Alfa, 2025)"
+
+sitasi:
+  gaya: APA
+  # 4.7 & 4.10: panduan menyebut APA tetapi memakai format (Nama, Tahun:Halaman)
+  # dengan titik dua — ini BUKAN APA 7 murni. Ikuti contoh panduan, bukan APA baku.
+  format_dalam_teks: "(Nama Belakang, Tahun:Halaman)"
+  format_naratif: "Nama (Tahun:Halaman)"
+  pemisah_tahun_halaman: ":"
+  wajib_reference_manager: true        # 4.7: "Diwajibkan menggunakan reference manager
+                                       # (Mendeley, Zotero)"
+  min_jurnal_atau_prosiding: 10        # 4.10 butir 8
+  batas_usia_referensi_tahun: 5        # 4.10 butir 11 dan 3.2 bagian B.2.a
+  aturan_khusus:
+    - "4.10 butir 9: wajib mensitasi minimal 2 jurnal/prosiding dosen ARS University"
+    - "4.10 butir 10: referensi buku diutamakan karangan dosen ARS University"
+    - "4.10 butir 5: semua nama pengarang ditulis lengkap, TIDAK memakai et al/dkk"
+    - "4.10 butir 1: nama belakang dulu, lalu nama depan (kecuali nama Cina)"
+    - "4.10 butir 12: sumber internet harus URL/web resmi, wajib cantumkan tanggal unduh;"
+    - "4.10 butir 12: DILARANG mengutip dari Blogspot, Wordpress, atau Wikipedia"
+  larangan_sumber: ["Blogspot", "Wordpress", "Wikipedia"]
+
+sampul:                                 # 4.3 dan Tabel IV.1
+  urutan_baris: ["Judul", "Logo ARS University", "SKRIPSI", "Diajukan ...dst",
+                 "Nama Penulis", "NIM", "Program Studi", "Universitas",
+                 "Kota", "Tahun"]
+  judul: {pt: 14, kapital: true, spasi: 1.5}
+  kata_skripsi_pt: 18
+  kalimat_diajukan_pt: 12
+  nama_nim_pt: 14
+  nama_nim_spasi: 1.5
+  institusi_pt: 12
+  institusi_spasi: 1.5
+  institusi_nama_resmi: "Universitas Adhirajasa Reswara Sanjaya"
+  catatan_institusi: "4.3 butir 8: tulis sesuai data Forlap Dikti"
+  sampul_depan:
+    bahan: hardcover
+    warna: "sesuai program studi masing-masing (kode warna tidak terbaca di PDF)"
+    tinta: "hitam atau emas"
+    logo: "berlatar putih"
+  lembar_judul:
+    kertas: "A4 80 g, putih polos"
+    tinta: hitam
+    latar: putih
+    logo: "warna default (bukan putih)"
+
+bahasa:                                 # 4.8 dan 4.9
+  istilah_asing: miring
+  larangan_singkatan_tidak_resmi: ["dll", "dst", "dsb", "ybs"]
+  larangan_kata_ulang_angka: "kata2 → kata-kata; ber-ulang → berulang-ulang"
+  larangan_garis_miring_atau: "jangan tulis PKL/riset; tulis 'PKL atau riset'"
+  larangan_humor: true
+  kata_yang_dihindari: ["daripada (sebagai 'dari')"]
+  aturan_titik_dua: "pilih satu saja: 'terdiri dari', 'adalah', 'sebagai berikut',
+                     'yaitu', 'bahwa', 'diantaranya', 'seperti' → langsung titik dua"
+
+ringkasan:                              # 3.2 bagian A butir 9
+  bahasa: Indonesia
+  panjang_kata: {min: 150, max: 250}
+  kata_kunci_maks: 5
+  pemisah_kata_kunci: koma
+
+sidang:                                 # 2.5, 2.6, 2.7
+  min_bimbingan: 8                      # 2.4 butir 1: per dosen pembimbing
+  tanda_tangan: "asli, bukan scan"      # 2.4 butir 3
+  laporan_cetak_rangkap: 3              # 2.6 butir 3
+  publikasi:
+    opsi: ["e-Prosiding internal prodi", "jurnal minimal SINTA 4",
+           "jurnal internasional bereputasi", "prosiding Scopus"]
+    larangan: "tidak boleh submit ke lebih dari 1 penerbit"   # 2.5 butir 7
+    penulis_pertama: "mahasiswa ATAU dosen pembimbing"        # 2.7 butir 4
+  berkas_myars: ["pas foto", "pernyataan verifikasi data/identitas",
+                 "pernyataan mengikuti wisuda"]               # 2.5 butir 8
+
+pengecualian: []
+
+catatan_konflik:
+  - bidang: "spasi isi"
+    isi: "4.2 butir 3 menulis 'Double (2 spasi)'; template lama banyak yang
+          memakai 1,5. Panduan 2025 = 2 spasi. Konfirmasi ke prodi bila draft
+          lama memakai 1,5."
+  - bidang: "gaya sitasi"
+    isi: "Panduan menyebut APA, tetapi seluruh contoh memakai format
+          (Nama, Tahun:Halaman) dengan titik dua — ciri APA edisi lama/Turabian.
+          Ikuti contoh panduan; jangan 'memperbaiki' ke APA 7 tanpa bertanya."
+  - bidang: "warna sampul"
+    isi: "4.3 butir 3 menyebut kode warna tetapi gambarannya tidak terbaca saat
+          teks diekstrak. Tanyakan warna prodi ke pengguna; jangan menebak."
+  - bidang: "kalimat 'Diajukan ...dst'"
+    isi: "4.3 butir 5 hanya menyebut ukuran 12 pt; bunyi kalimat lengkapnya ada
+          di template resmi (bit.ly/TemplateSkripsiFTI), bukan di badan panduan."

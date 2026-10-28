@@ -742,6 +742,7 @@ untuk memastikan DOCX sinkron dengan Markdown.** Jangan ekspor dulu lalu memerik
 | File | Gunakan untuk |
 |------|---------------|
 | [campus_templates/generic.json](campus_templates/generic.json) | Preset generik - dipakai bila tidak ada preset kampus |
+| [campus_templates/ars_fti.json](campus_templates/ars_fti.json) | Universitas Adhirajasa Reswara Sanjaya (ARS) — **resmi**: Panduan Penyusunan Laporan Skripsi FTI Revisi 2025. Khas: subbab "1.2. Identifikasi Masalah" (bukan Rumusan Masalah), BAB II "Landasan Pemikiran", spasi isi 2, caption angka Romawi per bab |
 | [campus_templates/ugm.json](campus_templates/ugm.json) | Universitas Gadjah Mada — **resmi**: Panduan Skripsi FKH UGM 2024 (+DTSL FT 2023 sbg catatan) |
 | [campus_templates/ui.json](campus_templates/ui.json) | Universitas Indonesia — **resmi**: Pedoman Penulisan TA UI 2017 (SK Rektor 2143/SK/R/UI/2017, lintas fakultas) |
 | [campus_templates/uny.json](campus_templates/uny.json) | Universitas Negeri Yogyakarta — konvensi umum |
