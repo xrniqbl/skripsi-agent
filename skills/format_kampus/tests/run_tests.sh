@@ -36,6 +36,35 @@ cek_tolak() {
         echo "LULUS $nama"
     fi
 }
+# Skrip shell dipanggil dengan bash; "$@" polos akan memakai $PY dan gagal.
+# Bungkus supaya "cek ... bash skrip.sh" tidak salah tafsir.
+cek_sh() {
+    local nama="$1"; shift
+    if bash "$@" >/tmp/fk.out 2>&1; then
+        echo "LULUS $nama"
+    else
+        echo "GAGAL $nama"
+        sed 's/^/      /' /tmp/fk.out | head -14
+        gagal=$((gagal + 1))
+    fi
+}
+cek_sh_tolak() {
+    local nama="$1"; shift
+    if bash "$@" >/tmp/fk.out 2>&1; then
+        echo "GAGAL $nama (harus exit bukan-0)"
+        gagal=$((gagal + 1))
+    else
+        echo "LULUS $nama"
+    fi
+}
+# Cari skrip berdasarkan ekstensi: .sh -> bash, lainnya -> $PY
+skrip() {
+    local f="$1"; shift
+    case "$f" in
+        *.sh) bash "$f" "$@" ;;
+        *)    "$PY" "$f" "$@" ;;
+    esac
+}
 cek_isi() {
     local nama="$1" pola="$2"
     if grep -qi -- "$pola" /tmp/fk.out; then
@@ -57,7 +86,7 @@ cek "preset contoh ada" test -f "$PROFIL"
 
 # semua skrip punya --help valid dan menolak tanpa argumen
 for s in audit_docx audit_halaman audit_rapi buat_daftar_isi buat_template_docx \
-         periksa_pustaka periksa_sistematika; do
+         periksa_pustaka periksa_sistematika periksa_ringkasan; do
     cek "help valid: $s" $PY "scripts/$s.py" --help
     cek_tolak "$s menolak pemanggilan tanpa argumen" $PY "scripts/$s.py"
 done
@@ -129,7 +158,56 @@ cek_isi "periksa_sistematika menangkap urutan bagian awal" "awal_urutan"
 cek_isi "periksa_sistematika menangkap caption angka Arab" "caption_angka_arab"
 cek_isi "periksa_sistematika menangkap penomoran tanpa titik" "penomoran_tanpa_titik"
 
-# 8. daftar isi — butuh soffice
+# 8. periksa_ringkasan — ringkasan, abstract, kata kunci
+cek "help valid: periksa_ringkasan" $PY scripts/periksa_ringkasan.py --help
+cek_tolak "periksa_ringkasan menolak tanpa argumen" $PY scripts/periksa_ringkasan.py
+cek "periksa_ringkasan lulus pada ringkasan patuh" \
+    $PY scripts/periksa_ringkasan.py tests/naskah_ringkasan_baik.md presets/ars-fti.yaml
+cek_tolak "periksa_ringkasan menolak ringkasan menyimpang" \
+    $PY scripts/periksa_ringkasan.py tests/naskah_ringkasan_buruk.md presets/ars-fti.yaml
+cek_isi "periksa_ringkasan menangkap ringkasan pendek" "ringkasan_pendek"
+cek_isi "periksa_ringkasan menangkap kata kunci berlebih" "kata_kunci_berlebih"
+cek_isi "periksa_ringkasan menangkap unsur kurang" "ringkasan_unsur_kurang"
+
+# 9. gate_naskah — satu perintah untuk semua gerbang isi
+cek "help valid: gate_naskah" skrip scripts/gate_naskah.sh --help
+cek_tolak "gate_naskah menolak tanpa argumen" skrip scripts/gate_naskah.sh
+cek "gate_naskah lulus dengan batas jurnal ditimpa" \
+    skrip scripts/gate_naskah.sh tests/naskah_fti_lengkap.md presets/ars-fti.yaml --min-jurnal 3
+cek_tolak "gate_naskah menolak naskah menyimpang" \
+    skrip scripts/gate_naskah.sh tests/naskah_sistematika_buruk.md presets/ars-fti.yaml \
+    --min-jurnal 1
+cek_isi "gate_naskah melaporkan sistematika" "sistematika"
+cek_isi "gate_naskah melaporkan pustaka kosong" "pustaka_kosong"
+# heading ada tapi isi kosong -> ringkasan_kosong (beda dari ringkasan_hilang)
+skrip scripts/gate_naskah.sh tests/naskah_ringkasan_kosong.md \
+    presets/ars-fti.yaml --min-jurnal 1 >/tmp/fk_rk.out 2>&1
+if grep -q "ringkasan_kosong" /tmp/fk_rk.out; then
+    echo "LULUS gate_naskah membedakan ringkasan kosong dari ringkasan hilang"
+else
+    echo "GAGAL gate_naskah membedakan ringkasan kosong dari ringkasan hilang"
+    sed 's/^/      /' /tmp/fk_rk.out | head -10
+    gagal=$((gagal + 1))
+fi
+cek_isi "gate_naskah melaporkan caption angka Arab" "caption_angka_arab"
+cek_isi "gate_naskah melaporkan subbab hilang" "subbab_hilang"
+# batas min_jurnal harus dibaca dari profil, bukan angka kembar di dua tempat
+$PY scripts/periksa_pustaka.py tests/naskah_fti_lengkap.md \
+    >/tmp/fk_j.out 2>&1
+# batas harus dibaca dari default profil (10), bukan angka kembar di tes
+if grep -q "minimal 10" /tmp/fk_j.out; then
+    echo "LULUS periksa_pustaka memakai batas bawaan 10"
+else
+    echo "GAGAL periksa_pustaka memakai batas bawaan 10"
+    sed 's/^/      /' /tmp/fk_j.out | head -6
+    gagal=$((gagal + 1))
+fi
+# --ketat: satu peringatan pun menggagalkan
+cek_tolak "gate_naskah --ketat menggagalkan peringatan" \
+    skrip scripts/gate_naskah.sh tests/naskah_fti_lengkap.md presets/ars-fti.yaml \
+    --min-jurnal 3 --ketat
+
+# 10. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
     cek "buat_daftar_isi berjalan" \
         $PY scripts/buat_daftar_isi.py "$TMP/template.docx" "$PROFIL"

@@ -212,9 +212,17 @@ def periksa(teks: str, tahun_acuan: int, min_jurnal: int, usia_maks: int) -> dic
     info: dict = {"jumlah_entri": len(entri)}
 
     if not entri:
-        return {"ok": False, "kode": 2,
-                "pesan": "Heading Daftar Pustaka ada, tetapi tidak ada entri yang "
-                         "terbaca. Pastikan tiap entri dipisah baris kosong."}
+        # Heading ADA tetapi tanpa entri = galat naskah (kode 1), bukan berkas
+        # salah (kode 2). Gerbang mutu memperlakukan keduanya berbeda.
+        return {"ok": False, "kode": 1,
+                "info": {"jumlah_entri": 0, "jurnal_prosiding": 0, "buku": 0,
+                         "sumber_web": 0, "lain": 0},
+                "galat": [{"kode": "pustaka_kosong",
+                           "pesan": "Heading Daftar Pustaka ada, tetapi tidak ada "
+                                    "entri yang terbaca.",
+                           "saran": "Pisahkan tiap entri dengan satu baris kosong; "
+                                    "panduan mewajibkan jarak dua spasi antar entri."}],
+                "peringatan": [], "entri": []}
 
     # --- 1. urutan abjad ---
     kunci = [kunci_abjad(nama_belakang(e)) for e in entri]

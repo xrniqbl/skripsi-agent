@@ -81,10 +81,20 @@ Suite ARS memakai sumber daya bersama di `skills/ars_shared_files/` (alias
    (validator, test, doctor), periksa hasil akhir secara visual bila berupa dokumen,
    dan laporkan status verifikasinya secara jujur — termasuk yang gagal atau belum
    bisa diverifikasi.
-6. **Gerbang mutu naskah** (untuk dokumen skripsi/proposal Indonesia, ketiganya
+6. **Gerbang mutu naskah** (untuk dokumen skripsi/proposal Indonesia, semuanya
    wajib sebelum menyebut dokumen selesai):
    - Bahasa akademik: jalankan `skills/bahasa_akademik/scripts/cek_bahasa.py`
      pada naskah dan perbaiki temuannya sesuai pedoman di skill yang sama.
+   - Sistematika: jalankan `skills/format_kampus/scripts/periksa_sistematika.py
+     <naskah> <profil-kampus.yaml>` — kelengkapan dan URUTAN bagian, keberadaan
+     tiap bab/subbab, format penomoran, penomoran caption. Rupa yang rapi tidak
+     membuktikan susunannya benar.
+   - Daftar pustaka: jalankan `skills/format_kampus/scripts/periksa_pustaka.py
+     <naskah>` — urutan abjad, larangan `et al.`/`dkk`, gelar, usia terbitan,
+     jumlah jurnal, sumber terlarang, dan sitasi tanpa entri.
+   - Ringkasan/Abstract: jalankan `skills/format_kampus/scripts/periksa_ringkasan.py
+     <naskah> <profil-kampus.yaml>` — panjang kata, empat unsur wajib, jumlah kata
+     kunci, dan kesejajaran panjang Abstract dengan Ringkasan.
    - Kerapian Word: jalankan `skills/format_kampus/scripts/audit_rapi.py` —
      disiplin style, caption tabel/gambar, tanpa judul palsu.
    - Daftar isi: bangun/perbarui dengan

@@ -3,6 +3,48 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.3.0] — 2026-10-28
+
+### Ditambahkan
+- **`format_kampus/scripts/periksa_ringkasan.py`** — memeriksa Ringkasan dan
+  Abstract terhadap `ringkasan:` profil kampus: panjang kata, empat unsur wajib
+  (masalah, metode, hasil, manfaat), jumlah kata kunci, dan kesejajaran panjang
+  Abstract dengan Ringkasan. Membedakan `ringkasan_hilang` (heading tidak ada)
+  dari `ringkasan_kosong` (heading ada, isi belum diisi) — dua kondisi yang butuh
+  tindakan berbeda.
+- **`format_kampus/scripts/gate_naskah.sh`** — satu perintah menjalankan kelima
+  pemeriksa isi (sistematika, pustaka, ringkasan, bahasa, pemetaan BAB IV/V) dan
+  melaporkan satu ringkasan. Mendukung `--ketat` (peringatan = gagal),
+  `--min-jurnal`, `--tahun-acuan`. Batas minimal jurnal dibaca dari profil,
+  tidak diulang sebagai angka di skrip.
+- Naskah uji baru: `naskah_ringkasan_baik.md`, `naskah_ringkasan_buruk.md`,
+  `naskah_ringkasan_kosong.md`, `naskah_fti_lengkap.md` (naskah patuh panduan
+  ARS dari awal sampai lampiran, dipakai uji gerbang menyeluruh).
+
+### Diperbaiki
+- **`periksa_pustaka.py`**: Daftar Pustaka kosong dilaporkan kode 2 ("berkas
+  salah") padahal itu galat naskah. Sekarang `pustaka_kosong` dengan kode 1.
+- **`format_kampus/tests/run_tests.sh`**: harness hanya tahu menjalankan `$PY`,
+  sehingga skrip `.sh` diperlakukan sebagai modul Python dan uji `--help` gagal
+  karena mencari `gate_naskah.py`. Ditambah `skrip()` yang memilih `bash` untuk
+  `.sh`; `gate_naskah.sh` dikeluarkan dari loop pemeriksa `--help`.
+- **`gate_naskah.sh --help`** keluar 2 karena digabung dengan cek jumlah argumen.
+  Dipisah: `--help` keluar 0, argumen kurang keluar 2.
+- Nama pemeriksa di ringkasan gerbang dirapikan (perataan sebelumnya memakai
+  spasi manual sehingga rawan bergeser saat nama berubah).
+
+### Dokumentasi
+- **README.md ditulis ulang** agar sesuai kenyataan: "20 skill" → 24 skill
+  ber-`SKILL.md`, `ars_shared_files/` yang sudah dihapus tidak lagi disebut,
+  `bab_iv_v` / `revisi_pembimbing` / `sidang` / `office_skripsi_pdf|pptx|spreadsheet`
+  yang sebelumnya tidak terdokumentasi kini masuk tabel, dan bagian "dua lapis
+  pemeriksaan" menjelaskan lapis isi — bukan hanya lapis rupa.
+- `SKILL.md` root: gerbang mutu naskah dari "ketiganya" menjadi lima pemeriksa
+  wajib (sistematika, pustaka, ringkasan, bahasa, kerapian, daftar isi).
+
+### Tes
+`format_kampus` 49 → 69 pemeriksaan. `tes_bundel` 36. Semua lulus.
+
 ## [2.2.0] — 2026-10-28
 
 ### Konteks

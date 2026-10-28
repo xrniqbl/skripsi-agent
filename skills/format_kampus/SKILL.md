@@ -101,12 +101,32 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
   gelar akademik, usia terbitan, jumlah jurnal, larangan Blogspot/Wordpress/
   Wikipedia, tanggal unduh sumber web, dan sitasi dalam teks yang tidak punya
   entri (atau sebaliknya).
+- `scripts/periksa_ringkasan.py naskah profil-kampus.yaml` — Ringkasan dan
+  Abstract terhadap `ringkasan:` profil: panjang kata, empat unsur wajib
+  (masalah, metode, hasil, manfaat), jumlah kata kunci, dan kesejajaran panjang
+  Abstract dengan Ringkasan.
 - `skills/bahasa_akademik/scripts/cek_bahasa.py naskah` — ragam baku, kata tidak
   baku, singkatan tidak resmi (dll/dst/dsb/ybs), kata ulang berangka (`kata2`),
   garis miring sebagai "atau", dan "daripada" sebagai "dari".
 
-Ketiganya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
+Keempatnya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
 jangan memperbaiki otomatis tanpa membaca kalimatnya.
+
+### 8. Satu perintah untuk semua gerbang isi
+
+`scripts/gate_naskah.sh NASKAH PROFIL.yaml [--ketat] [--min-jurnal N] [--tahun-acuan T]`
+menjalankan kelima pemeriksa berurutan dan melaporkan satu ringkasan. Tanpa
+`--ketat`, hanya galat yang menggagalkan; dengan `--ketat`, satu peringatan pun
+menggagalkan. Batas minimal jurnal dibaca dari `sitasi.min_jurnal_atau_prosiding`
+profil — jangan diulang sebagai angka di tempat lain.
+
+```text
+  ~ sistematika  — Ringkasan: 0 galat, 5 peringatan
+  OK pustaka     — Ringkasan: 0 galat, 1 peringatan
+  OK ringkasan   — Ringkasan: 0 galat, 0 peringatan
+  OK bahasa      — Ringkasan: 0 kesalahan, 0 peringatan
+  OK bab IV/V    — Ringkasan: 0 galat, 0 peringatan
+```
 
 ## Preset
 
