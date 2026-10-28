@@ -57,7 +57,7 @@ ada yang gagal — jadi bisa dipakai di alur otomatis, bukan hanya dibaca manusi
 |---|---|
 | Topik | `peta_fenomena.py` `skor_topik.py` `judul_check.py` `literature_probe.py` |
 | Format — rupa | `buat_template_docx.py` `audit_docx.py` `audit_rapi.py` `buat_daftar_isi.py` `audit_halaman.py` |
-| Format — isi | `periksa_sistematika.py` `periksa_pustaka.py` `periksa_ringkasan.py` |
+| Format — isi | `periksa_sistematika.py` `periksa_pustaka.py` `periksa_ringkasan.py` `periksa_tabel_gambar.py` `periksa_penomoran.py` |
 | Proposal | `proposal_doctor.py` `verify_doi.py` `stats_tests.py` |
 | BAB IV/V | `peta_bab45.py` |
 | Revisi | `parse_revisi.py` |
@@ -98,11 +98,17 @@ tabel/gambar tanpa caption, dan nomor halaman hasil render.
 - `periksa_ringkasan.py` — Ringkasan dan Abstract terhadap ketentuan panduan:
   panjang kata, empat unsur wajib (masalah, metode, hasil, manfaat), jumlah kata
   kunci, dan kesejajaran panjang Abstract dengan Ringkasan.
+- `periksa_tabel_gambar.py` — caption tabel/gambar: keberadaan, posisi, format
+  nomor, urutan per bab, kesesuaian nomor bab, **rujukan di teks**, dan sumber
+  kutipan pada caption.
+- `periksa_penomoran.py` — khusus `.docx`: membaca `numbering.xml` dan menghitung
+  nomor subbab yang AKAN tampil. Menangkap subbab tanpa `numPr`, `lvlText` salah,
+  dan `numId` dipakai ulang lintas bab (semua bab jadi "2.x").
 - `cek_bahasa.py` — ragam baku, kata tidak baku, singkatan tidak resmi
   (`dll`/`dst`/`dsb`/`ybs`), kata ulang berangka (`kata2`), garis miring sebagai
   "atau", dan "daripada" sebagai "dari".
 
-Keempatnya **pemeriksa pola, bukan vonis** — setiap temuan wajib dinilai konteksnya.
+Keenamnya **pemeriksa pola, bukan vonis** — setiap temuan wajib dinilai konteksnya.
 
 ### Preset kampus yang sudah tersedia
 
@@ -226,6 +232,8 @@ Atau semuanya sekaligus:
 
 ```bash
 bash skills/format_kampus/scripts/gate_naskah.sh skripsi.md profil-kampus.yaml
+# untuk DOCX, gerbang yang sama sekalian memeriksa penomoran subbab
+bash skills/format_kampus/scripts/gate_naskah.sh skripsi.docx profil-kampus.yaml
 ```
 ```
 
@@ -251,7 +259,7 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 36 pemeriksaan, `format_kampus` 69,
+Status tes saat ini: `tes_bundel` 36 pemeriksaan, `format_kampus` 91,
 `bahasa_akademik` 12, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 17,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 

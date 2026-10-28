@@ -31,11 +31,19 @@ RE_BAB = {
     "BAB III": re.compile(r"^#{1,3}\s*BAB\s+(III|3)\b", re.I | re.M),
     "BAB IV": re.compile(r"^#{1,3}\s*BAB\s+(IV|4)\b", re.I | re.M),
     "BAB V": re.compile(r"^#{1,3}\s*BAB\s+(V|5)\b", re.I | re.M),
-    "DAFTAR PUSTAKA": re.compile(r"^#{1,3}\s*(DAFTAR\s+PUSTAKA|REFERENCES)\b", re.I | re.M),
+    # Bagian akhir sering ditulis tanpa penanda markdown (hasil salin dari DOCX),
+    # jadi '#' dibuat opsional — kalau wajib, naskah yang lengkap pun dilaporkan
+    # "DAFTAR PUSTAKA hilang".
+    "DAFTAR PUSTAKA": re.compile(r"^\s*(?:#{1,3}\s*)?(DAFTAR\s+PUSTAKA|"
+                                 r"DAFTAR\s+RUJUKAN|REFERENCES)\b", re.I | re.M),
 }
 SUB_WAJIB = {
     "latar belakang": r"latar\s+belakang",
-    "rumusan masalah": r"rumusan\s+masalah|perumusan\s+masalah",
+    # Panduan FTI ARS memakai "Identifikasi Masalah"; kampus lain memakai
+    # "Rumusan/Perumusan Masalah" atau "Pertanyaan Penelitian". Ketiganya bagian
+    # yang sama, dan penguji membacanya dengan nama yang dipakai panduan.
+    "rumusan masalah": r"(rumusan|perumusan)\s+masalah|identifikasi\s+masalah|"
+                       r"pertanyaan\s+penelitian",
     "tujuan": r"\btujuan\b(?!\s+penelitian\s+lanjut)",
     "manfaat": r"\bmanfaat\b",
     "metode": r"metode|metodologi",
@@ -140,6 +148,19 @@ def audit(teks: str) -> dict:
     sim = ambil_butir(blok_sub(bagian.get("BAB V", ""), SUB_WAJIB["simpulan"]))
     info.update({"jumlah_rumusan": len(rum), "jumlah_tujuan": len(tuj),
                  "jumlah_simpulan": len(sim)})
+
+    # Bila rumusan berbentuk butir bernomor tetapi tujuan ditulis sebagai satu
+    # paragraf, perbandingan 1:1 DIAM-DIAM terlewat (syarat `rum and tuj`).
+    # Lompatan senyap inilah yang berbahaya: naskah tampak lulus padahal
+    # kesejajaran rumusan-tujuan belum pernah diperiksa.
+    if rum and not tuj:
+        peringatan.append({
+            "kode": "tujuan_tanpa_butir",
+            "pesan": (f"Rumusan masalah {len(rum)} butir, tetapi tujuan penelitian "
+                      f"tidak berbentuk butir bernomor sehingga kesejajaran 1:1 "
+                      f"tidak dapat diperiksa."),
+            "saran": ("Tulis tujuan sebagai daftar bernomor dengan urutan sama "
+                      "seperti rumusan/identifikasi masalah.")})
 
     if rum and tuj and len(rum) != len(tuj):
         galat.append({"kode": "rumusan_tujuan_beda",

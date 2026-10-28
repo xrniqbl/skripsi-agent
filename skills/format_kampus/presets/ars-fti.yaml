@@ -13,6 +13,8 @@ kampus:
   fakultas: "Fakultas Teknologi Informasi"
   program_studi: "S1 Sistem Informasi; S1 Teknik Informatika"
   sumber_panduan: "Panduan Penyusunan Laporan Skripsi FTI ARS University, Revisi Tahun 2025"
+  sumber_template: "Template Skripsi FTI (bit.ly/TemplateSkripsiFTI → Google Docs 1cJKuTgPRDm-BaFi8rd6_V_RJrGCiEwJn), diekstrak 2026-10-28"
+  catatan_sumber: "Angka pada blok dokumen/font/spasi/penomoran diambil dari panduan; bunyi kalimat dan susunan halaman depan diambil dari template resmi karena panduan hanya menyebut ukuran hurufnya."
 
 dokumen:
   ukuran_kertas: A4                    # 4.1 butir 3c: 21 cm x 29,7 cm
@@ -54,6 +56,13 @@ sistematika:
     - "Daftar Gambar"        # opsional
     - "Daftar Tabel"         # opsional
     - "Daftar Lampiran"      # opsional
+  # Format penomoran subbab TERBUKTI dari numbering.xml template resmi:
+  #   BAB I  → lvlText "%1.%2."  → "1.1." "1.2." ...
+  #   BAB II → lvlText "2.%1."   → "2.1." "2.2."
+  #   BAB III→ lvlText "3.%1."   → "3.1."
+  #   BAB V  → lvlText "5.%1."   → "5.1."
+  #   BAB IV → TIDAK ADA subbab bernomor di template (lihat catatan_konflik)
+  penomoran_subbab_terbukti: "1.1. / 2.1. / 3.1. / 5.1. (angka Arab, titik penutup)"
   bab:                                  # 3.1 Tabel III.1
     "BAB I": ["1.1. Latar Belakang", "1.2. Identifikasi Masalah",
               "1.3. Tujuan Penelitian", "1.4. Manfaat Penelitian",
@@ -116,9 +125,15 @@ sampul:                                 # 4.3 dan Tabel IV.1
   kalimat_diajukan_pt: 12
   nama_nim_pt: 14
   nama_nim_spasi: 1.5
+  nama_nim_tebal: true
+  kalimat_diajukan: "Diajukan untuk memenuhi salah satu syarat kelulusan Program Sarjana"
+  kalimat_diajukan_pt: 12
+  kata_skripsi_spasi: 2
   institusi_pt: 12
   institusi_spasi: 1.5
   institusi_nama_resmi: "Universitas Adhirajasa Reswara Sanjaya"
+  institusi_tebal: true
+  kota_bawaan: "Kota Bandung"            # template resmi menulis "Kota Bandung"
   catatan_institusi: "4.3 butir 8: tulis sesuai data Forlap Dikti"
   sampul_depan:
     bahan: hardcover
@@ -175,4 +190,16 @@ catatan_konflik:
           teks diekstrak. Tanyakan warna prodi ke pengguna; jangan menebak."
   - bidang: "kalimat 'Diajukan ...dst'"
     isi: "4.3 butir 5 hanya menyebut ukuran 12 pt; bunyi kalimat lengkapnya ada
-          di template resmi (bit.ly/TemplateSkripsiFTI), bukan di badan panduan."
+          di template resmi (bit.ly/TemplateSkripsiFTI), bukan di badan panduan.
+          SUDAH TERJAWAB dari template: 'Diajukan untuk memenuhi salah satu syarat
+          kelulusan Program Sarjana'. Lihat sampul.kalimat_diajukan."
+  - bidang: "subbab BAB IV"
+    isi: "Panduan 3.1 Tabel III.1 mencantumkan 4.1 Penyajian Hasil Penelitian,
+          4.2 Pembahasan Hasil, 4.3 Implikasi dan Signifikansi Hasil — tetapi
+          TEMPLATE RESMI tidak memberi satu pun subbab bernomor di BAB IV
+          (numbering.xml tidak memuat entri untuk BAB IV). Ikuti panduan untuk
+          penomoran, dan tanyakan ke pembimbing bila template dipakai apa adanya."
+  - bidang: "daftar simbol/gambar/tabel/lampiran"
+    isi: "Panduan menyebut '*jika ada', tetapi template resmi SELALU memuat
+          keempat halaman itu sebagai bagian kosong. Aman: sertakan halamannya
+          walau kosong, atau hapus setelah dikonfirmasi pembimbing."

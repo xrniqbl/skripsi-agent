@@ -86,7 +86,8 @@ cek "preset contoh ada" test -f "$PROFIL"
 
 # semua skrip punya --help valid dan menolak tanpa argumen
 for s in audit_docx audit_halaman audit_rapi buat_daftar_isi buat_template_docx \
-         periksa_pustaka periksa_sistematika periksa_ringkasan; do
+         periksa_pustaka periksa_sistematika periksa_ringkasan \
+         periksa_tabel_gambar periksa_penomoran; do
     cek "help valid: $s" $PY "scripts/$s.py" --help
     cek_tolak "$s menolak pemanggilan tanpa argumen" $PY "scripts/$s.py"
 done
@@ -207,7 +208,50 @@ cek_tolak "gate_naskah --ketat menggagalkan peringatan" \
     skrip scripts/gate_naskah.sh tests/naskah_fti_lengkap.md presets/ars-fti.yaml \
     --min-jurnal 3 --ketat
 
-# 10. daftar isi — butuh soffice
+# 10. periksa_tabel_gambar — caption, urutan, rujukan
+cek "help valid: periksa_tabel_gambar" $PY scripts/periksa_tabel_gambar.py --help
+cek_tolak "periksa_tabel_gambar menolak tanpa argumen" $PY scripts/periksa_tabel_gambar.py
+cek "periksa_tabel_gambar lulus pada caption patuh" \
+    $PY scripts/periksa_tabel_gambar.py tests/naskah_caption_baik.md presets/ars-fti.yaml
+cek_tolak "periksa_tabel_gambar menolak caption menyimpang" \
+    $PY scripts/periksa_tabel_gambar.py tests/naskah_caption_buruk.md presets/ars-fti.yaml
+cek_isi "periksa_tabel_gambar menangkap caption angka Arab" "caption_angka_arab"
+cek_isi "periksa_tabel_gambar menangkap tabel tanpa caption" "tabel_tanpa_caption"
+cek_isi "periksa_tabel_gambar menangkap objek tak dirujuk" "objek_tak_dirujuk"
+cek_isi "periksa_tabel_gambar menangkap caption tanpa sumber" "caption_tanpa_sumber"
+cek_isi "periksa_tabel_gambar menangkap urutan nomor" "urutan_tabel_salah"
+
+# 11. periksa_penomoran — nomor subbab dari numbering.xml
+cek "help valid: periksa_penomoran" $PY scripts/periksa_penomoran.py --help
+cek_tolak "periksa_penomoran menolak tanpa argumen" $PY scripts/periksa_penomoran.py
+cek_tolak "periksa_penomoran menolak berkas bukan docx" \
+    $PY scripts/periksa_penomoran.py tests/naskah_caption_baik.md presets/ars-fti.yaml
+cek_tolak "periksa_penomoran menangkap nomor dirusak" \
+    $PY scripts/periksa_penomoran.py tests/docx_nomor_salah.docx presets/ars-fti.yaml
+cek_isi "periksa_penomoran menangkap titik penutup hilang" "nomor_tanpa_titik"
+cek_isi "periksa_penomoran menangkap awalan bab salah" "awalan_bab_salah"
+# template sendiri harus lulus (tidak ada galat palsu)
+$PY scripts/buat_template_docx.py presets/ars-fti.yaml "$TMP/ars2.docx" >/dev/null 2>&1
+cek "periksa_penomoran lulus pada template buatan sendiri" \
+    $PY scripts/periksa_penomoran.py "$TMP/ars2.docx" presets/ars-fti.yaml
+
+# 11b. gate pada DOCX: jalur periksa_penomoran ikut berjalan
+skrip scripts/gate_naskah.sh tests/docx_nomor_salah.docx presets/ars-fti.yaml \
+    >/tmp/fk_gd.out 2>&1
+if grep -q "X penomoran" /tmp/fk_gd.out; then
+    echo "LULUS gate_naskah menjalankan penomoran untuk .docx"
+else
+    echo "GAGAL gate_naskah menjalankan penomoran untuk .docx"
+    sed 's/^/      /' /tmp/fk_gd.out | head -12
+    gagal=$((gagal + 1))
+fi
+if grep -q "dilewati (bukan .docx" /tmp/fk_gd.out; then
+    echo "GAGAL gate_naskah salah melewati penomoran pada .docx"; gagal=$((gagal + 1))
+else
+    echo "LULUS gate_naskah tidak melewati penomoran pada .docx"
+fi
+
+# 12. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
     cek "buat_daftar_isi berjalan" \
         $PY scripts/buat_daftar_isi.py "$TMP/template.docx" "$PROFIL"

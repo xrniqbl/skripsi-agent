@@ -95,6 +95,14 @@ Suite ARS memakai sumber daya bersama di `skills/ars_shared_files/` (alias
    - Ringkasan/Abstract: jalankan `skills/format_kampus/scripts/periksa_ringkasan.py
      <naskah> <profil-kampus.yaml>` — panjang kata, empat unsur wajib, jumlah kata
      kunci, dan kesejajaran panjang Abstract dengan Ringkasan.
+   - Tabel/gambar: jalankan `skills/format_kampus/scripts/periksa_tabel_gambar.py
+     <naskah> <profil-kampus.yaml>` — caption, format nomor, urutan, dan rujukan
+     di teks. Caption tanpa rujukan adalah cacat yang tidak terlihat saat membaca.
+   - Penomoran DOCX: jalankan `skills/format_kampus/scripts/periksa_penomoran.py
+     <naskah.docx> <profil-kampus.yaml>` — nomor subbab dihitung dari
+     `numbering.xml`, bukan dari style heading.
+   - Semua sekaligus: `bash skills/format_kampus/scripts/gate_naskah.sh <naskah>
+     <profil-kampus.yaml> [--ketat]`.
    - Kerapian Word: jalankan `skills/format_kampus/scripts/audit_rapi.py` —
      disiplin style, caption tabel/gambar, tanpa judul palsu.
    - Daftar isi: bangun/perbarui dengan

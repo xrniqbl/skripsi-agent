@@ -77,6 +77,22 @@ cek "help valid" $PY scripts/audit_sidang.py --help
 printf 'terlalu pendek\n' > /tmp/pendek.md
 cek_tolak "menolak naskah terlalu pendek" $PY scripts/audit_sidang.py /tmp/pendek.md
 
+# naskah bergaya panduan FTI ARS: "Identifikasi Masalah", bukan "Rumusan Masalah"
+cek "naskah ARS: rumusan dikenali dari 'Identifikasi Masalah'" \
+    $PY scripts/audit_sidang.py tests/naskah_fti_ars.md
+$PY scripts/audit_sidang.py tests/naskah_fti_ars.md >/tmp/sd.out 2>&1
+if grep -q "rumusan masalah : 2" /tmp/sd.out; then
+    echo "LULUS naskah ARS: 2 butir rumusan terbaca"
+else
+    echo "GAGAL naskah ARS: 2 butir rumusan terbaca"; sed 's/^/      /' /tmp/sd.out | head -8
+    gagal=$((gagal + 1))
+fi
+if grep -q "rumusan_simpulan_beda\|rumusan_tujuan_beda" /tmp/sd.out; then
+    echo "GAGAL naskah ARS: tidak boleh ada galat kesejajaran"; gagal=$((gagal + 1))
+else
+    echo "LULUS naskah ARS: kesejajaran rumusan-tujuan-simpulan utuh"
+fi
+
 echo
 if [ "$gagal" -eq 0 ]; then
     echo "Ringkasan: SEMUA LULUS"

@@ -76,12 +76,21 @@ landasan konsep penelitian ini.
 Penelitian terdahulu dirangkum pada Tabel II.1 beserta kelebihan dan kelemahan
 masing-masing untuk menunjukkan celah penelitian.
 
+Tabel II.1. Ringkasan Penelitian Terdahulu
+| Peneliti | Fokus | Kelemahan |
+|---|---|---|
+| Handayani (2025) | Sistem pakar | Belum terintegrasi laporan |
+| Junianto (2025) | Robotika | Tidak membahas pelaporan |
+
 # BAB III METODE PENELITIAN
 ## 3.1. Objek Penelitian
 Objek penelitian adalah Puskesmas X dengan alasan volume penimbangan tinggi.
 ## 3.2. Alur Penelitian
 Alur penelitian digambarkan pada Gambar III.1, mulai identifikasi masalah
 sampai kesimpulan dan saran.
+
+Gambar III.1. Alur Penelitian
+![alur](alur.png)
 ## 3.3. Alat dan Bahan Penelitian
 Perangkat keras berupa laptop; perangkat lunak berupa Laravel dan MySQL;
 dataset berupa data penimbangan hasil survei lapangan.
@@ -90,6 +99,12 @@ dataset berupa data penimbangan hasil survei lapangan.
 ## 4.1. Penyajian Hasil Penelitian
 Hasil penelitian disajikan pada Tabel IV.1 berupa hasil pengujian black box
 seluruh fungsi sistem.
+
+Tabel IV.1. Hasil Pengujian Black Box
+| Fungsi | Skenario | Hasil |
+|---|---|---|
+| Login | Kredensial benar | Sesuai |
+| Rekap | Satu bulan penuh | Sesuai |
 ### 4.1.1. Perancangan Sistem Pelaporan Gizi
 Sistem dirancang dengan empat modul utama sesuai kebutuhan hasil wawancara.
 ### 4.1.2. Pengujian Kualitas Sistem

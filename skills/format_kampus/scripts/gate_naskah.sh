@@ -13,8 +13,10 @@
 #   1. periksa_sistematika   bagian awal/akhir, bab, subbab, penomoran, caption
 #   2. periksa_pustaka       ketentuan daftar pustaka
 #   3. periksa_ringkasan     Ringkasan, Abstract, kata kunci
-#   4. cek_bahasa            ragam baku + aturan bahasa panduan
-#   5. peta_bab45            pemetaan rumusan -> hasil -> simpulan
+#   4. periksa_tabel_gambar  caption, urutan nomor, rujukan di teks
+#   5. periksa_penomoran     nomor subbab dari numbering.xml (khusus .docx)
+#   6. cek_bahasa            ragam baku + aturan bahasa panduan
+#   7. peta_bab45            pemetaan rumusan -> hasil -> simpulan
 #
 # Tanpa --ketat, temuan berupa PERINGATAN tidak menggagalkan gerbang; dengan
 # --ketat, satu peringatan pun membuat exit 1.
@@ -26,11 +28,11 @@
 set -uo pipefail
 
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
-    sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
 fi
 if [ $# -lt 2 ]; then
-    sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
     exit 2
 fi
 
@@ -116,6 +118,12 @@ ARG_PUSTAKA=()
 [ -n "$TAHUN_ACUAN" ] && ARG_PUSTAKA+=(--tahun-acuan "$TAHUN_ACUAN")
 jalankan "pustaka" "$HERE/periksa_pustaka.py" "$NASKAH" "${ARG_PUSTAKA[@]+"${ARG_PUSTAKA[@]}"}"
 jalankan "ringkasan" "$HERE/periksa_ringkasan.py" "$NASKAH" "$PROFIL"
+jalankan "tabel/gambar" "$HERE/periksa_tabel_gambar.py" "$NASKAH" "$PROFIL"
+# periksa_penomoran hanya untuk .docx — nomor subbab di .md/.pdf sudah berupa teks
+case "$NASKAH" in
+    *.docx) jalankan "penomoran" "$HERE/periksa_penomoran.py" "$NASKAH" "$PROFIL" ;;
+    *)      echo "  - penomoran    — dilewati (bukan .docx; nomor sudah berupa teks)" ;;
+esac
 jalankan "bahasa" "$ROOT/skills/bahasa_akademik/scripts/cek_bahasa.py" "$NASKAH"
 jalankan "bab IV/V" "$ROOT/skills/bab_iv_v/scripts/peta_bab45.py" "$NASKAH" --periksa
 

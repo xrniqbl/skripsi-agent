@@ -3,6 +3,73 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.4.0] — 2026-10-28
+
+### Konteks
+Template resmi FTI ARS berhasil diekstrak dari `bit.ly/TemplateSkripsiFTI`
+(Google Docs `1cJKuTgPRDm...` → .docx 77 KB). Tiga hal yang sebelumnya
+ditandai "belum terjawab" di `catatan_konflik` kini TERBUKTI dari berkasnya,
+dan satu konflik baru ditemukan.
+
+### Terjawab dari template resmi
+- Bunyi kalimat sampul: **"Diajukan untuk memenuhi salah satu syarat kelulusan
+  Program Sarjana"** (12 pt) — masuk `sampul.kalimat_diajukan`.
+- Kota bawaan sampul: **"Kota Bandung"** — masuk `sampul.kota_bawaan`.
+- Nama/NIM sampul **tebal**, spasi 1,5 — masuk `sampul.nama_nim_tebal`.
+- Format penomoran subbab TERBUKTI dari `numbering.xml`, bukan dugaan:
+  BAB I `%1.%2.` → "1.1.", BAB II `2.%1.` → "2.1.", BAB III `3.%1.`,
+  BAB V `5.%1.` — masuk `sistematika.penomoran_subbab_terbukti`.
+- **Konflik baru:** panduan mencantumkan 4.1/4.2/4.3 untuk BAB IV, tetapi
+  template resmi **tidak memberi satu pun subbab bernomor di BAB IV**.
+  Dicatat di `catatan_konflik`, tidak ditebak.
+- Daftar Simbol/Gambar/Tabel/Lampiran: panduan bilang "*jika ada", template
+  selalu memuat halamannya. Tercatat sebagai panduan praktis.
+
+### Ditambahkan
+- **`format_kampus/scripts/periksa_tabel_gambar.py`** — caption tabel/gambar:
+  keberadaan, posisi, format nomor, urutan per bab, kesesuaian nomor bab,
+  **rujukan di teks**, dan sumber kutipan pada caption. Cacat yang paling sering
+  lolos dari pemeriksa lain: caption lengkap dan nomor benar, tetapi tabelnya
+  tidak pernah disebut di paragraf mana pun.
+- **`format_kampus/scripts/periksa_penomoran.py`** — khusus `.docx`. Membaca
+  `numbering.xml`, menghitung nomor yang AKAN tampil, dan menangkap empat mode
+  kegagalan yang semuanya tampak normal di berkas: judul tanpa `numPr`, `lvlText`
+  berlevel tunggal padahal seharusnya "%1.%2.", `numId` dipakai ulang lintas bab
+  (semua bab jadi "2.x"), dan `start` bukan 1.
+- `gate_naskah.sh` kini menjalankan tujuh pemeriksa (penomoran otomatis aktif
+  bila naskah `.docx`).
+- Fixture: `naskah_caption_{baik,buruk}.md`, `docx_nomor_salah.docx` (template
+  resmi yang `numbering.xml`-nya sengaja dirusak untuk membuktikan pemeriksa
+  benar-benar menangkapnya), `naskah_fti_ars.md` untuk `sidang`.
+  `naskah_fti_lengkap.md` dilengkapi objek tabel/gambar nyata.
+
+### Diperbaiki
+- **`periksa_tabel_gambar.py`**: `ROMAWI.get(k, int(k))` — argumen default Python
+  dievaluasi SEBELUM pemanggilan, jadi `int("IV")` melempar ValueError dan SELURUH
+  rujukan bernomor Romawi dibuang diam-diam; pemeriksaan rujukan tidak pernah
+  berjalan. Diganti `angka_bab()`.
+- **`periksa_tabel_gambar.py`**: satu tabel Markdown (beberapa baris pipe
+  berurutan) dilaporkan "tanpa caption" tiga kali. Blok pipe bersambung kini
+  dihitung satu objek.
+- **`periksa_penomoran.py`**: cek titik penutup memakai `contoh.endswith('.')`
+  padahal `contoh` adalah judul utuh ("1.1. Latar Belakang") sehingga tidak pernah
+  berakhir titik — pemeriksaan tidak pernah aktif. Juga melewatkan `lvlText`
+  berawalan literal ("2.%1.") karena hanya menghitung jumlah '%'.
+- **`periksa_penomoran.py`**: halaman depan dan bagian akhir dilaporkan "judul
+  tanpa nomor" (25 galat palsu) — penomoran kini hanya diperiksa di dalam bab.
+- **`sidang/audit_sidang.py`**: pola rumusan masalah hanya mengenal
+  "Rumusan/Perumusan Masalah", sehingga naskah bergaya panduan ARS
+  (**"Identifikasi Masalah"**) menghasilkan 0 butir dan pemeriksaan kesejajaran
+  rumusan–tujuan–simpulan diam-diam terlewat. Juga heading `DAFTAR PUSTAKA`
+  diwajibkan ber-`#`, padahal bagian akhir sering ditulis datar → dilaporkan
+  hilang pada naskah yang lengkap.
+- **`sidang/audit_sidang.py`**: bila rumusan berbentuk butir tetapi tujuan
+  ditulis satu paragraf, perbandingan 1:1 dilewati tanpa pesan. Kini dilaporkan
+  `tujuan_tanpa_butir`.
+
+### Tes
+`format_kampus` 69 → 91. `sidang` +3. `tes_bundel` 36. Semua lulus.
+
 ## [2.3.0] — 2026-10-28
 
 ### Ditambahkan

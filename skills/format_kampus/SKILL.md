@@ -105,27 +105,38 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
   Abstract terhadap `ringkasan:` profil: panjang kata, empat unsur wajib
   (masalah, metode, hasil, manfaat), jumlah kata kunci, dan kesejajaran panjang
   Abstract dengan Ringkasan.
+- `scripts/periksa_tabel_gambar.py naskah profil-kampus.yaml` — caption tabel
+  dan gambar: keberadaan, posisi, format nomor (`Tabel IV.1`), urutan per bab,
+  kesesuaian nomor bab, **rujukan di teks**, dan sumber kutipan pada caption.
+  Butir rujukan yang paling sering lolos: caption lengkap dan nomor benar, tetapi
+  tabelnya tidak pernah disebut di paragraf mana pun.
+- `scripts/periksa_penomoran.py naskah.docx profil-kampus.yaml` — khusus `.docx`.
+  Membaca `numbering.xml` dan menghitung nomor yang AKAN tampil, karena membaca
+  heading dari style saja tidak cukup: subbab bisa tanpa `numPr`, `lvlText`
+  salah, atau `numId` dipakai ulang lintas bab sehingga semua bab jadi "2.x".
 - `skills/bahasa_akademik/scripts/cek_bahasa.py naskah` — ragam baku, kata tidak
   baku, singkatan tidak resmi (dll/dst/dsb/ybs), kata ulang berangka (`kata2`),
   garis miring sebagai "atau", dan "daripada" sebagai "dari".
 
-Keempatnya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
+Keenamnya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
 jangan memperbaiki otomatis tanpa membaca kalimatnya.
 
 ### 8. Satu perintah untuk semua gerbang isi
 
 `scripts/gate_naskah.sh NASKAH PROFIL.yaml [--ketat] [--min-jurnal N] [--tahun-acuan T]`
-menjalankan kelima pemeriksa berurutan dan melaporkan satu ringkasan. Tanpa
+menjalankan keenam pemeriksa berurutan (penomoran hanya untuk `.docx`) dan melaporkan satu ringkasan. Tanpa
 `--ketat`, hanya galat yang menggagalkan; dengan `--ketat`, satu peringatan pun
 menggagalkan. Batas minimal jurnal dibaca dari `sitasi.min_jurnal_atau_prosiding`
 profil — jangan diulang sebagai angka di tempat lain.
 
 ```text
-  ~ sistematika  — Ringkasan: 0 galat, 5 peringatan
-  OK pustaka     — Ringkasan: 0 galat, 1 peringatan
-  OK ringkasan   — Ringkasan: 0 galat, 0 peringatan
-  OK bahasa      — Ringkasan: 0 kesalahan, 0 peringatan
-  OK bab IV/V    — Ringkasan: 0 galat, 0 peringatan
+  ~ sistematika   — Ringkasan: 0 galat, 5 peringatan
+  ~ pustaka       — Ringkasan: 0 galat, 1 peringatan
+  OK ringkasan    — Ringkasan: 0 galat, 0 peringatan
+  OK tabel/gambar — Ringkasan: 0 galat, 0 peringatan
+  - penomoran     — dilewati (bukan .docx; nomor sudah berupa teks)
+  OK bahasa       — Ringkasan: 0 kesalahan, 0 peringatan
+  OK bab IV/V     — Ringkasan: 0 galat, 0 peringatan
 ```
 
 ## Preset
