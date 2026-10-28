@@ -3,6 +3,46 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.0.0] — 2026-10-28
+
+### Ditambahkan
+- **Skill `topik_skripsi`** — menutup tahap paling awal yang sebelumnya tidak ada di
+  bundel: dari fenomena mentah sampai judul yang layak. Enam fase (inventaris aset →
+  panen fenomena → tangga masalah → problematisasi & gap → skor FINER → rumus judul →
+  kontrak topik) dengan keluaran `kontrak_topik.json` yang mengisi STEP 0
+  `proposal_skripsi`.
+- Empat referensi baru: `sumber-fenomena.md` (8 sumber fenomena Indonesia + cara ambil
+  bukti), `fenomena-ke-masalah.md` (tangga 5 tingkat dengan contoh lulus/gagal),
+  `problemisasi-dan-gap.md` (5 domain asumsi Alvesson–Sandberg, 4 tipe gap, TAS),
+  `finer-dan-kelayakan.md` (rubrik 0–5 berbobot + jalur perbaikan),
+  `rumus-judul.md` (pola judul per bidang + 8 kesalahan umum).
+- Empat skrip: `peta_fenomena.py` (validasi tangga masalah; menolak klaim "LULUS" saat
+  tangga kelayakan kosong), `skor_topik.py` (FINER berbobot F30/I15/N20/E15/R20,
+  dimensi 0 = diskualifikasi), `judul_check.py` (panjang, verba ganda, lokus, klaim
+  hasil, singkatan, duplikasi Jaccard), `literature_probe.py` (kepadatan literatur via
+  OpenAlex + Crossref).
+- `tests/` untuk skill baru: contoh naskah bersih dan naskah dengan klaim palsu, contoh
+  kandidat JSON (termasuk satu diskualifikasi Feasible=0), contoh judul buruk, dan
+  `run_tests.sh` dengan 17 pemeriksaan.
+
+### Diubah
+- `SKILL.md` root: ditambah bagian "Langkah Minus Satu" dan baris router untuk
+  `topik_skripsi`.
+- `proposal_skripsi` STEP 0: bila `kontrak_topik.json` ada, parameter dibaca dari berkas
+  itu alih-alih ditanyakan ulang.
+- `README.md`: bagian "Mulai dari Mana: Topik Dulu, Baru Format"; jumlah skill 19 → 20.
+- `CREDITS.md`: entri `topik_skripsi` sebagai karya asli bundel.
+
+### Catatan teknis
+- `literature_probe.py` melaporkan **tiga** hitungan per kueri (longgar / konsep / ketat).
+  Parameter `search=` OpenAlex mencocokkan kata mana pun: kueri `"pelaporan gizi
+  puskesmas"` memberi 4.465 pada `search=` tetapi **1** pada pencarian frasa. Sinyal
+  SEPI/SEDANG/PADAT dihitung dari angka ketat, bukan angka longgar — memakai angka
+  longgar membuat medan sepi tampak padat.
+- `peta_fenomena.py` keluar kode 1 bila ada fenomena berstatus LULUS padahal tangga 5
+  (kelayakan) kosong; itu klaim kelayakan palsu dan penyebab utama ganti judul di
+  tengah jalan.
+
 ## [1.3.0] — 2026-10-22
 
 ### Ditambahkan

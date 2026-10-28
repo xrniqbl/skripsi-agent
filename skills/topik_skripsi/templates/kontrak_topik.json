@@ -1,0 +1,45 @@
+{
+  "_catatan": "Isi field ini dari hasil FASE 0-5. Berkas ini dibaca oleh proposal_skripsi STEP 0 dan menggantikan klarifikasi ulang. Jangan mengarang: field yang belum ada tulis null.",
+  "bidang": "Sistem Informasi",
+  "jenjang": "S1",
+  "judul_final": "Rancang Bangun Dashboard Rekap Gizi Berbasis Web pada Puskesmas X Kabupaten Y",
+  "fenomena_asal": "F-02",
+  "tipe_gap": "evidence",
+  "pernyataan_gap": "Temuan tentang adopsi sistem pelaporan gizi umumnya berasal dari satu situs dengan n kecil; belum ada studi yang menguji apakah pola tersebut bertahan pada puskesmas dengan jumlah pengguna kurang dari 10 dan koneksi tidak stabil.",
+  "pertanyaan_penelitian": [
+    "Bagaimana kondisi proses rekap gizi berjalan di Puskesmas X?",
+    "Fitur apa yang dibutuhkan agar rekap dapat diselesaikan dalam satu alur?",
+    "Sejauh mana dashboard yang dibangun menurunkan waktu rekap dan ketidaksesuaian angka?"
+  ],
+  "variabel_atau_objek": [
+    "waktu rekap (menit)",
+    "ketidaksesuaian angka antar sumber (persen)",
+    "jumlah langkah proses"
+  ],
+  "data": {
+    "jenis": "sekunder arsip + observasi proses",
+    "jumlah": "18 bulan arsip, 4 petugas",
+    "pemilik": "Puskesmas X",
+    "status_akses": "izin dinas dalam proses"
+  },
+  "metode_arah": "R&D / pengembangan sistem dengan uji black-box",
+  "lokus": "Puskesmas X, Kabupaten Y",
+  "batas_waktu": "6 bulan",
+  "risiko": [
+    "izin dinas belum turun",
+    "arsip 3 bulan tidak lengkap",
+    "tidak ada log akses sistem lama"
+  ],
+  "skor_finer": {
+    "total": 96,
+    "rincian": {"feasible": 5, "interesting": 5, "novel": 4, "ethical": 5, "relevant": 5},
+    "terlemah": "novel"
+  },
+  "probe_literatur": {
+    "kueri_ketat": "dashboard gizi puskesmas",
+    "ketat": 0,
+    "sinyal": "SEPI",
+    "catatan": "coba sinonim Inggris sebelum menyimpulkan medan kosong"
+  },
+  "tanggal_keputusan": "2026-10-28"
+}

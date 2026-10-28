@@ -10,6 +10,19 @@ Untuk setiap tugas, tentukan tahap pekerjaannya, muat `SKILL.md` sub-skill yang 
 dan ikuti alur kerja di dalamnya. Jangan mengerjakan tugas akademik besar tanpa memuat
 sub-skill yang relevan.
 
+## Langkah Minus Satu: Kalau Belum Ada Topik
+
+Bila pengguna datang tanpa topik — "bingung mau skripsi apa", "ideku masih samar", "judulku
+ditolak" — jangan langsung ke format kampus. Muat `skills/topik_skripsi/` dan jalankan
+tahapannya sampai menghasilkan `kontrak_topik.json`.
+
+Skill itu menangani: panen fenomena (8 sumber), tangga masalah 5 tingkat, problematisasi
+dan tipe gap, skor FINER berbobot, rumus judul, dan validasi otomatis lewat
+`peta_fenomena.py` / `skor_topik.py` / `judul_check.py` / `literature_probe.py`.
+
+`kontrak_topik.json` yang dihasilkan mengisi parameter STEP 0 `proposal_skripsi` — jadi
+klarifikasi di bawah tidak perlu diulang dari nol.
+
 ## Langkah Nol: Kunci Format Kampus Dulu
 
 Sebelum menulis apa pun untuk sebuah proyek skripsi, pastikan format kampusnya
@@ -30,6 +43,7 @@ terkunci:
 
 | Tahap / permintaan pengguna | Sub-skill |
 |---|---|
+| Belum punya topik / cari fenomena / uji judul / nilai kelayakan topik | `skills/topik_skripsi/` |
 | Panduan/format/template kampus → profil format + template DOCX + audit dokumen | `skills/format_kampus/` |
 | Memeriksa/menyunting bahasa naskah agar baku akademik (EYD) + pemeriksa otomatis | `skills/bahasa_akademik/` |
 | Riset topik, tinjauan literatur mendalam, laporan bersitasi | `skills/deep_research/` atau `skills/ars_deep_research/` |

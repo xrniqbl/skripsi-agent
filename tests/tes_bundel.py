@@ -31,7 +31,7 @@ skill_files = []
 for base, _dirs, files in os.walk(skills_dir):
     if 'SKILL.md' in files:
         skill_files.append(os.path.join(base, 'SKILL.md'))
-cek('jumlah SKILL.md (termasuk salinan upstream) >= 19', len(skill_files) >= 19,
+cek('jumlah SKILL.md (termasuk salinan upstream) >= 20', len(skill_files) >= 19,
     f'{len(skill_files)} ditemukan')
 
 # Metadata tiap skill tingkat atas: frontmatter SKILL.md ATAU skill.yaml di sisinya
@@ -78,6 +78,32 @@ with tempfile.TemporaryDirectory() as tmp:
     cek('uji asap format_kampus (generator -> auditor)',
         r1.returncode == 0 and r2 is not None and r2.returncode == 0,
         (r1.stderr or '')[-200:] + ((r2.stderr or '')[-200:] if r2 else ''))
+
+tk = os.path.join(ROOT, 'skills', 'topik_skripsi')
+with tempfile.TemporaryDirectory() as tmp:
+    skor = os.path.join(tmp, 'skor.md')
+    r = subprocess.run([sys.executable, os.path.join(tk, 'scripts', 'skor_topik.py'),
+                        os.path.join(tk, 'tests', 'contoh_kandidat.json'),
+                        '--out', skor, '--ambang', '70'],
+                       capture_output=True, text=True)
+    isi = open(skor, encoding='utf8').read() if os.path.isfile(skor) else ''
+    cek('uji asap topik_skripsi: skor FINER + diskualifikasi',
+        r.returncode == 0 and 'DISKUALIFIKASI' in isi and 'KUAT' in isi,
+        (r.stderr or '')[-160:])
+
+    r2 = subprocess.run([sys.executable, os.path.join(tk, 'scripts', 'judul_check.py'),
+                         os.path.join(tk, 'tests', 'contoh_judul.md'),
+                         '--maks-kata', '25'], capture_output=True, text=True)
+    cek('uji asap topik_skripsi: judul_check menolak judul buruk',
+        r2.returncode == 1 and 'verba penelitian' in (r2.stdout + r2.stderr),
+        f'kode {r2.returncode}')
+
+    r3 = subprocess.run([sys.executable, os.path.join(tk, 'scripts', 'peta_fenomena.py'),
+                         os.path.join(tk, 'tests', 'contoh_masalah.md')],
+                        capture_output=True, text=True)
+    cek('uji asap topik_skripsi: peta_fenomena menolak klaim kelayakan palsu',
+        r3.returncode == 1 and 'GALAT' in (r3.stdout + r3.stderr),
+        f'kode {r3.returncode}')
 
 ba = os.path.join(ROOT, 'skills', 'bahasa_akademik')
 with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,34 @@
+{
+  "kandidat": [
+    {
+      "id": "K1",
+      "judul_kerja": "Pengaruh Kualitas Data Rekap terhadap Ketepatan Pelaporan Gizi di Puskesmas X Kabupaten Y",
+      "skor": {"feasible": 4, "interesting": 4, "novel": 3, "ethical": 5, "relevant": 4},
+      "catatan": "arsip 18 bulan tersedia; izin dinas masih diproses"
+    },
+    {
+      "id": "K2",
+      "judul_kerja": "Rancang Bangun Dashboard Rekap Gizi Berbasis Web untuk Puskesmas X",
+      "skor": {"feasible": 5, "interesting": 5, "novel": 4, "ethical": 5, "relevant": 5},
+      "catatan": "sudah ada prototipe setengah jadi"
+    },
+    {
+      "id": "K3",
+      "judul_kerja": "Pengaruh Digitalisasi terhadap Kinerja ASN di Indonesia",
+      "skor": {"feasible": 1, "interesting": 3, "novel": 1, "ethical": 5, "relevant": 2},
+      "catatan": "butuh data nasional"
+    },
+    {
+      "id": "K4",
+      "judul_kerja": "Analisis Kepuasan Pengguna Sistem Informasi Desa",
+      "skor": {"feasible": 4, "interesting": 2, "novel": 2, "ethical": 5, "relevant": 3},
+      "catatan": "menarik tapi sudut belum jelas"
+    },
+    {
+      "id": "K5",
+      "judul_kerja": "Analisis Kebocoran Data pada Instansi Pemerintah",
+      "skor": {"feasible": 0, "interesting": 5, "novel": 5, "ethical": 3, "relevant": 4},
+      "catatan": "tidak akan dapat izin akses dataset insiden"
+    }
+  ]
+}

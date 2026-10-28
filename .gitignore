@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store
 *.muse-github-snapshot-sync.json
 *.muse-github-snapshot-sync.json.tmp-*
+.venv/

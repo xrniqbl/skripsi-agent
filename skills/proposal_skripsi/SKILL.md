@@ -68,6 +68,12 @@ dan **satu kali sebelum export** (Step 6). Jangan konfirmasi per-bagian.
 
 ## STEP 0 — Klarifikasi
 
+> **Bila `kontrak_topik.json` sudah ada** (dari skill `topik_skripsi`), muat berkas itu
+> lebih dulu dan isi tabel di bawah dari isinya. Jangan menanyakan ulang parameter yang
+> sudah tercatat — cukup konfirmasi satu kali: "topik ini masih yang dipakai?".
+> Hanya parameter yang tidak ada di kontrak (mis. gaya sitasi, preset kampus, format
+> ekspor) yang perlu ditanyakan.
+
 Kumpulkan parameter berikut (cukup seperlunya bila konteks sudah jelas dari brief user):
 
 | Parameter | Opsi | Default |

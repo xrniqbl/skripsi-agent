@@ -2,9 +2,31 @@
 
 **Paket skill AI agent untuk menulis skripsi, proposal, dan artikel ilmiah — dari riset sampai siap submit.**
 
-Skripsi Agent menyatukan 19 skill penulisan akademik (riset mendalam, penyusunan proposal Bab I–III, penulisan dan penyuntingan dokumen Word, peer review, sampai paket submit jurnal) menjadi satu bundel yang bisa dipasang di platform AI agent mana pun: Claude, ChatGPT, dan agent berbasis berkas lainnya. Setiap skill adalah folder mandiri berisi `SKILL.md` beserta referensi dan skrip pendukungnya.
+Skripsi Agent menyatukan 20 skill penulisan akademik (menemukan topik, riset mendalam, penyusunan proposal Bab I–III, penulisan dan penyuntingan dokumen Word, peer review, sampai paket submit jurnal) menjadi satu bundel yang bisa dipasang di platform AI agent mana pun: Claude, ChatGPT, dan agent berbasis berkas lainnya. Setiap skill adalah folder mandiri berisi `SKILL.md` beserta referensi dan skrip pendukungnya.
 
 > Bundel ini hanya berisi skill dan dokumentasinya. Tidak ada proposal, data penelitian, atau dokumen kampus milik siapa pun di dalam repo ini.
+
+## Mulai dari Mana: Topik Dulu, Baru Format
+
+Banyak mahasiswa datang dengan "bingung mau skripsi apa". Untuk kondisi itu, jangan mulai
+dari format kampus — mulai dari `skills/topik_skripsi/`:
+
+```text
+FASE 0  inventaris minat & aset (lokasi, data, waktu, kemampuan)
+FASE 1  panen fenomena (8 sumber → minimal 8 kandidat)
+FASE 2  tangga masalah 5 tingkat (fakta → kesenjangan → dampak → urgensi → kelayakan)
+FASE 3  problematisasi + tipe gap (bukan "belum ada yang meneliti di kota X")
+FASE 4  skor FINER berbobot (Feasible 30, Novel 20, Relevant 20, Interesting 15, Ethical 15)
+FASE 5  rumus judul + judul_check.py
+FASE 6  kontrak_topik.json → serahkan ke proposal_skripsi sebagai STEP 0
+```
+
+Keluarannya `kontrak_topik.json` yang mengisi seluruh parameter Step 0 di
+`proposal_skripsi`, jadi tidak ada klarifikasi ulang dari nol. Tiga skripnya bisa dijalankan
+sendiri: `peta_fenomena.py`, `skor_topik.py`, `judul_check.py`, `literature_probe.py`.
+
+Bila pengguna **sudah** punya topik yang disetujui pembimbing, lewati `topik_skripsi` dan
+langsung ke Langkah Nol di bawah.
 
 ## Fitur Utama: Adaptasi Format Kampus Otomatis
 
