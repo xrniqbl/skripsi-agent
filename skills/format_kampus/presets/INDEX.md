@@ -12,12 +12,26 @@ panduan bisa berubah antar edisi.
 
 ## Menambah preset kampus nyata
 
-1. Ekstrak profil dari buku panduan resmi kampus mengikuti `../SKILL.md` dan
-   `../references/ekstraksi-checklist.md`.
-2. Simpan sebagai `presets/<slug-kampus>.yaml` (huruf kecil, tanda hubung).
-3. Wajib isi `kampus.sumber_panduan` dengan nama dokumen panduan dan edisi/tahunnya,
-   agar pembaca bisa menilai kesegarannya.
-4. Tambahkan satu baris ke tabel di atas (status: nama kampus persis seperti di
-   panduan) dan naikkan versi bundel (lihat CHANGELOG di root repo).
-5. Preset hanya berisi KETENTUAN FORMAT dari dokumen publik kampus — jangan pernah
-   memasukkan data pribadi, naskah skripsi, atau dokumen milik individu ke folder ini.
+`ars-fti.yaml` adalah **cetakan** terbaik untuk preset baru: setiap angkanya sudah
+dikutip dengan nomor butir panduan, dan memuat `catatan_konflik`, `pengecualian`,
+serta `ringkasan`. Salin berkasnya, ganti isinya — jangan mulai dari nol.
+
+Perkiraan waktu 20-30 menit per kampus untuk panduan 30-50 halaman.
+
+1. Ekstrak teks panduan: `pdftotext -layout panduan.pdf panduan.txt`.
+2. Isi `dokumen`, `font`, `spasi`, `penomoran_halaman`, `caption`, `sitasi` —
+   semuanya angka; kutip nomor butirnya di komentar.
+3. Isi `sistematika.bagian_awal`, `bab`, `bagian_akhir` **persis seperti panduan**.
+   Jangan menormalkan nama: bila panduan menulis "Identifikasi Masalah", tulis itu,
+   bukan "Rumusan Masalah". Nama subbab menentukan apakah pemeriksa bisa bekerja.
+4. Catat setiap pertentangan internal panduan di `catatan_konflik` — jangan menebak.
+   Contoh nyata: panduan menyebut APA tetapi seluruh contohnya memakai
+   `(Nama, Tahun:Halaman)`; panduan mencantumkan subbab BAB IV tetapi template
+   resminya tidak.
+5. Simpan sebagai `presets/<slug-kampus>.yaml`, isi `kampus.sumber_panduan` dengan
+   nama dokumen + edisi/tahun, lalu tambahkan satu baris ke tabel di atas.
+6. Uji: `python3 scripts/periksa_sistematika.py naskah_contoh.md presets/<baru>.yaml`
+
+Preset hanya berisi KETENTUAN FORMAT dari dokumen publik kampus — jangan pernah
+memasukkan data pribadi, naskah skripsi, atau dokumen milik individu ke folder ini
+(penjaga konten `tests/tes_bundel.py` akan menggagalkan build).
