@@ -62,19 +62,36 @@ def pola(kata):
     return re.compile(r'\b' + re.escape(kata) + r'\b', re.IGNORECASE)
 
 
-def periksa_teks(teks_asli, label, temuan):
+# Bagian dokumen yang SECARA BENTUK memakai kata ganti orang pertama: surat
+# pernyataan dan lembar persetujuan. "Saya yang bertanda tangan di bawah ini"
+# adalah kalimat baku dokumen itu — bukan pelanggaran ragam akademik. Menandainya
+# hanya melatih pengguna mengabaikan temuan.
+RE_BAGIAN_ORANG_PERTAMA = re.compile(
+    r"(SURAT\s+PERNYATAAN|LEMBAR\s+PERSETUJUAN|LEMBAR\s+PENGESAHAN|"
+    r"SURAT\s+PERJANJIAN|PERNYATAAN\s+KEASLIAN)", re.I)
+
+# Baris berformat isian ("Nama\t\t: ...", "NIM      : ...") — tanda titik dua di
+# sini adalah pemisah label, bukan tanda baca kalimat.
+RE_BARIS_ISIAN = re.compile(r"^\s*[A-Za-z][A-Za-z\s./]{1,28}\s{2,}:\s|\t.*:")
+
+
+def periksa_teks(teks_asli, label, temuan, orang_pertama_ok=False):
     # URL dan DOI bukan teks bahasa — samarkan HANYA untuk pemeriksaan kata agar
     # kode jurnal di dalam DOI (mis. "j.ijin" pada doi.org/10.1016/j.ijin...)
     # tidak terbaca sebagai kata. Pemeriksaan mekanik tetap memakai teks asli,
     # karena penyamaran sendiri menimbulkan spasi semu.
     teks = re.sub(r'https?://\S+|10\.\d{4,}/\S+', 'URL', teks_asli)
+    # Placeholder template (<<nama>>, <<NIDN/NIP>>, <JUDUL>) bukan prosa naskah.
+    teks = re.sub(r'<<[^>]*>>|<[A-Za-z][^>]{0,40}>', 'PLACEHOLDER', teks)
 
     def tambah(kategori, pesan, parah=True):
         temuan.append((kategori, label, pesan, parah))
 
-    for kata in KATA_GANTI:
-        for m in pola(kata).finditer(teks):
-            tambah('kata ganti orang', f'"{m.group(0)}" — naskah ilmiah memakai orang ketiga/impersonal')
+    if not orang_pertama_ok and not RE_BARIS_ISIAN.search(teks_asli):
+        for kata in KATA_GANTI:
+            for m in pola(kata).finditer(teks):
+                tambah('kata ganti orang',
+                       f'"{m.group(0)}" — naskah ilmiah memakai orang ketiga/impersonal')
     for kata in RAGAM_LISAN:
         for m in pola(kata).finditer(teks):
             tambah('ragam lisan', f'"{m.group(0)}" — ganti dengan padanan baku')
@@ -94,15 +111,24 @@ def periksa_teks(teks_asli, label, temuan):
                    f'"{m.group(0)}" → "{panjang}" (panduan 4.9)')
 
     # --- panduan kampus: kata ulang ditulis angka (4.9) ---
-    for m in RE_KATA_ANGKA.finditer(teks_asli):
+    for m in RE_KATA_ANGKA.finditer(teks):
         kata = m.group(1)
         tambah('kata ulang angka',
                f'"{m.group(0)}" → "{kata}-{kata}" (panduan 4.9)')
 
     # --- panduan kampus: garis miring sebagai "atau" (4.8 butir 6) ---
-    for m in RE_GARIS_MIRING.finditer(teks_asli):
+    for m in RE_GARIS_MIRING.finditer(teks):
         frasa = m.group(0)
         if frasa.lower() in {g.lower() for g in GARIS_MIRING_DIIZINKAN}:
+            continue
+        # Pasangan SINGKATAN (NIDN/NIP, telp/hp) adalah label isian, bukan
+        # pilihan kata dalam kalimat. Ciri: KEDUA sisi kapital, atau keduanya
+        # sangat pendek (<= 4 huruf). Jangan pakai "salah satu kapital" — itu
+        # meloloskan "PKL/riset" yang justru wajib ditandai panduan.
+        kiri, kanan = m.group(1), m.group(2)
+        if kiri.isupper() and kanan.isupper():
+            continue
+        if len(kiri) <= 4 and len(kanan) <= 4:
             continue
         # lewati jalur berkas/URL yang sudah disamarkan
         tambah('garis miring sebagai atau',
@@ -114,10 +140,11 @@ def periksa_teks(teks_asli, label, temuan):
         tambah('kata salah',
                f'"{m.group(0)}" — gunakan "dari" bila maksudnya asal/sumber '
                f'(panduan 4.8)', parah=False)
-    if re.search(r'  +', teks_asli):
-        tambah('mekanik', 'spasi ganda ditemukan')
-    if re.search(r'\s+[,.;:!?]', teks_asli):
-        tambah('mekanik', 'spasi sebelum tanda baca')
+    if not RE_BARIS_ISIAN.search(teks_asli):
+        if re.search(r'  +', teks_asli):
+            tambah('mekanik', 'spasi ganda ditemukan')
+        if re.search(r'\s+[,.;:!?]', teks_asli):
+            tambah('mekanik', 'spasi sebelum tanda baca')
     for kalimat in re.split(r'[.!?]+', teks):
         n = len(kalimat.split())
         if n > 45:
@@ -142,9 +169,19 @@ def main():
     if path.endswith('.docx'):
         from docx import Document
         doc = Document(path)
+        # Bagian surat pernyataan memakai "saya" menurut bentuk dokumennya.
+        # Lacak sampai bagian berikutnya dimulai.
+        orang1 = False
         for i, p in enumerate(doc.paragraphs, 1):
-            if p.text.strip():
-                periksa_teks(p.text, f'paragraf {i}', temuan)
+            t = p.text.strip()
+            if not t:
+                continue
+            if RE_BAGIAN_ORANG_PERTAMA.search(t):
+                orang1 = True
+            elif re.match(r"^(KATA\s+PENGANTAR|RINGKASAN|ABSTRACT|DAFTAR\s+ISI|"
+                          r"BAB\s+[IVX]+|PANDUAN\s+PENGGUNAAN)", t, re.I):
+                orang1 = False
+            periksa_teks(t, f'paragraf {i}', temuan, orang1)
         for ti, t in enumerate(doc.tables, 1):
             for r in t.rows:
                 for c in r.cells:
@@ -153,9 +190,18 @@ def main():
     else:
         try:
             with open(path, encoding='utf8') as f:
+                orang1 = False
                 for i, baris in enumerate(f, 1):
-                    if baris.strip():
-                        periksa_teks(baris, f'baris {i}', temuan)
+                    t = baris.strip()
+                    if not t:
+                        continue
+                    if RE_BAGIAN_ORANG_PERTAMA.search(t):
+                        orang1 = True
+                    elif re.match(r"^(KATA\s+PENGANTAR|RINGKASAN|ABSTRACT|"
+                                  r"DAFTAR\s+ISI|BAB\s+[IVX]+|"
+                                  r"PANDUAN\s+PENGGUNAAN)", t, re.I):
+                        orang1 = False
+                    periksa_teks(baris, f'baris {i}', temuan, orang1)
         except FileNotFoundError:
             print(f'GAGAL: berkas tidak ada: {path}', file=sys.stderr)
             sys.exit(2)

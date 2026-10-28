@@ -30,5 +30,34 @@ else
     echo "LULUS naskah bersih bebas dari temuan 4.8/4.9"
 fi
 
+# --- anti galat palsu pada template resmi ---
+# "saya" di SURAT PERNYATAAN adalah bentuk baku dokumen itu, bukan pelanggaran.
+# "NIDN/NIP" adalah label isian, bukan garis miring sebagai "atau".
+$PY scripts/cek_bahasa.py tests/naskah_template_resmi.md >/tmp/bh_tpl.out 2>&1
+if grep -q "kata ganti orang" /tmp/bh_tpl.out; then
+    echo "GAGAL template resmi: 'saya' di surat pernyataan tidak boleh ditandai"
+    gagal=$((gagal + 1))
+else
+    echo "LULUS template resmi: 'saya' di surat pernyataan tidak ditandai"
+fi
+if grep -q "garis miring" /tmp/bh_tpl.out; then
+    echo "GAGAL template resmi: 'NIDN/NIP' tidak boleh ditandai garis miring"
+    gagal=$((gagal + 1))
+else
+    echo "LULUS template resmi: 'NIDN/NIP' tidak ditandai garis miring"
+fi
+if grep -q "spasi sebelum tanda baca" /tmp/bh_tpl.out; then
+    echo "GAGAL template resmi: baris isian bertab tidak boleh ditandai mekanik"
+    gagal=$((gagal + 1))
+else
+    echo "LULUS template resmi: baris isian bertab tidak ditandai mekanik"
+fi
+# tetapi PKL/riset HARUS tetap ditandai
+if grep -q "garis miring" /tmp/bh.out 2>/dev/null ||    $PY scripts/cek_bahasa.py tests/naskah_bahasa_buruk.md 2>&1 | grep -q "PKL/riset"; then
+    echo "LULUS garis miring 'PKL/riset' tetap ditangkap"
+else
+    echo "GAGAL garis miring 'PKL/riset' hilang"; gagal=$((gagal + 1))
+fi
+
 echo
 if [ "$gagal" -eq 0 ]; then echo "Ringkasan: SEMUA LULUS"; exit 0; else echo "Ringkasan: GAGAL $gagal"; exit 1; fi

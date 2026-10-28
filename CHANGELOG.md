@@ -67,8 +67,27 @@ dan satu konflik baru ditemukan.
   ditulis satu paragraf, perbandingan 1:1 dilewati tanpa pesan. Kini dilaporkan
   `tujuan_tanpa_butir`.
 
+### Diperbaiki — galat palsu pada template resmi
+Dijalankan pada template resmi FTI, `cek_bahasa.py` melaporkan **51 kesalahan**;
+51 di antaranya palsu. Tiga penyebab:
+- **"saya" di SURAT PERNYATAAN / LEMBAR PERSETUJUAN** ditandai sebagai kata ganti
+  orang — padahal itu bentuk baku dokumen tersebut. Kini bagian itu dilacak dan
+  dilewati; "saya" di badan naskah tetap ditangkap.
+- **Baris isian bertab** (`Nama		: ...`) ditandai "spasi sebelum tanda baca" —
+  titik dua di sana pemisah label, bukan tanda baca kalimat.
+- **`NIDN/NIP`** ditandai "garis miring sebagai atau". Pasangan singkatan
+  (kedua sisi kapital, atau keduanya <= 4 huruf) kini dilewati; `PKL/riset`
+  tetap ditangkap karena itu memang pilihan kata.
+- Placeholder template (`<<nama>>`, `<<NIDN/NIP>>`) tidak lagi diperiksa sebagai
+  prosa.
+
+Sisa 2 temuan pada template resmi keduanya BENAR dan berasal dari template itu
+sendiri: kata tidak baku **"ijin"** (seharusnya "izin") pada Surat Pernyataan
+Persetujuan Publikasi.
+
 ### Tes
-`format_kampus` 69 → 91. `sidang` +3. `tes_bundel` 36. Semua lulus.
+`format_kampus` 69 → 91. `bahasa_akademik` 12 → 16 (termasuk uji anti-galat-palsu
+pada template resmi). `sidang` +3. `tes_bundel` 36. Semua lulus.
 
 ## [2.3.0] — 2026-10-28
 
