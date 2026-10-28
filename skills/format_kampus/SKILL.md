@@ -117,6 +117,14 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
   judul contoh; untuk dokumen yang akan dipakai, pakai skrip ini.
   Tiap bab menjadi seksi sendiri supaya "awal bab tengah bawah, halaman lain
   kanan atas" (panduan 4.5) benar-benar terpenuhi.
+- `scripts/buat_template_lengkap.py profil-kampus.yaml out.docx --halaman
+  presets/ars-fti-halaman.yaml` — menambah BUNYI halaman bagian awal/akhir:
+  surat pernyataan, lembar persetujuan/pengesahan, kata pengantar, ringkasan,
+  abstract, riwayat hidup, lembar konsultasi, surat keterangan riset. Tanpa
+  `--halaman`, halaman hanya berisi judul dan penanda isi.
+- `scripts/render_halaman.py presets/ars-fti-halaman.yaml --daftar` — lihat
+  halaman apa saja yang tersedia beserta placeholder yang dibutuhkan.
+  `--cek` memvalidasi tanpa menulis dokumen.
 - `scripts/periksa_penomoran.py naskah.docx profil-kampus.yaml` — khusus `.docx`.
   Membaca `numbering.xml` dan menghitung nomor yang AKAN tampil, karena membaca
   heading dari style saja tidak cukup: subbab bisa tanpa `numPr`, `lvlText`

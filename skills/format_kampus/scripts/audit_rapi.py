@@ -80,19 +80,39 @@ def main():
             urutan.append(('p', Paragraph(anak, doc)))
         elif anak.tag.endswith('}tbl'):
             urutan.append(('t', Table(anak, doc)))
+    # Aturan caption (panduan 4.6) berlaku untuk TABEL ISI di dalam bab.
+    # Tabel bagian awal/akhir bukan tabel isi: kolom tanda tangan Lembar
+    # Pengesahan, tabel Lembar Konsultasi Bimbingan, dan Daftar Simbol/Gambar/
+    # Tabel/Lampiran memang tidak pernah bercaption "Tabel IV.1" — menandainya
+    # sebagai pelanggaran hanya melatih pengguna mengabaikan temuan.
+    def indeks_bab(daftar, pola):
+        return next((i for i, (j, o) in enumerate(daftar)
+                     if j == 'p' and o.style and o.style.name == 'Heading 1'
+                     and re.match(pola, o.text.strip(), re.I)), None)
+
+    i_bab_awal = indeks_bab(urutan, r'^BAB\s+[IVX\d]')
+    i_bab_akhir = indeks_bab(urutan, r'^(DAFTAR\s+PUSTAKA|DAFTAR\s+RIWAYAT|'
+                                    r'LAMPIRAN|DAFTAR\s+SIMBOL)')
+    if i_bab_akhir is None:
+        i_bab_akhir = len(urutan)
+
     tabel_tanpa = []
     for k, (jenis, obj) in enumerate(urutan):
-        if jenis == 't':
-            prev = ''
-            j = k - 1
-            while j >= 0:
-                if urutan[j][0] == 'p' and urutan[j][1].text.strip():
-                    prev = urutan[j][1].text.strip()
-                    break
-                j -= 1
-            if not re.match(r'^Tabel\s+[IVX\d]', prev):
-                tabel_tanpa.append(f'tabel ke-{len([u for u in urutan[:k+1] if u[0]=="t"])} (sebelumnya: "{prev[:30]}")')
-    catat('semua tabel bercaption', not tabel_tanpa, '; '.join(tabel_tanpa[:3]))
+        if jenis != 't':
+            continue
+        # lewati tabel di luar badan naskah (bagian awal & bagian akhir)
+        if i_bab_awal is not None and not (i_bab_awal < k < i_bab_akhir):
+            continue
+        prev = ''
+        j = k - 1
+        while j >= 0:
+            if urutan[j][0] == 'p' and urutan[j][1].text.strip():
+                prev = urutan[j][1].text.strip()
+                break
+            j -= 1
+        if not re.match(r'^Tabel\s+[IVX\d]', prev):
+            tabel_tanpa.append(f'tabel ke-{len([u for u in urutan[:k+1] if u[0]=="t"])} (sebelumnya: "{prev[:30]}")')
+    catat('semua tabel isi bercaption', not tabel_tanpa, '; '.join(tabel_tanpa[:3]))
 
     # gambar sebelum Heading 1 pertama = sampul (logo) — bukan gambar isi, tanpa caption
     idx_h1 = next((k for k, (j, o) in enumerate(urutan)

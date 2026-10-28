@@ -1,0 +1,301 @@
+# Isi halaman bagian awal & akhir — FTI ARS University
+#
+# Dipisah dari `ars-fti.yaml` supaya berkas itu tetap murni ATURAN FORMAT.
+# Berkas ini berisi BUNYI HALAMAN, disalin dari template resmi
+# (bit.ly/TemplateSkripsiFTI -> Google Docs -> .docx), halaman 3-25.
+#
+# Placeholder {{...}} diisi lewat `--nilai kunci=nilai`. Placeholder yang belum
+# punya nilai dibiarkan tampil sebagai penanda {{...}} — jelas mana yang harus
+# diisi, dan tidak ada teks palsu yang menyamar sebagai isi.
+#
+# tipe:
+#   judul   — judul tengah + paragraf; halaman berkonten pendek
+#   surat   — paragraf + blok isian label:titik dua + penutup + ttd
+#   isian   — beberapa blok isian saja (riwayat hidup)
+#   tabel   — daftar/tabel (daftar simbol, gambar, tabel, lampiran, konsultasi)
+#   kosong  — judul saja (halaman yang diisi manual: Lampiran)
+#
+# `spasi: 1.5` pada surat & lembar pengesahan diukur dari template resmi:
+# jarak antar-barisnya 21 pt, bukan 27,6 pt. Dengan spasi 2, Surat Pernyataan
+# Publikasi dan Lembar Pengesahan meluber ke halaman kedua padahal di template
+# resmi masing-masing SATU halaman. Paragraf isi bab tetap 2 (panduan 4.2.3).
+#
+# `contoh:` berisi teks contoh yang HANYA dipakai bila placeholder-nya kosong,
+# supaya Persembahan/Kata Pengantar/Ringkasan/Abstract tidak tampil kosong total.
+# Teks contoh ditulis netral — bukan data milik orang lain.
+
+sumber: "Template Skripsi FTI ARS University (template resmi), halaman 3-25"
+
+halaman:
+
+  "Persembahan":
+    tipe: judul
+    wajib: true
+    spasi: 1.5
+    paragraf:
+      - "{{persembahan}}"
+    contoh:
+      persembahan: "Skripsi ini penulis persembahkan kepada kedua orang tua yang tiada henti mendoakan, kepada dosen pembimbing yang telah meluangkan waktu dan pikiran, serta kepada rekan sejawat di Program Studi {{prodi}} yang menjadi teman berdiskusi selama masa studi."
+
+  "Surat Pernyataan Keaslian Skripsi":
+    tipe: surat
+    wajib: true
+    spasi: 1.5
+    pembuka:
+      - "Yang bertanda tangan di bawah ini:"
+    isian:
+      - ["Nama", "{{nama}}"]
+      - ["NIM", "{{nim}}"]
+      - ["Perguruan Tinggi", "{{institusi}}"]
+    paragraf:
+      - "Dengan ini menyatakan bahwa skripsi yang telah saya buat dengan judul “{{judul}}” adalah asli (orisinil) atau tidak plagiat (menjiplak) dan belum pernah diterbitkan/dipublikasikan dimanapun dan dalam bentuk apapun."
+      - "Demikian surat pernyataan ini saya buat dengan sebenar-benarnya tanpa ada paksaan dari pihak manapun juga. Apabila dikemudian hari ternyata saya memberikan keterangan palsu dan atau ada pihak lain yang mengklaim bahwa skripsi yang telah saya buat adalah hasil karya milik seseorang atau badan tertentu, saya bersedia diproses baik secara pidana maupun perdata dan kelulusan saya dari {{institusi}} dicabut/dibatalkan."
+    ttd:
+      - "Dibuat di: {{kota}}"
+      - "Pada tanggal: {{tanggal}}"
+      - "Yang menyatakan,"
+      - ""
+      - ""
+      - ""
+      - "{{nama}}"
+
+  "Surat Pernyataan Persetujuan Publikasi Karya Ilmiah":
+    tipe: surat
+    wajib: true
+    spasi: 1.5
+    pembuka:
+      - "Yang bertanda tangan di bawah ini, saya:"
+    isian:
+      - ["Nama", "{{nama}}"]
+      - ["NIM", "{{nim}}"]
+      - ["Perguruan Tinggi", "{{institusi}}"]
+      - ["Program Studi", "{{prodi}}"]
+    paragraf:
+      - "Dengan ini menyetujui untuk memberikan ijin kepada pihak {{institusi}} Hak Royalti Non-Eksklusif (Non-exclusive Royalti-Fee Right) atas karya ilmiah kami yang berjudul “{{judul}}”, beserta perangkat yang diperlukan (apabila ada)."
+      - "Dengan Hak Bebas Royalti Non-Eksklusif ini pihak {{institusi}} berhak menyimpan, mengalih-media atau format-kan, mengelolanya dalam pangkalan data (database), mendistribusikannya dan menampilkan atau mempublikasikannya di internet atau media lain untuk kepentingan akademis tanpa perlu meminta ijin dari kami selama tetap mencantumkan nama kami sebagai penulis/pencipta karya ilmiah tersebut."
+      - "Saya bersedia untuk menanggung secara pribadi, tanpa melibatkan pihak {{institusi}}, segala bentuk tuntutan hukum yang timbul atas pelanggaran Hak Cipta dalam karya ilmiah saya ini."
+      - "Demikian pernyataan ini saya buat dengan sebenarnya."
+    ttd:
+      - "Dibuat di: {{kota}}"
+      - "Pada tanggal: {{tanggal}}"
+      - "Yang menyatakan,"
+      - ""
+      - ""
+      - ""
+      - "{{nama}}"
+
+  "Lembar Persetujuan":
+    tipe: surat
+    wajib: true
+    spasi: 1.5
+    judul_tambahan:
+      - "{{judul}}"
+    pembuka:
+      - "Yang disusun dan diajukan oleh:"
+    isian:
+      - ["Nama", "{{nama}}"]
+      - ["NIM", "{{nim}}"]
+      - ["Program Studi", "{{prodi}}"]
+    paragraf:
+      - "Telah disetujui oleh Dosen Pembimbing pada tanggal {{tanggal_setuju}}"
+    ttd:
+      - "Dosen Pembimbing,"
+      - ""
+      - ""
+      - ""
+      - "{{pembimbing}}"
+      - "NIDN/NIP. {{nidn_pembimbing}}"
+
+  "Lembar Pengesahan":
+    tipe: surat
+    wajib: true
+    spasi: 1.5
+    pembuka:
+      - "Judul : {{judul}}"
+      - "yang disusun dan diajukan oleh:"
+    isian:
+      - ["NIM", "{{nim}}"]
+      - ["Nama", "{{nama}}"]
+    paragraf:
+      - "Telah dipertahankan di depan Dewan Penguji pada tanggal {{tanggal_sidang}}"
+    tabel_ttd:
+      judul: "Dewan Penguji"
+      kolom: ["Penguji", "Tanda Tangan"]
+      # "|" memisahkan dua baris DALAM satu sel: nama, lalu NIDN. Kalau dibuat
+      # baris tabel terpisah, tabel jadi berjarak dan terlihat berantakan.
+      baris:
+        - ["{{penguji_1}}|NIDN/NIP. {{nidn_penguji_1}}", "____________________"]
+        - ["{{penguji_2}}|NIDN/NIP. {{nidn_penguji_2}}", "____________________"]
+      judul_2: "Pembimbing"
+      baris_2:
+        - ["{{pembimbing}}|NIDN/NIP. {{nidn_pembimbing}}", "____________________"]
+    penutup:
+      - "Skripsi ini telah dinyatakan diterima untuk memenuhi salah satu syarat memperoleh gelar {{gelar}} pada tanggal {{tanggal_lulus}}"
+      - "DEKAN {{fakultas}}"
+      - ""
+      - ""
+      - "{{dekan}}"
+      - "NIDN/NIP. {{nidn_dekan}}"
+
+  "Panduan Penggunaan Hak Cipta":
+    tipe: judul
+    wajib: true
+    spasi: 1.5
+    paragraf:
+      - "Skripsi sarjana yang berjudul “{{judul}}” adalah hasil karya tulis asli {{nama}} dan bukan hasil terbitan sehingga peredaran karya tulis hanya berlaku dilingkungan akademik saja, serta memiliki hak cipta. Oleh karena itu, dilarang keras untuk menggandakan baik sebagian maupun seluruhnya karya tulis ini, tanpa seizin penulis."
+      - "Referensi kepustakaan diperkenankan untuk dicatat tetapi pengutipan atau peringkasan isi tulisan hanya dapat dilakukan dengan seizin penulis dan disertai ketentuan pengutipan secara ilmiah dengan menyebutkan sumbernya."
+      - "Untuk keperluan perizinan pada pemilik dapat menghubungi informasi yang tertera di bawah ini:"
+    isian:
+      - ["Nama", "{{nama}}"]
+      - ["Alamat", "{{alamat}}"]
+      - ["No. Telp", "{{telp}}"]
+      - ["Email", "{{email}}"]
+
+  "Kata Pengantar":
+    tipe: judul
+    wajib: true
+    spasi: 1.5
+    paragraf:
+      - "{{kata_pengantar}}"
+      - "{{kata_pengantar_lanjutan}}"
+    ttd:
+      - "{{kota}}, {{tanggal}}"
+      - "Penulis,"
+      - ""
+      - ""
+      - "{{nama}}"
+    contoh:
+      kata_pengantar: "Puji syukur penulis panjatkan kepada Tuhan Yang Maha Esa atas selesainya skripsi berjudul “{{judul}}”. Skripsi ini disusun untuk memenuhi salah satu syarat kelulusan Program Sarjana pada {{institusi}}."
+      kata_pengantar_lanjutan: "Pada kesempatan ini penulis menyampaikan terima kasih kepada dosen pembimbing atas arahan dan koreksi selama proses penyusunan, kepada pihak {{tempat_riset}} atas izin dan data penelitian, serta kepada keluarga dan rekan sejawat atas dukungan yang diberikan. Penulis menyadari skripsi ini masih memiliki kekurangan. Oleh karena itu, kritik dan saran yang membangun sangat penulis harapkan demi perbaikan pada penelitian selanjutnya."
+
+  "Ringkasan":
+    tipe: judul
+    wajib: true
+    spasi: 1.5
+    paragraf:
+      - "{{ringkasan}}"
+    penutup:
+      - "Kata Kunci: {{kata_kunci}}"
+    contoh:
+      ringkasan: "Penelitian ini bertujuan merancang dan menguji sistem informasi yang belum tersedia pada objek penelitian, karena proses yang berjalan saat ini masih dikerjakan secara manual sehingga rawan kesalahan dan memakan waktu. Metode pengembangan yang digunakan adalah waterfall dengan tahapan analisis kebutuhan, perancangan, implementasi, dan pengujian black box. Hasil penelitian berupa sistem yang telah diuji pada seluruh fungsi utama dan dinyatakan sesuai dengan kebutuhan pengguna. Pengujian menunjukkan bahwa sistem mempercepat proses pencatatan dan penyusunan laporan dibandingkan cara manual. Kesimpulannya, sistem yang dirancang dapat digunakan sebagai solusi atas permasalahan yang diidentifikasi, dengan saran pengembangan berupa penambahan modul analisis dan pelatihan pengguna."
+      kata_kunci: "sistem informasi, waterfall, pengujian black box, efisiensi pelaporan"
+
+  "Abstract":
+    tipe: judul
+    wajib: true
+    spasi: 1.5
+    paragraf:
+      - "{{abstract}}"
+    penutup:
+      - "Keywords: {{keywords}}"
+    contoh:
+      abstract: "This study aims to design and evaluate an information system that is not yet available at the research site, where current processes are still performed manually, making them error-prone and time-consuming. The development method used is the waterfall model, covering requirements analysis, design, implementation, and black-box testing. The result is a system tested across all main functions and declared compliant with user requirements. Testing shows that the system accelerates recording and reporting compared with manual work. In conclusion, the designed system addresses the identified problems, with future work suggested in the form of an analytics module and user training."
+      keywords: "information system, waterfall, black-box testing, reporting efficiency"
+
+  "Daftar Simbol":
+    tipe: tabel
+    wajib: false
+    kolom: ["Simbol", "Arti"]
+    baris: []
+
+  "Daftar Gambar":
+    tipe: tabel
+    wajib: false
+    kolom: ["Gambar", "Judul Gambar", "Halaman"]
+    baris: []
+
+  "Daftar Tabel":
+    tipe: tabel
+    wajib: false
+    kolom: ["Tabel", "Judul Tabel", "Halaman"]
+    baris: []
+
+  "Daftar Lampiran":
+    tipe: tabel
+    wajib: false
+    kolom: ["Lampiran", "Judul Lampiran", "Halaman"]
+    baris: []
+
+  "Daftar Riwayat Hidup":
+    tipe: isian
+    wajib: true
+    spasi: 1.5
+    blok:
+      - judul: "I. Biodata Mahasiswa"
+        isian:
+          - ["NIM", "{{nim}}"]
+          - ["Nama Lengkap", "{{nama}}"]
+          - ["Tempat & Tanggal Lahir", "{{tempat_lahir}}, {{tanggal_lahir}}"]
+          - ["Alamat Lengkap", "{{alamat}}"]
+      - judul: "II. Pendidikan"
+        isian:
+          - ["1. SD", "{{sd}}"]
+          - ["2. SMP", "{{smp}}"]
+          - ["3. SMA/SMK", "{{sma}}"]
+          - ["4. Perguruan Tinggi", "{{pt}}"]
+      - judul: "III. Riwayat Pengalaman Berorganisasi/Pekerjaan"
+        isian:
+          - ["1.", "{{organisasi_1}}"]
+          - ["2.", "{{organisasi_2}}"]
+    ttd:
+      - "{{kota}}, {{tanggal}}"
+      - "Penulis,"
+      - ""
+      - ""
+      - "{{nama}}"
+
+  "Lembar Konsultasi Bimbingan":
+    tipe: tabel
+    wajib: true
+    spasi: 1.5
+    sub_judul:
+      - "UNIVERSITAS ADHIRAJASA RESWARA SANJAYA"
+    isian:
+      - ["NIM", "{{nim}}"]
+      - ["Nama Lengkap", "{{nama}}"]
+      - ["Dosen Pembimbing I", "{{pembimbing}}"]
+      - ["Judul Skripsi", "{{judul}}"]
+    kolom: ["No", "Tanggal Bimbingan", "Pokok Bahasan", "Paraf Dosen Pembimbing"]
+    baris:
+      - ["1", "", "", ""]
+      - ["2", "", "", ""]
+      - ["3", "", "", ""]
+      - ["4", "", "", ""]
+      - ["5", "", "", ""]
+      - ["6", "", "", ""]
+      - ["7", "", "", ""]
+      - ["8", "", "", ""]
+    # total wajib <= 14 cm (A4 21 - margin kiri 4 - kanan 3); kalau lebih,
+    # header "Paraf Dosen Pembimbing" pecah jadi tiga baris.
+    lebar_kolom_cm: [1.2, 2.8, 6.5, 3.5]
+
+  "Surat Keterangan Riset":
+    tipe: surat
+    wajib: false
+    spasi: 1.5
+    judul_tambahan:
+      - "SURAT KETERANGAN RISET"
+    pembuka:
+      - "Yang bertanda tangan di bawah ini:"
+    isian:
+      - ["Nama", "{{nama_penandatangan}}"]
+      - ["Jabatan", "{{jabatan_penandatangan}}"]
+    paragraf:
+      - "Dengan ini menerangkan bahwa, yang tersebut di bawah ini:"
+    isian_2:
+      - ["Nama", "{{nama}}"]
+      - ["NIM", "{{nim}}"]
+      - ["Program Studi", "{{prodi}}"]
+    paragraf_2:
+      - "Adalah benar telah melakukan Riset di {{tempat_riset}} terhitung sejak {{tanggal_mulai}} s/d {{tanggal_selesai}}, dan yang bersangkutan telah melaksanakan tugasnya dengan baik dan penuh tanggung jawab."
+      - "Demikian surat keterangan ini dibuat dengan benar, untuk dipergunakan sebagaimana mestinya."
+    ttd:
+      - "{{kota}}, {{tanggal}}"
+      - "{{jabatan_penandatangan}},"
+      - ""
+      - ""
+      - "{{nama_penandatangan}}"
+
+  "Lampiran":
+    tipe: kosong
+    wajib: true

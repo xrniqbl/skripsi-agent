@@ -56,7 +56,7 @@ ada yang gagal — jadi bisa dipakai di alur otomatis, bukan hanya dibaca manusi
 | Tahap | Pemeriksa |
 |---|---|
 | Topik | `peta_fenomena.py` `skor_topik.py` `judul_check.py` `literature_probe.py` |
-| Format — rupa | `buat_template_lengkap.py` `buat_template_docx.py` `audit_docx.py` `audit_rapi.py` `buat_daftar_isi.py` `audit_halaman.py` |
+| Format — rupa | `buat_template_lengkap.py` `render_halaman.py` `buat_template_docx.py` `audit_docx.py` `audit_rapi.py` `buat_daftar_isi.py` `audit_halaman.py` |
 | Format — isi | `periksa_sistematika.py` `periksa_pustaka.py` `periksa_ringkasan.py` `periksa_tabel_gambar.py` `periksa_penomoran.py` |
 | Proposal | `proposal_doctor.py` `verify_doi.py` `stats_tests.py` |
 | BAB IV/V | `peta_bab45.py` |
@@ -259,7 +259,7 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 36 pemeriksaan, `format_kampus` 99,
+Status tes saat ini: `tes_bundel` 36 pemeriksaan, `format_kampus` 107,
 `bahasa_akademik` 12, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 17,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 

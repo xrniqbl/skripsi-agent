@@ -405,6 +405,16 @@ def main() -> int:
     ap.add_argument("--nim", default="NIM")
     ap.add_argument("--prodi", default="PROGRAM STUDI")
     ap.add_argument("--tahun", default="2026")
+    ap.add_argument("--halaman", metavar="YAML",
+                    help="berkas bunyi halaman bagian awal/akhir "
+                         "(mis. presets/ars-fti-halaman.yaml). Tanpa ini, "
+                         "halaman hanya berisi judul + penanda isi.")
+    ap.add_argument("--nilai", action="append", default=[], metavar="KUNCI=NILAI",
+                    help="nilai pengisi placeholder {{...}} pada berkas halaman")
+    ap.add_argument("--persembahan", default="", help="isi halaman Persembahan")
+    ap.add_argument("--kata-pengantar", default="", help="isi Kata Pengantar")
+    ap.add_argument("--ringkasan", default="", help="isi Ringkasan")
+    ap.add_argument("--abstract", default="", help="isi Abstract")
     ap.add_argument("--isi-paragraf", type=int, default=1,
                     help="jumlah paragraf contoh per subbab (pakai angka besar "
                          "untuk menguji penomoran halaman lanjutan)")
@@ -417,6 +427,48 @@ def main() -> int:
     if not isinstance(profil, dict) or "sistematika" not in profil:
         print("GAGAL: profil tidak memuat kunci 'sistematika'.", file=sys.stderr)
         return 2
+
+    # ---- berkas bunyi halaman (opsional) ----
+    halaman_def: dict = {}
+    if a.halaman:
+        if not os.path.isfile(a.halaman):
+            print(f"GAGAL: berkas halaman tidak ada: {a.halaman}", file=sys.stderr)
+            return 2
+        halaman_def = (_muat_yaml(a.halaman) or {}).get("halaman") or {}
+        if not halaman_def:
+            print("GAGAL: berkas halaman tidak memuat kunci 'halaman:'.",
+                  file=sys.stderr)
+            return 2
+        try:
+            import render_halaman as RH
+        except ImportError:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import render_halaman as RH
+        nilai_halaman = {"judul": a.judul, "nama": a.nama, "nim": a.nim,
+                         "prodi": a.prodi, "tahun": a.tahun,
+                         "institusi": (profil.get("sampul") or {}).get(
+                             "institusi_nama_resmi", ""),
+                         "kota": (profil.get("sampul") or {}).get(
+                             "kota_bawaan", "Kota Bandung"),
+                         "persembahan": a.persembahan,
+                         "kata_pengantar": a.kata_pengantar,
+                         "ringkasan": a.ringkasan,
+                         "abstract": a.abstract}
+        for item in a.nilai:
+            if "=" in item:
+                k, v = item.split("=", 1)
+                nilai_halaman[k.strip()] = v
+            else:
+                print(f"GAGAL: --nilai harus KUNCI=NILAI: {item}", file=sys.stderr)
+                return 2
+        kurang = RH.kosong_tersisa({"halaman": halaman_def}, nilai_halaman)
+        # placeholder yang belum terisi dibiarkan sebagai penanda {{...}} supaya
+        # jelas mana yang harus diisi mahasiswa — jangan gagal, karena template
+        # memang dipakai sebelum semua data ada.
+        if kurang:
+            print(f"catatan: {len(kurang)} placeholder dibiarkan kosong "
+                  f"(penanda {{...}}): {', '.join(kurang[:8])}"
+                  + (" ..." if len(kurang) > 8 else ""))
 
     sis = profil["sistematika"]
     dok = profil.get("dokumen") or {}
@@ -473,14 +525,24 @@ def main() -> int:
     tulis_sampul(doc, profil, a.judul, a.nama, a.nim, a.prodi, a.tahun)
 
     awal = sis.get("bagian_awal") or []
+    gaya = {"font": nama_font, "spasi": spa.get("isi", 2.0) or 2.0,
+            "isi_pt": fon.get("isi_pt", 12),
+            "judul_pt": (fon.get("judul_bab") or {}).get("pt", 14)}
+
+    def gambar_halaman(nama_halaman: str) -> bool:
+        """Render satu halaman dari berkas bunyi halaman. False bila tak ada."""
+        hal = halaman_def.get(nama_halaman)
+        if not hal:
+            return False
+        RH.render(doc, nama_halaman, hal, nilai_halaman, gaya)
+        return True
+
     # "Lembar Judul" sudah dibuat sebagai sampul
     for item in awal:
         if re.fullmatch(r"lembar\s+judul", item, re.I):
             continue
-        catatan = None
-        for s in (sis.get("catatan_bagian_awal") or {}).items():
-            pass
-        # catatan per bagian diambil dari `catatan_halaman` bila ada
+        if gambar_halaman(item):
+            continue
         ch = (profil.get("catatan_halaman") or {}).get(item)
         tulis_halaman(doc, item, ch)
 
@@ -590,6 +652,13 @@ def main() -> int:
     tambah_penomoran_halaman(s3, "decimal", rata="center")
 
     for item in (sis.get("bagian_akhir") or []):
+        if item.strip().lower() == "daftar pustaka":
+            # Daftar Pustaka dibiarkan kosong: isinya lahir dari naskah.
+            h = doc.add_heading("Daftar Pustaka", level=1)
+            h.paragraph_format.page_break_before = True
+            continue
+        if gambar_halaman(item):
+            continue
         ch = (profil.get("catatan_halaman") or {}).get(item)
         tulis_halaman(doc, item, ch)
 

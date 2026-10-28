@@ -3,6 +3,76 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.6.0] — 2026-10-28
+
+### Konteks
+Template lengkap sebelumnya hanya berisi JUDUL tiap halaman bagian awal —
+Surat Pernyataan, Lembar Pengesahan, Riwayat Hidup semuanya kosong. Mahasiswa
+harus mengetik ulang bunyi surat dari PDF template resmi. Bunyi itu sekarang
+diekstrak dan dirender otomatis.
+
+### Ditambahkan
+- **`presets/ars-fti-halaman.yaml`** — 17 halaman bagian awal/akhir dengan bunyi
+  LENGKAP, disalin dari template resmi halaman 3-25: dua surat pernyataan,
+  lembar persetujuan, lembar pengesahan (tabel dewan penguji), panduan hak
+  cipta, kata pengantar, ringkasan, abstract, empat halaman daftar, riwayat
+  hidup, lembar konsultasi bimbingan, surat keterangan riset, lampiran.
+  Dipisah dari `ars-fti.yaml` supaya berkas itu tetap murni aturan format:
+  format bisa dipakai ulang antar kampus, bunyi surat hanya sah untuk satu.
+- **`scripts/render_halaman.py`** — merender satu halaman dari definisi YAML:
+  lima tipe (`judul`, `surat`, `isian`, `tabel`, `kosong`), blok isian dengan
+  titik dua sejajar, tabel tanda tangan, blok ttd. Punya `--daftar` dan `--cek`.
+- `buat_template_lengkap.py --halaman` + `--nilai kunci=nilai` + `--persembahan`
+  / `--kata-pengantar` / `--ringkasan` / `--abstract`.
+- `tests/run_tests.sh`: 99 → **107 pemeriksaan**, 0 dilewati.
+
+### Diperbaiki
+- **Titik dua blok isian tidak sejajar.** Tab KIRI dengan posisi tetap tidak
+  cukup: label yang lebih lebar dari tab stop melompat ke tab default
+  berikutnya (terukur: kolon di x=198 lalu x=257 pada halaman yang sama). Tab
+  KANAN juga salah — ia menempelkan UJUNG label di tab stop, lalu ": nilai"
+  menyusul sehingga kolon ikut bergeser. Yang benar: tab KIRI dengan lebar
+  dihitung dari label terpanjang **seluruh halaman**, memakai metrik font
+  sungguhan (Pillow). Posisi tab harus ditambah `left_indent` karena `w:pos`
+  diukur dari margin kiri. Diverifikasi: semua kolon di satu halaman kini
+  berada di satu nilai x.
+- **Lebar label dihitung 25% terlalu sempit.** Pillow memakai ukuran PIXEL,
+  bukan point: `ImageFont.truetype(path, 12)` = 9 pt, bukan 12 pt.
+  Diperbaiki jadi `isi_pt / 72 * 96`.
+- **Surat Pernyataan Publikasi & Lembar Pengesahan meluber ke halaman kedua.**
+  Template resmi memakai spasi 1,5 untuk halaman-halaman ini (jarak antar-baris
+  21 pt, bukan 27,6 pt). Ditambahkan `spasi:` per halaman di berkas halaman.
+- **Paragraf kosong sebagai jarak.** 23 paragraf kosong dilaporkan `audit_rapi`
+  sebagai "spasi manual" — termasuk baris kosong di blok tanda tangan. Semua
+  jarak kini memakai `space_before`; sisa 1 paragraf (pembawa `sectPr`).
+- **Ringkasan/Abstract/Kata Pengantar/Persembahan tampil kosong.** `par()`
+  memakai `nilai`, bukan `nilai_isi()`, sehingga blok `contoh:` tidak pernah
+  dipakai. Diperbaiki, dan placeholder DI DALAM teks contoh ikut diganti
+  (sempat muncul `{{prodi}}` mentah di tengah paragraf contoh).
+- **`audit_rapi` melaporkan tabel bagian awal tanpa caption.** Tabel tanda
+  tangan Lembar Pengesahan, Lembar Konsultasi, dan Daftar Simbol/Gambar/Tabel
+  bukan tabel isi — aturan caption 4.6 tidak berlaku di sana. Pemeriksaan
+  dibatasi ke tabel DI DALAM bab. Pesan diubah jadi "semua tabel isi bercaption".
+- **Baris pendek di-justify** menghasilkan celah antarkata aneh
+  ("Telah   dipertahankan   di   depan   Dewan   Penguji"). Paragraf < 95
+  karakter kini rata kiri.
+- **`konfigurasi --nilai` diabaikan** pada render halaman: nilai dari
+  `--nilai kunci=nilai` dipakai setelah `nilai_halaman` dibentuk, tetapi
+  `judul`/`nama`/`nim` dari argumen tidak ikut menimpa contoh.
+
+### Verifikasi (template ARS + bunyi halaman, 25 halaman render)
+```text
+audit_docx        15/15 lulus
+audit_rapi         0 gagal, 0 peringatan
+audit_halaman     24/24 halaman bernomor lulus
+periksa_penomoran  0 galat, 0 peringatan
+```
+Jumlah halaman 25 = sama dengan template resmi. Susunan: sampul, Persembahan,
+2 surat pernyataan, Lembar Persetujuan, Lembar Pengesahan, Panduan Hak Cipta,
+Kata Pengantar, Ringkasan, Abstract, Daftar Isi, 4 halaman daftar, BAB I-V,
+Daftar Pustaka, Riwayat Hidup, Lembar Konsultasi, Surat Keterangan Riset,
+Lampiran.
+
 ## [2.5.0] — 2026-10-28
 
 ### Konteks

@@ -265,6 +265,66 @@ cek "template lengkap memuat semua bagian, bab, subbab, dan tata letak benar" \
     $PY tests/uji_template_lengkap.py "$TMP/lengkap.docx" presets/ars-fti.yaml
 cek "audit_halaman lulus pada render template lengkap" true
 
+# 11d. render_halaman — bunyi halaman bagian awal/akhir
+cek "help valid: render_halaman" $PY scripts/render_halaman.py --help
+cek_tolak "render_halaman menolak tanpa argumen" $PY scripts/render_halaman.py
+cek "render_halaman --daftar mengenali semua halaman" \
+    $PY scripts/render_halaman.py presets/ars-fti-halaman.yaml --daftar
+$PY scripts/render_halaman.py presets/ars-fti-halaman.yaml --daftar \
+    >/tmp/fk_rh.out 2>&1
+if grep -qc "Surat Pernyataan Keaslian Skripsi" /tmp/fk_rh.out && \
+   grep -q "Lembar Pengesahan" /tmp/fk_rh.out && \
+   grep -q "Daftar Riwayat Hidup" /tmp/fk_rh.out; then
+    echo "LULUS render_halaman memuat surat, pengesahan, riwayat hidup"
+else
+    echo "GAGAL render_halaman memuat surat, pengesahan, riwayat hidup"
+    gagal=$((gagal + 1))
+fi
+# --cek harus menolak bila placeholder belum punya nilai
+$PY scripts/render_halaman.py presets/ars-fti-halaman.yaml --cek \
+    >/tmp/fk_rh2.out 2>&1
+if [ $? -eq 1 ] && grep -q "BELUM ADA NILAI" /tmp/fk_rh2.out; then
+    echo "LULUS render_halaman --cek melaporkan placeholder kosong"
+else
+    echo "GAGAL render_halaman --cek melaporkan placeholder kosong"
+    gagal=$((gagal + 1))
+fi
+
+# 11e. template LENGKAP + bunyi halaman: surat jadi nyata, bukan cuma judul
+cek "template + halaman menghasilkan docx" \
+    $PY scripts/buat_template_lengkap.py presets/ars-fti.yaml "$TMP/berisi.docx" \
+    --halaman presets/ars-fti-halaman.yaml --judul "JUDUL UJI" \
+    --nama "NAMA UJI" --nim "NIM UJI" --prodi "PRODI UJI"
+$PY - "$TMP/berisi.docx" >/tmp/fk_isi.out 2>&1 <<'PYEOF'
+import sys
+from docx import Document
+d = Document(sys.argv[1])
+teks = "\n".join(p.text for p in d.paragraphs)
+wajib = [
+    "Yang bertanda tangan di bawah ini",
+    "adalah asli (orisinil) atau tidak plagiat",
+    "Hak Royalti Non-Eksklusif",
+    "Telah disetujui oleh Dosen Pembimbing",
+    "Telah dipertahankan di depan Dewan Penguji",
+    "Kata Kunci:",
+    "Keywords:",
+    "Biodata Mahasiswa",
+]
+kurang = [w for w in wajib if w.lower() not in teks.lower()]
+# placeholder yang tidak diganti tidak boleh menyamar jadi isi surat
+mentah = [x for x in ("{{nama}}", "{{nim}}", "{{judul}}") if x in teks]
+print("kurang:", kurang)
+print("placeholder mentah:", mentah)
+sys.exit(0 if not kurang and not mentah else 1)
+PYEOF
+if [ $? -eq 0 ]; then
+    echo "LULUS surat & lembar terisi bunyi nyata, tanpa placeholder mentah"
+else
+    echo "GAGAL surat & lembar terisi bunyi nyata, tanpa placeholder mentah"
+    sed 's/^/      /' /tmp/fk_isi.out | head -6
+    gagal=$((gagal + 1))
+fi
+
 # 12. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
     # buat_daftar_isi mencari heading BAB; template 1 halaman tidak punya.
