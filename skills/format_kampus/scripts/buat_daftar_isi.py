@@ -125,6 +125,33 @@ def main():
         nama = p.style.name if p.style else ''
         if nama in ('Heading 1', 'Heading 2', 'Heading 3') and p.text.strip():
             judul.append((p, int(nama[-1]), p.text.strip()))
+
+    # Nomor subbab dihasilkan Word lewat numPr, jadi TIDAK ada di p.text.
+    # Daftar isi yang dibangun di sini harus menuliskannya sendiri — kalau tidak,
+    # semua subbab muncul tanpa nomor ("Latar Belakang" bukan "1.1. Latar Belakang")
+    # dan daftar isi tidak cocok dengan badan dokumen.
+    def beri_nomor(entri_list, profil):
+        sis = profil.get('sistematika') or {}
+        bab_map = sis.get('bab') or {}
+        nomor_bab = {1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI',
+                     7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X'}
+        hasil = []
+        bab_ke = 0
+        sub_ke = 0
+        for p, tingkat, teks in entri_list:
+            if tingkat == 1 and re.match(r'^BAB\s+', teks, re.I):
+                bab_ke += 1
+                sub_ke = 0
+                hasil.append((p, tingkat, teks))
+                continue
+            if tingkat == 2 and bab_ke:
+                sub_ke += 1
+                nomor = f"{bab_ke}.{sub_ke}."
+                if not re.match(r'^\d+(\.\d+)*\.?\s', teks):
+                    teks = f"{nomor} {teks}"
+            hasil.append((p, tingkat, teks))
+        return hasil
+    judul = beri_nomor(judul, profil)
     sasaran_toc = next((p for p, t, x in judul if x.upper() == 'DAFTAR ISI'), None)
     entri = [(t, x) for p, t, x in judul if x.upper() != 'DAFTAR ISI']
     if sasaran_toc is None:
@@ -144,7 +171,11 @@ def main():
         for n in range(halaman_terakhir, total + 1):
             if n == hal_toc:
                 continue
-            if teks.lower() in isi[n].lower():  # style kapital menampilkan huruf besar di render
+            # Nomor subbab ditambahkan di atas untuk tampilan daftar isi, tetapi
+            # di render nomornya menempel dari numbering Word. Cocokkan inti
+            # judulnya saja supaya tidak gagal karena beda spasi/titik.
+            inti = re.sub(r'^\d+(\.\d+)*\.?\s*', '', teks).lower()
+            if inti and inti in isi[n].lower():
                 ketemu = n
                 break
         if ketemu is None:

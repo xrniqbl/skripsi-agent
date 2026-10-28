@@ -110,6 +110,13 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
   kesesuaian nomor bab, **rujukan di teks**, dan sumber kutipan pada caption.
   Butir rujukan yang paling sering lolos: caption lengkap dan nomor benar, tetapi
   tabelnya tidak pernah disebut di paragraf mana pun.
+- `scripts/buat_template_lengkap.py profil-kampus.yaml keluaran.docx [--isi-paragraf N]`
+  — membangun kerangka UTUH: sampul (posisi terukur), semua bagian awal, semua
+  bab + subbab dengan penomoran multilevel, semua bagian akhir, dan tiga zona
+  nomor halaman. `buat_template_docx.py` hanya mengatur style dan menaruh satu
+  judul contoh; untuk dokumen yang akan dipakai, pakai skrip ini.
+  Tiap bab menjadi seksi sendiri supaya "awal bab tengah bawah, halaman lain
+  kanan atas" (panduan 4.5) benar-benar terpenuhi.
 - `scripts/periksa_penomoran.py naskah.docx profil-kampus.yaml` — khusus `.docx`.
   Membaca `numbering.xml` dan menghitung nomor yang AKAN tampil, karena membaca
   heading dari style saja tidak cukup: subbab bisa tanpa `numPr`, `lvlText`

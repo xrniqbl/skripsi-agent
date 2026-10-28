@@ -63,6 +63,14 @@ sistematika:
   #   BAB V  → lvlText "5.%1."   → "5.1."
   #   BAB IV → TIDAK ADA subbab bernomor di template (lihat catatan_konflik)
   penomoran_subbab_terbukti: "1.1. / 2.1. / 3.1. / 5.1. (angka Arab, titik penutup)"
+  # Nama bab persis panduan (3.1). Dipakai generator untuk mencetak dua baris
+  # "BAB I" / "PENDAHULUAN". Tanpa ini, kunci "BAB I" saja tidak memuat judulnya.
+  judul_bab:
+    "BAB I": "PENDAHULUAN"
+    "BAB II": "LANDASAN PEMIKIRAN"
+    "BAB III": "METODE PENELITIAN"
+    "BAB IV": "HASIL DAN PEMBAHASAN"
+    "BAB V": "PENUTUP"
   bab:                                  # 3.1 Tabel III.1
     "BAB I": ["1.1. Latar Belakang", "1.2. Identifikasi Masalah",
               "1.3. Tujuan Penelitian", "1.4. Manfaat Penelitian",

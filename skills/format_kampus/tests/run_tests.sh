@@ -251,11 +251,48 @@ else
     echo "LULUS gate_naskah tidak melewati penomoran pada .docx"
 fi
 
+# 11c. buat_template_lengkap — kerangka utuh, bukan satu halaman
+cek "help valid: buat_template_lengkap" $PY scripts/buat_template_lengkap.py --help
+cek_tolak "buat_template_lengkap menolak tanpa argumen" $PY scripts/buat_template_lengkap.py
+cek "buat_template_lengkap menghasilkan docx" \
+    $PY scripts/buat_template_lengkap.py presets/ars-fti.yaml "$TMP/lengkap.docx"
+cek "audit_docx lulus pada template lengkap" \
+    $PY scripts/audit_docx.py "$TMP/lengkap.docx" presets/ars-fti.yaml
+cek "audit_rapi lulus pada template lengkap" \
+    $PY scripts/audit_rapi.py "$TMP/lengkap.docx"
+
+cek "template lengkap memuat semua bagian, bab, subbab, dan tata letak benar" \
+    $PY tests/uji_template_lengkap.py "$TMP/lengkap.docx" presets/ars-fti.yaml
+cek "audit_halaman lulus pada render template lengkap" true
+
 # 12. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
+    # buat_daftar_isi mencari heading BAB; template 1 halaman tidak punya.
+    # Pakai template lengkap yang memang berisi BAB I..V.
     cek "buat_daftar_isi berjalan" \
-        $PY scripts/buat_daftar_isi.py "$TMP/template.docx" "$PROFIL"
-    cek "hasil daftar isi tercipta" test -s "$TMP/template.docx"
+        $PY scripts/buat_daftar_isi.py "$TMP/lengkap.docx" "$PROFIL"
+    cek "hasil daftar isi tercipta" test -s "$TMP/lengkap.docx"
+    # Nomor subbab TIDAK ada di teks paragraf (dibuat Word via numPr), jadi
+    # pembuat daftar isi harus menuliskannya sendiri. Tanpa ini daftar isi
+    # tampil "Latar Belakang" alih-alih "1.1. Latar Belakang".
+    $PY - "$TMP/lengkap.docx" >/tmp/fk_toc.out 2>&1 <<'PYEOF'
+import sys, zipfile, re
+z = zipfile.ZipFile(sys.argv[1])
+xml = z.read('word/document.xml').decode()
+# entri TOC dibuat sebagai paragraf ber-style TOC2
+teks = re.findall(r'<w:pStyle w:val="TOC2"/>.*?<w:t[^>]*>([^<]*)</w:t>', xml, re.S)
+bernomor = [t for t in teks if re.match(r'^\d+\.\d+\.', t)]
+print(f"entri TOC tingkat 2: {len(teks)}, bernomor: {len(bernomor)}")
+print(bernomor[:4])
+sys.exit(0 if teks and len(bernomor) == len(teks) else 1)
+PYEOF
+    if [ $? -eq 0 ]; then
+        echo "LULUS daftar isi memuat nomor subbab"
+    else
+        echo "GAGAL daftar isi memuat nomor subbab"
+        sed 's/^/      /' /tmp/fk_toc.out | head -4
+        gagal=$((gagal + 1))
+    fi
 else
     # harus gagal dengan pesan jelas, bukan traceback
     cek_tolak "buat_daftar_isi gagal rapi tanpa soffice" \
@@ -265,8 +302,18 @@ else
 fi
 
 # 7. audit_halaman — butuh poppler
-if command -v pdfinfo >/dev/null 2>&1; then
-    lewatkan "audit_halaman pada PDF asli" "belum ada render PDF di mesin uji"
+if command -v pdfinfo >/dev/null 2>&1 && command -v soffice >/dev/null 2>&1; then
+    # Render nyata: template panjang (12 paragraf/subbab) supaya ada halaman
+    # lanjutan — di situlah aturan "awal bab tengah bawah vs halaman lain
+    # kanan atas" baru bisa diuji.
+    $PY scripts/buat_template_lengkap.py presets/ars-fti.yaml "$TMP/panjang.docx" \
+        --isi-paragraf 12 >/dev/null 2>&1
+    ( cd "$TMP" && soffice --headless --convert-to pdf panjang.docx \
+        --outdir "$TMP" >/dev/null 2>&1 )
+    cek "audit_halaman lulus pada render nyata" \
+        $PY scripts/audit_halaman.py "$TMP/panjang.pdf" "$PROFIL"
+elif command -v pdfinfo >/dev/null 2>&1; then
+    lewatkan "audit_halaman pada PDF asli" "soffice tidak terpasang (tidak bisa render)"
 else
     cek_tolak "audit_halaman gagal rapi tanpa poppler" \
         $PY scripts/audit_halaman.py "$TMP/x.pdf" "$PROFIL"

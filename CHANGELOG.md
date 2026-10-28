@@ -3,6 +3,77 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.5.0] — 2026-10-28
+
+### Konteks
+Masalah "pastikan tata letak rapi" tidak bisa dijawab tanpa bisa MERENDER dokumen.
+`soffice` (LibreOffice) dipasang di mesin uji, dan begitu PDF-nya bisa dilihat,
+ternyata **template buatan hanya 1 halaman**: sampul, bagian awal, bab, dan bagian
+akhir tidak pernah dibuat. `audit_docx` melaporkan "15/15 lulus" karena yang
+diperiksa hanya style, bukan isi kerangka.
+
+### Ditambahkan
+- **`format_kampus/scripts/buat_template_lengkap.py`** — membangun kerangka UTUH
+  dari `sistematika` profil: sampul dengan posisi terukur, semua bagian awal,
+  semua bab + subbab dengan penomoran multilevel, semua bagian akhir, dan tiga
+  zona penomoran halaman (Romawi / Arab / Arab lanjutan).
+- **`format_kampus/tests/uji_template_lengkap.py`** — 15 pemeriksaan kerangka:
+  kelengkapan bagian, keberadaan `numPr`, awalan nomor per bab, margin, font,
+  spasi, jumlah paragraf kosong, dan isi sampul.
+- Uji `run_tests.sh` naik ke **99 pemeriksaan, 0 dilewati** — `soffice` dan
+  `poppler` sekarang ada, jadi jalur render + `audit_halaman` benar-benar diuji.
+
+### Diperbaiki
+- **`buat_template_lengkap.py` — sampul memakai posisi absolut**, diukur dari PDF
+  template resmi (judul y=86, SKRIPSI y=330, "Diajukan…" y=371, nama y=454,
+  NIM y=478, prodi y=567, universitas y=588, kota y=608, tahun y=629 pt).
+  Versi pertama memakai paragraf kosong untuk jarak: sampul terlalu rapat di atas
+  dan `audit_rapi` menghitungnya "spasi manual".
+- **`buat_template_lengkap.py` — "BAB I" dan "PENDAHULUAN" dipisah dua paragraf
+  Heading 1.** Digabung dengan line break, judulnya menjadi satu string
+  "BAB I\nPENDAHULUAN": daftar isi menampilkannya sebagai satu baris rusak dan
+  `buat_daftar_isi.py` tidak menemukannya di render (5 peringatan "judul tidak
+  ditemukan").
+- **`buat_template_lengkap.py` — tiap bab jadi seksi sendiri.** Hanya dengan cara
+  itu aturan panduan 4.5 terpenuhi: "awal bab tengah bawah, halaman lain kanan
+  atas". Sebelumnya semua halaman bernomor kanan atas, termasuk pembuka bab.
+- **`buat_template_lengkap.py` — `sectPr` dipindah dari paragraf kosong.** Setiap
+  `add_section()` menyisipkan paragraf kosong pembawa `sectPr`; enam seksi = enam
+  paragraf kosong yang dilaporkan `audit_rapi` sebagai "spasi manual". `sectPr`
+  dipindahkan ke paragraf sebelumnya (aman menurut skema Word), lalu paragraf
+  kosongnya dihapus — paginasi tidak berubah, PDF diverifikasi tetap 25 halaman.
+- **`buat_template_lengkap.py` — atribut font tema dibersihkan.** Tanpa ini Word
+  mengganti Times New Roman menjadi Calibri (432 atribut `asciiTheme`/`hAnsiTheme`
+  diwarisi dari dokumen kosong python-docx).
+- **`buat_template_lengkap.py` — nomor halaman tidak dobel.** Header "first page"
+  yang kosong membuat LibreOffice mewarisi header seksi sebelumnya, sehingga
+  halaman pembuka bab mencetak nomor dua kali (tengah + kanan atas).
+  `_kosongkan()` sekarang benar-benar meninggalkan satu paragraf kosong.
+- **`buat_daftar_isi.py` — nomor subbab masuk daftar isi.** Nomor subbab dibuat
+  Word lewat `numPr` sehingga TIDAK ada di `p.text`; daftar isi yang dibangun
+  manual menampilkannya tanpa nomor ("Latar Belakang", bukan "1.1. Latar
+  Belakang") — tidak cocok dengan badan dokumen. Nomor kini ditulis dari profil,
+  dan pencocokan judul di render memakai inti judul tanpa nomor.
+- **`audit_halaman.py` — zona bagian akhir tidak pernah terdeteksi.** Judul bagian
+  akhir dibandingkan dengan `l == item.upper()` (kapital penuh), padahal heading
+  hasil generator tercetak "Daftar Pustaka" (title case). Akibatnya semua halaman
+  bagian akhir diperiksa dengan aturan bagian pokok dan dilaporkan gagal.
+  Perbandingan dibuat tidak peka huruf besar-kecil.
+- **`run_tests.sh` — blok Python lewat heredoc di dalam string multi-baris.** `\n`
+  berubah menjadi baris baru sehingga yang muncul adalah `SyntaxError`, bukan
+  temuan asli. Diganti pemanggilan skrip uji terpisah.
+
+### Hasil verifikasi (template ARS, 25 halaman hasil render)
+```text
+audit_docx       15/15 lulus
+audit_rapi        0 gagal, 0 peringatan
+audit_halaman    24/24 halaman bernomor lulus
+periksa_penomoran 0 galat, 0 peringatan
+```
+Margin 4/3/3/3 cm, TNR 12 pt, spasi isi 2, jarak baris 27,6 pt, nomor Romawi
+i–xvi lalu Arab 1–10, sampul tanpa nomor, awal bab tengah bawah, halaman lain
+kanan atas.
+
 ## [2.4.0] — 2026-10-28
 
 ### Konteks

@@ -81,9 +81,15 @@ def main():
                    if any(JUDUL_BAB.match(l) for l in halaman[n])}
     akhir_items = sis.get('bagian_akhir') or []
     awal_akhir = None
+    # Perbandingan harus TIDAK peka huruf besar-kecil: judul bagian akhir bisa
+    # tercetak "Daftar Pustaka" (title case dari style heading) atau
+    # "DAFTAR PUSTAKA" (kapital penuh dari template kampus). Versi lama hanya
+    # menerima kapital penuh, sehingga zona bagian akhir tidak pernah terdeteksi
+    # dan semua halaman di sana diperiksa dengan aturan bagian pokok -> gagal.
     for item in akhir_items:
+        target = item.strip().upper()
         for n in range(1, total + 1):
-            if any(l == item.upper() for l in halaman[n]):
+            if any(l.strip().upper() == target for l in halaman[n]):
                 awal_akhir = n
                 break
         if awal_akhir:
@@ -117,6 +123,10 @@ def main():
         if n < bab_pertama:
             periksa(n, 'awal', 'bawah', romawi(n))
         elif awal_akhir and n >= awal_akhir:
+            # Bagian akhir melanjutkan penomoran Arab dari bagian pokok.
+            # Hitung dari jumlah halaman pokok sebelum awal_akhir, bukan dari
+            # selisih indeks halaman — supaya benar walau ada halaman
+            # ber-header berbeda di dalamnya.
             periksa(n, 'akhir', 'bawah', str(mulai + (n - bab_pertama)))
         else:
             nilai = str(mulai + (n - bab_pertama))
