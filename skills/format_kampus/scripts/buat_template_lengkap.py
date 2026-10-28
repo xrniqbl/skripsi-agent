@@ -352,6 +352,39 @@ def tulis_sampul(doc, profil: dict, judul: str, nama: str, nim: str,
     y_kursor = 12.0
     baris_pada(judul, smp.get("judul_pt", 14), Y_JUDUL,
                tebal=True, spasi=1.5, kapital=True)
+
+    # Logo universitas di antara judul dan kata SKRIPSI. Panduan 4.1 mewajibkan
+    # lembar judul memuat logo; template resmi menaruhnya 4,6 x 5,0 cm di tengah.
+    # Tanpa logo, sampul buatan tidak akan lolos pemeriksaan tata letak kampus.
+    # Path di preset bersifat relatif terhadap FOLDER SKILL (bukan cwd), karena
+    # preset dipanggil dari mana saja. Tanpa penjalanan ini, `assets/logo-ars.png`
+    # tidak ditemukan saat skrip dijalankan dari /tmp dan sampul keluar tanpa logo
+    # tanpa satu pun pesan galat.
+    _akar = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    logo = smp.get("logo")
+    if logo:
+        if not os.path.isabs(logo) and not os.path.isfile(logo):
+            logo = os.path.join(_akar, logo)
+    if not logo or not os.path.isfile(logo):
+        logo = os.path.join(_akar, "assets", "logo-ars.png")
+    if not os.path.isfile(logo):
+        logo = None
+    if logo and os.path.isfile(logo):
+        from docx.shared import Cm
+        p_logo = doc.add_paragraph()
+        p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_logo.paragraph_format.space_after = Pt(0)
+        lebar = Cm(smp.get("logo_lebar_cm", 4.6))
+        tinggi = Cm(smp.get("logo_tinggi_cm", 5.0))
+        # space_before menempatkan ATAS logo, diukur dari kursor setelah judul.
+        y_logo = 176 - 85            # atas logo, terukur dari template resmi
+        p_logo.paragraph_format.space_before = Pt(max(0.0, y_logo - y_kursor))
+        # line_spacing 1.0 wajib: spasi baris 1,5 akan menambah ruang di atas
+        # gambar dan mendorongnya turun dari posisi yang dihitung.
+        p_logo.paragraph_format.line_spacing = 1.0
+        p_logo.add_run().add_picture(logo, width=lebar, height=tinggi)
+        y_kursor = y_logo + tinggi.pt
+
     baris_pada("SKRIPSI", smp.get("skripsi_pt", 18), Y_SKRIPSI,
                tebal=True, spasi=smp.get("kata_skripsi_spasi", 2), kapital=True)
     baris_pada(smp.get("kalimat_diajukan") or

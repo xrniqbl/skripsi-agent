@@ -122,6 +122,10 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
   surat pernyataan, lembar persetujuan/pengesahan, kata pengantar, ringkasan,
   abstract, riwayat hidup, lembar konsultasi, surat keterangan riset. Tanpa
   `--halaman`, halaman hanya berisi judul dan penanda isi.
+- Sampul memuat **logo universitas** (`assets/logo-ars.png`, 4,6 × 5,0 cm,
+  disalin dari template resmi). Path logo di preset relatif terhadap folder
+  skill. Kalau logo tidak ditemukan, sampul keluar tanpa logo **tanpa pesan
+  galat** — periksa `d.inline_shapes` bila sampul terlihat kosong.
 - `scripts/render_halaman.py presets/ars-fti-halaman.yaml --daftar` — lihat
   halaman apa saja yang tersedia beserta placeholder yang dibutuhkan.
   `--cek` memvalidasi tanpa menulis dokumen.

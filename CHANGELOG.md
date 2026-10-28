@@ -24,7 +24,7 @@ diekstrak dan dirender otomatis.
   titik dua sejajar, tabel tanda tangan, blok ttd. Punya `--daftar` dan `--cek`.
 - `buat_template_lengkap.py --halaman` + `--nilai kunci=nilai` + `--persembahan`
   / `--kata-pengantar` / `--ringkasan` / `--abstract`.
-- `tests/run_tests.sh`: 99 → **107 pemeriksaan**, 0 dilewati.
+- `tests/run_tests.sh`: 99 → **108 pemeriksaan**, 0 dilewati.
 
 ### Diperbaiki
 - **Titik dua blok isian tidak sejajar.** Tab KIRI dengan posisi tetap tidak
@@ -60,12 +60,19 @@ diekstrak dan dirender otomatis.
   `--nilai kunci=nilai` dipakai setelah `nilai_halaman` dibentuk, tetapi
   `judul`/`nama`/`nim` dari argumen tidak ikut menimpa contoh.
 
+- **Sampul tidak memuat logo universitas.** Panduan 4.1 mewajibkan lembar
+  judul memuat logo. Sampul buatan hanya teks. Logo disalin dari template resmi
+  ke `assets/logo-ars.png` (4,6 × 5,0 cm, terukur dari PDF), ditambahkan ke
+  preset sebagai `sampul.logo`. Path relatif dijalankan terhadap folder SKILL,
+  bukan cwd — sempat gagal senyap saat skrip dipanggil dari `/tmp`.
+
 ### Verifikasi (template ARS + bunyi halaman, 25 halaman render)
 ```text
 audit_docx        15/15 lulus
 audit_rapi         0 gagal, 0 peringatan
 audit_halaman     24/24 halaman bernomor lulus
 periksa_penomoran  0 galat, 0 peringatan
+sampul            logo 543×591 px @300 dpi = 4,6 × 5,0 cm
 ```
 Jumlah halaman 25 = sama dengan template resmi. Susunan: sampul, Persembahan,
 2 surat pernyataan, Lembar Persetujuan, Lembar Pengesahan, Panduan Hak Cipta,

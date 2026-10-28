@@ -325,6 +325,25 @@ else
     gagal=$((gagal + 1))
 fi
 
+# 11f. sampul wajib memuat logo universitas (panduan 4.1)
+$PY - "$TMP/berisi.docx" >/tmp/fk_logo.out 2>&1 <<'PYEOF'
+import sys
+from docx import Document
+d = Document(sys.argv[1])
+gambar = len(d.inline_shapes)
+teks = "\n".join(p.text for p in d.paragraphs[:20])
+print("inline_shapes:", gambar)
+print("ada SKRIPSI di sampul:", "SKRIPSI" in teks)
+sys.exit(0 if gambar >= 1 and "SKRIPSI" in teks else 1)
+PYEOF
+if [ $? -eq 0 ]; then
+    echo "LULUS sampul memuat logo universitas"
+else
+    echo "GAGAL sampul memuat logo universitas"
+    sed 's/^/      /' /tmp/fk_logo.out | head -4
+    gagal=$((gagal + 1))
+fi
+
 # 12. daftar isi — butuh soffice
 if command -v soffice >/dev/null 2>&1; then
     # buat_daftar_isi mencari heading BAB; template 1 halaman tidak punya.

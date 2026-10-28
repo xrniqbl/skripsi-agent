@@ -141,6 +141,11 @@ sampul:                                 # 4.3 dan Tabel IV.1
   institusi_spasi: 1.5
   institusi_nama_resmi: "Universitas Adhirajasa Reswara Sanjaya"
   institusi_tebal: true
+  # Logo wajib ada di lembar judul (panduan 4.1). Berkasnya disalin dari
+  # template resmi; ukuran 4,6 x 5,0 cm terukur dari PDF-nya.
+  logo: assets/logo-ars.png
+  logo_lebar_cm: 4.6
+  logo_tinggi_cm: 5.0
   kota_bawaan: "Kota Bandung"            # template resmi menulis "Kota Bandung"
   catatan_institusi: "4.3 butir 8: tulis sesuai data Forlap Dikti"
   sampul_depan:
