@@ -45,11 +45,17 @@ def baca_berkas(path: str) -> str:
             sys.exit("GAGAL: butuh python-docx untuk membaca .docx "
                      "(pip install python-docx)")
         d = Document(path)
+        # Paragraf Word ADALAH batas entri pustaka. Menggabungnya dengan "\n"
+        # tunggal menghapus batas itu, dan pemecah entri jatuh ke heuristik
+        # "Nama ... tahun" — yang gagal pada entri banyak-pengarang karena
+        # tahun baru muncul setelah 150 karakter atau lebih, sehingga seluruh
+        # daftar terbaca sebagai nol entri.
         bagian = [p.text for p in d.paragraphs]
         for t in d.tables:
             for r in t.rows:
                 bagian.append(" | ".join(c.text for c in r.cells))
-        return "\n".join(bagian)
+        # "\n\n" antar paragraf: pemecah entri memisah per baris kosong.
+        return "\n\n".join(bagian)
     if ext == ".pdf":
         import subprocess
         try:
@@ -288,6 +294,12 @@ def periksa(teks: str, tahun_acuan: int, min_jurnal: int, usia_maks: int) -> dic
     # lalu web, lalu buku. Entri jurnal online sah punya URL — jangan direbut web.
     web = [e for e in entri if RE_WEB.search(e)]
     jurnal = [e for e in entri if RE_JURNAL.search(e)]
+    # Entri jurnal online yang sah SELALU punya URL (DOI/laman jurnal). Kalau
+    # ia dihitung sebagai "sumber web", aturan "web wajib tanggal unduh"
+    # menyalakan galat palsu pada setiap artikel ber-DOI, dan naskah yang
+    # benar jadi tampak cacat. Jurnal menang; web hanya untuk yang bukan
+    # jurnal.
+    web = [e for e in web if e not in jurnal]
     buku = [e for e in entri
             if e not in jurnal and e not in web and RE_BUKU.search(e)]
     info.update({"jurnal_prosiding": len(jurnal), "buku": len(buku),

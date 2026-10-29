@@ -45,6 +45,7 @@ terkunci:
 |---|---|
 | Belum punya topik / cari fenomena / uji judul / nilai kelayakan topik | `skills/topik_skripsi/` |
 | Panduan/format/template kampus → profil format + template DOCX + audit dokumen | `skills/format_kampus/` |
+| Menyambung Zotero / BibTeX / RIS / DOI → Daftar Pustaka otomatis, sisip sitasi ke DOCX | `skills/zotero_pustaka/` |
 | Memeriksa/menyunting bahasa naskah agar baku akademik (EYD) + pemeriksa otomatis | `skills/bahasa_akademik/` |
 | Verifikasi DOI / entri Daftar Pustaka yang mungkin dikarang | `skills/proposal_skripsi/scripts/verify_doi.py` |
 | Data sudah terkumpul → menulis BAB IV hasil & pembahasan, BAB V simpulan & saran | `skills/bab_iv_v/` |

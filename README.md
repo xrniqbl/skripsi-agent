@@ -135,6 +135,39 @@ spasi isi 2 vs 1,5 · caption `Tabel IV.1` vs `Tabel 4.1` · subbab
   halaman hasil render — field TOC Word, titik pemimpin rapi, nomor halaman sesuai
   skema bagian (Romawi/Arab). Bukan ketikan manual.
 
+
+## Referensi: Zotero dan DOI ke Daftar Pustaka
+
+`skills/zotero_pustaka/` menutup celah terbesar alur skripsi: referensi. Empat
+jalur masuk, satu bentuk kanonik (CSL-JSON), satu mesin render, satu gerbang.
+
+| Situasi | Perintah |
+|---|---|
+| Zotero desktop jalan | `zotero_client.py user 0 --local` |
+| Punya API key | `zotero_client.py user <id> --key $ZOTERO_KEY` |
+| Grup publik | `zotero_client.py group <id>` |
+| Cuma DOI | `zotero_client.py doi 10.1038/s41586-020-2649-2 --cek` |
+| Cuma judul | `zotero_client.py cari "judul artikel"` |
+| Ekspor BibTeX/RIS/Zotero JSON | `konversi_pustaka.py *.bib *.ris --gabung` |
+| Render daftar pustaka | `render_sitasi.py pustaka.csl.json --gaya apa --nama-lengkap` |
+| Sisip ke Word | `sisip_docx.py naskah.docx pustaka.csl.json --ganti-sitasi` |
+
+Yang dijaga, dan ini yang membedakannya dari menyalin manual:
+
+- **Nomor sitasi = nomor entri.** Sitasi dirender sesudah daftar diurutkan,
+  karena gaya numerik menomori menurut urutan akhir. Ada tes yang membandingkan
+  setiap `[n]` di teks terhadap blok ke-n.
+- **`et al.`/`dkk` bisa dimatikan** (`--nama-lengkap`) karena panduan ARS
+  mewajibkannya. Yang diubah atribut CSL-nya, bukan teks hasil render.
+- **Pola sitasi kampus** `(Nama, Tahun:Halaman)` lewat `--format-kampus
+  nama_tahun_halaman`, dengan halaman dari penanda `{{cite:ID:HAL}}`.
+- **Metadata tidak dikarang.** Field kosong tetap kosong dan dilaporkan; `--cek`
+  menolak DOI yang tidak resolve di Crossref maupun doi.org.
+- **Dedup dilaporkan**, bukan dibuang diam-diam — duplikat yang lolos merusak
+  penomoran IEEE/Vancouver.
+- **Locale `id-ID`**: "dan", "ed. oleh", "Dalam" — bukan istilah Inggris.
+
+
 ## Isi Paket
 
 ### Format, bahasa, dan tahap akhir
@@ -163,6 +196,7 @@ spasi isi 2 vs 1,5 · caption `Tabel IV.1` vs `Tabel 4.1` · subbab
 
 | Skill | Fungsi |
 |---|---|
+| `zotero_pustaka` | Menyambung Zotero (Web API, Local API, ekspor) dan DOI ke naskah: metadata → CSL-JSON → Daftar Pustaka APA/IEEE/Vancouver → sisip ke DOCX, dengan nomor sitasi yang dijamin sama dengan nomor entri |
 | `topik_skripsi` | Menemukan topik yang layak: panen fenomena, tangga masalah, tipe gap, skor FINER berbobot, rumus judul, keluaran `kontrak_topik.json` |
 | `proposal_skripsi` | Menyusun proposal skripsi/tesis/disertasi Bab I–III dari folder sumber lokal: profil dataset dan uji statistik nyata, coding wawancara kualitatif, 29 preset format kampus, cek EYD dan plagiarisme, ekspor Markdown + DOCX + BibTeX/RIS/EndNote |
 | `skripsi_pacil` | Alur penulisan skripsi Sistem Informasi gaya Pacil/Fasilkom: riset → tulis → revisi, sitasi IEEE, audit konsistensi, persiapan seminar dan sidang |
@@ -226,6 +260,20 @@ Contoh memeriksa naskah di akhir:
 .venv/bin/python skills/bahasa_akademik/scripts/cek_bahasa.py skripsi.md
 # pemetaan rumusan → hasil → simpulan
 .venv/bin/python skills/bab_iv_v/scripts/peta_bab45.py skripsi.md --periksa
+```
+
+Referensi dari Zotero/DOI, sebelum gerbang di atas:
+
+```bash
+bash skills/zotero_pustaka/scripts/unduh_gaya.sh            # sekali saja
+.venv/bin/python skills/zotero_pustaka/scripts/zotero_client.py \
+    doi --dari-daftar dois.txt --cek --out pustaka.csl.json
+.venv/bin/python skills/zotero_pustaka/scripts/render_sitasi.py \
+    pustaka.csl.json --gaya apa --nama-lengkap --out daftar_pustaka.md
+.venv/bin/python skills/zotero_pustaka/scripts/sisip_docx.py \
+    skripsi.docx pustaka.csl.json --gaya apa --nama-lengkap \
+    --format-kampus nama_tahun_halaman --ganti-sitasi \
+    --out skripsi-final.docx
 ```
 
 Atau semuanya sekaligus:

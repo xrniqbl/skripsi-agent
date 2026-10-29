@@ -39,6 +39,8 @@ PETA = {
     "fastmcp": "fastmcp",
     "mcp": "mcp",
     "docx2pdf": "docx2pdf",
+    "citeproc": "citeproc-py",
+    "bibtexparser": "bibtexparser",
 }
 
 RE_IMPOR = re.compile(

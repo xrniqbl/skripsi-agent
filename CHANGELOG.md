@@ -3,6 +3,78 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.7.0] — 2026-10-29
+
+### Konteks
+Pertanyaan "apakah skripsi agent bisa tersambung ke Zotero" jawabannya tidak:
+bundel ini sama sekali tidak punya jalur referensi. Mahasiswa menyalin entri
+dari Zotero/Mendeley ke Word dengan tangan — dan di situ nomor sitasi dan
+nomor Daftar Pustaka mulai berbeda, `et al.` masuk padahal panduan ARS
+melarangnya, dan `R\&D` tercetak apa adanya. Empat jalur metadata + satu
+mesin render + satu gerbang sekarang menggantikan penyalinan manual itu.
+
+### Ditambahkan
+- **`skills/zotero_pustaka/`** — sub-skill baru, 5 skrip:
+  - `zotero_client.py` — empat jalur metadata ke CSL-JSON: Web API v3
+    (`/users`, `/groups`, `--key`), Local API Zotero 7 (`:23119`, `--local`,
+    `probe`), DOI content negotiation (`doi.org`), dan Crossref (`cari`,
+    `--cek`). Paging sadar `Total-Results`; 403 dibaca sebagai "privat",
+    bukan "tidak ada".
+  - `konversi_pustaka.py` — BibTeX, RIS, ekspor Zotero JSON, CSL-JSON, dan
+    TSV → satu bentuk kanonik; dedup DOI lalu judul+tahun dengan laporan
+    duplikat, bukan pembuangan diam-diam; unescape LaTeX.
+  - `render_sitasi.py` — citeproc-py: Daftar Pustaka + sitasi dari SATU
+    daftar item. Gaya apa/ieee/vancouver/chicago/harvard/nature, `--csl`
+    untuk gaya kampus sendiri, `--nama-lengkap` (matikan `et al.`),
+    `--format-kampus` (pola `(Nama, Tahun:Halaman)` ARS), `--halaman ID=HAL`
+    (locator), locale `id-ID`.
+  - `sisip_docx.py` — ganti `{{DAFTAR_PUSTAKA}}` dan `{{cite:ID:HAL}}` di
+    DOCX, hanging indent 1,27 cm, atau sisip tepat setelah heading
+    "Daftar Pustaka" bila template tidak punya placeholder.
+  - `unduh_gaya.sh` — unduh + verifikasi 6 gaya CSL dan locale Indonesia.
+- `styles/` — apa, ieee, vancouver, chicago-author-date,
+  harvard-cite-them-right, nature + `locales-id-ID.xml`, semua terverifikasi
+  XML sebelum dipakai.
+- `references/api-dan-gaya.md` — endpoint, tabel kode respons, peta field
+  Zotero/BibTeX/RIS → CSL, catatan hasil probe.
+- `tests/run_tests.sh` — **35 pemeriksaan offline**, 0 dilewati.
+- Router `SKILL.md`: baris baru di peta tahap menuju `skills/zotero_pustaka/`.
+
+### Diperbaiki
+- **Nomor sitasi berbeda dari nomor entri.** `bib.sort()` harus dipanggil
+  sebelum sitasi dirender, bukan sesudah. Gaya numerik menomori menurut
+  urutan akhir daftar; merender sitasi lebih dulu memberi `[1]` pada entri
+  yang tercetak `[3]`. Diverifikasi dengan pemeriksa yang membandingkan
+  setiap `[n]` terhadap blok ke-n.
+- **`bib.cite()` melempar `VariableError('bibliography')`.** Objek `Citation`
+  yang dipakai harus yang sudah di-`register()`; tanpa itu bukan sitasi
+  kosong, tapi exception yang tertelan jadi `[?VariableError]`.
+- **APA keluar tidak berabjad** karena citeproc mempertahankan urutan
+  register.
+- **`et-al-min` tidak berubah** saat menjelajahi `<citation>` dan
+  `<bibliography>` saja — atribut itu duduk di `<macro>` di akar dokumen.
+- **`vancouver.csl` 14 byte.** Gaya dependent tidak ada di path raw repo;
+  diunduh dari `zotero.org/styles/<nama>` dan diverifikasi ukuran + XML.
+- **`R\&D` tercetak apa adanya** dari BibTeX — ditambahkan unescape LaTeX.
+- **`form="short"` di `<names>` diabaikan**, nama depan ikut tercetak
+  (`(I. Saputra, A. Wijaya)`); atribut itu harus di `<name>`.
+- **locator sebagai string melempar `AttributeError`** — harus
+  `citeproc.source.Locator(label, identifier)`.
+- **`periksa_pustaka.py` menghitung entri jurnal ber-DOI sebagai "sumber
+  web"**, lalu menyalakan galat palsu "web tanpa tanggal unduh" pada setiap
+  artikel ber-DOI. Entri jurnal sekarang dikeluarkan dari daftar web.
+- **`periksa_pustaka.py` membaca DOCX dengan `"\n".join()`** sehingga batas
+  paragraf hilang dan seluruh Daftar Pustaka terbaca **0 entri** pada entri
+  banyak-pengarang (tahun muncul setelah >150 karakter). Sekarang `"\n\n"`.
+- **`sisip_docx.py` menaruh entri di akhir dokumen** padahal template punya
+  heading "Daftar Pustaka" — hasilnya entri jatuh setelah "Daftar Riwayat
+  Hidup". Sekarang mencari heading dan menyisipkan tepat sesudahnya.
+
+### Dependensi
+- `requirements.txt`: `citeproc-py>=0.7.0`, `bibtexparser>=2.0.0`.
+- `cek_dependensi.py`: peta impor `citeproc`/`bibtexparser` ditambahkan
+  supaya tidak muncul sebagai "tidak tercatat".
+
 ## [2.6.0] — 2026-10-28
 
 ### Konteks
