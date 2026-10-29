@@ -69,6 +69,16 @@ mesin render + satu gerbang sekarang menggantikan penyalinan manual itu.
 - **`sisip_docx.py` menaruh entri di akhir dokumen** padahal template punya
   heading "Daftar Pustaka" — hasilnya entri jatuh setelah "Daftar Riwayat
   Hidup". Sekarang mencari heading dan menyisipkan tepat sesudahnya.
+- **Nomor entri hilang pada judul berawalan angka.** `1984. (2000). ...`
+  cocok pola "sudah bernomor", jadi entri itu kehilangan nomornya sementara
+  entri lain tetap bernomor — daftar bolong tanpa sebab yang terlihat.
+  Keputusan memberi nomor sekarang bergantung pada GAYA, bukan pada tebakan
+  dari isi teks.
+- **Pustaka Zotero nyata mengandung entri kembar** (163 → 154 pada pustaka
+  uji 240 item: 7 judul+tahun, 2 DOI). Pada gaya numerik duplikat merusak
+  penomoran; pada gaya abjad ia mencetak baris yang sama dua kali.
+  `zotero_client.py` sekarang dedup DOI-dulu lalu judul+tahun dan
+  melaporkan setiap duplikat (`--tanpa-dedup` untuk mematikannya).
 
 ### Dependensi
 - `requirements.txt`: `citeproc-py>=0.7.0`, `bibtexparser>=2.0.0`.

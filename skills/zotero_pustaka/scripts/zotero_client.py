@@ -509,6 +509,56 @@ def cek_doi(doi: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Deduplikasi
+# ---------------------------------------------------------------------------
+def _kunci_doi(it: dict) -> str:
+    d = str(it.get("DOI") or "").strip().lower()
+    return re.sub(r"^https?://(dx\.)?doi\.org/", "", d)
+
+
+def _kunci_judul(it: dict) -> str:
+    import unicodedata
+    t = it.get("title") or ""
+    if isinstance(t, list):
+        t = " ".join(str(x) for x in t)
+    t = unicodedata.normalize("NFKD", str(t))
+    t = re.sub(r"[^a-z0-9 ]", "", t.lower())
+    t = re.sub(r"\s+", " ", t).strip()
+    dp = (it.get("issued") or {}).get("date-parts") or [[None]]
+    thn = str(dp[0][0]) if dp and dp[0] and dp[0][0] else ""
+    return f"{t}|{thn}" if t else ""
+
+
+def dedup(items: list) -> tuple[list, list]:
+    """
+    Buang entri kembar: DOI dulu, lalu judul ternormalisasi + tahun.
+
+    Pustaka Zotero nyata memang mengandung duplikat (entri yang diimpor dua
+    kali, atau dua item tanpa judul sama sekali). Pada gaya numerik
+    (IEEE/Vancouver) duplikat langsung merusak penomoran, dan pada gaya
+    abjad ia mencetak baris yang sama dua kali di Daftar Pustaka.
+    Duplikat DILAPORKAN, tidak dibuang diam-diam.
+    """
+    unik, dup, doi_ada, judul_ada = [], [], {}, {}
+    for it in items:
+        d, j = _kunci_doi(it), _kunci_judul(it)
+        if d and d in doi_ada:
+            dup.append({"id": it.get("id"), "sama_dengan": doi_ada[d],
+                        "sebab": "DOI"})
+            continue
+        if j and j in judul_ada:
+            dup.append({"id": it.get("id"), "sama_dengan": judul_ada[j],
+                        "sebab": "judul+tahun"})
+            continue
+        if d:
+            doi_ada[d] = it.get("id")
+        if j:
+            judul_ada[j] = it.get("id")
+        unik.append(it)
+    return unik, dup
+
+
+# ---------------------------------------------------------------------------
 # I/O
 # ---------------------------------------------------------------------------
 def baca_doi_daftar(path: str) -> list[str]:
@@ -539,6 +589,8 @@ def main(argv=None) -> int:
 
     p = sub.add_parser("user", help="pustaka pengguna Zotero")
     p.add_argument("id")
+    p.add_argument("--tanpa-dedup", action="store_true",
+                   help="pertahankan entri kembar (default: dibuang + dilaporkan)")
     p.add_argument("--key", default=os.environ.get("ZOTERO_KEY"))
     p.add_argument("--limit", type=int, default=100)
     p.add_argument("--collection")
@@ -547,6 +599,7 @@ def main(argv=None) -> int:
 
     p = sub.add_parser("group", help="pustaka grup Zotero")
     p.add_argument("id")
+    p.add_argument("--tanpa-dedup", action="store_true")
     p.add_argument("--key", default=os.environ.get("ZOTERO_KEY"))
     p.add_argument("--limit", type=int, default=100)
     p.add_argument("--collection")
@@ -588,6 +641,13 @@ def main(argv=None) -> int:
             else:
                 csl.append(c)
         lap["dilewati"] = sorted({d for d in dilewati if d})
+        if not getattr(a, "tanpa_dedup", False):
+            sebelum = len(csl)
+            csl, dup = dedup(csl)
+            lap["duplikat"] = len(dup)
+            if dup:
+                lap["daftar_duplikat"] = dup[:30]
+            lap["entri_sebelum_dedup"] = sebelum
         lap["entri"] = len(csl)
         if a.out:
             simpan(csl, a.out, lap)

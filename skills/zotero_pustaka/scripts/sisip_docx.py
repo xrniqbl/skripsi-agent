@@ -115,8 +115,22 @@ def _set_hanging(p, Cm) -> None:
     pf.space_after = 0
 
 
+def _beri_nomor(entri: list, gaya_nama: str) -> list:
+    """
+    Paragraf DOCX tidak punya penanda nomor otomatis seperti Daftar Pustaka
+    bernomor Word — jadi nomornya ditulis di awal teks. Hanya untuk gaya
+    non-numerik: IEEE/Vancouver sudah mencetak [n]/n. sendiri, dan
+    menambahkan "1." di depannya menghasilkan "1. [1] ...".
+    """
+    from render_sitasi import GAYA_NUMERIK
+    if gaya_nama.lower() in GAYA_NUMERIK:
+        return entri
+    return [f"{i}. {e}" for i, e in enumerate(entri, 1)]
+
+
 def sisip(naskah: str, entri: list, keluar: str, judul: str,
-          ganti_placeholder: bool = True, kering: bool = False) -> dict:
+          ganti_placeholder: bool = True, kering: bool = False,
+          gaya_nama: str = "") -> dict:
     Document, Cm, Pt, WD_ALIGN = _import_docx()
     doc = Document(naskah)
     laporan = {"paragraf_pustaka": len(entri), "placeholder": False,
@@ -277,7 +291,8 @@ def main(argv=None) -> int:
                                    a.nama_lengkap, a.locale, a.format_kampus,
                                    locator)
 
-    lap = sisip(a.naskah, entri, out, a.judul, kering=a.kering)
+    lap = sisip(a.naskah, _beri_nomor(entri, a.gaya), out, a.judul,
+                kering=a.kering, gaya_nama=a.gaya)
     if a.kering:
         print(json.dumps({"kering": True, **lap, "entri": len(entri)},
                          ensure_ascii=False, indent=2))

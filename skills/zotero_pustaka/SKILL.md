@@ -131,6 +131,12 @@ Gaya tersedia: `apa`, `ieee`, `vancouver`, `chicago-author-date`, `harvard`
   naskah, dibaca `cari_locator()`.
 - **`addnext()` berulang pada anchor yang sama membalik urutan** — geser
   anchor ke paragraf yang baru disisipkan setiap iterasi.
+- **Jangan menebak "sudah bernomor" dari isi entri.** Judul `1984. (2000)`
+  memicu tebakan itu dan menghapus nomornya. Keputusan memberi nomor harus
+  bergantung pada gaya (`GAYA_NUMERIK`), bukan pada regex atas teks.
+- **Pustaka Zotero nyata punya duplikat** — 163 → 154 entri pada pustaka uji
+  240 item. Dedup DOI-dulu lalu judul+tahun, dan laporkan; jangan biarkan
+  lolos ke gaya numerik.
 
 ## Berkas
 
@@ -151,7 +157,7 @@ references/api-dan-gaya.md   endpoint, kode respons, peta field
 PYTHON=/root/skripsi-agent/.venv/bin/python bash tests/run_tests.sh
 ```
 
-35 pemeriksaan offline: konversi tiga format, dedup DOI, urutan abjad APA,
+37 pemeriksaan offline: konversi tiga format, dedup DOI, urutan abjad APA,
 penanda IEEE, penghapusan et al., kecocokan nomor sitasi↔entri, pola sitasi
 kampus `(Nama, Tahun:Halaman)` dan naratif, penyisipan DOCX (placeholder,
 heading template, hanging indent), dan penolakan id sitasi yang tidak ada.

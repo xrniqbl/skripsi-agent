@@ -396,9 +396,22 @@ def render(items: list, gaya_path: str, gaya_nama: str,
     return entri, sitasi, dipakai
 
 
-def _sudah_bernomor(entri: str) -> bool:
-    """True bila gaya sudah menuliskan nomornya sendiri ([1] / 1.)."""
-    return bool(re.match(r"^\s*(\[\d+\]|\(\d+\)|\d+\.)", entri))
+def _gaya_numerik(gaya_nama: str) -> bool:
+    return gaya_nama.lower() in GAYA_NUMERIK
+
+
+def _sudah_bernomor(entri: str, gaya_nama: str = "") -> bool:
+    """
+    True bila gaya sudah menuliskan nomornya sendiri.
+
+    JANGAN menebak dari teks entri. Judul yang dimulai angka + titik
+    ("1984. (2000). 1984 [Video recording].") cocok pola "sudah bernomor",
+    lalu entri itu kehilangan nomornya sementara entri lain tetap bernomor —
+    daftar jadi bolong tanpa sebab yang terlihat.
+    """
+    if not _gaya_numerik(gaya_nama):
+        return False
+    return bool(re.match(r"^\s*(\[\d+\]|\d+\.)", entri))
 
 
 def _rapikan(entri: str) -> str:
@@ -408,10 +421,10 @@ def _rapikan(entri: str) -> str:
     return re.sub(r"\s+", " ", entri).strip()
 
 
-def _tulis_baris(entri: list, keluar) -> None:
+def _tulis_baris(entri: list, keluar, gaya_nama: str = "") -> None:
     for i, e in enumerate(entri, 1):
         e = _rapikan(e)
-        if _sudah_bernomor(e):
+        if _sudah_bernomor(e, gaya_nama):
             keluar.write(e + "\n\n")
         else:
             keluar.write(f"{i}. {e}\n\n")
@@ -489,12 +502,12 @@ def main(argv=None) -> int:
 
     if a.out:
         with open(a.out, "w", encoding="utf-8") as f:
-            _tulis_baris(entri, f)
+            _tulis_baris(entri, f, gaya_nama)
         print(json.dumps({"gaya": gaya_nama, "entri": len(entri),
                           "berkas": a.out, "urut": urut_info, "cacat": cacat},
                          ensure_ascii=False, indent=2))
     else:
-        _tulis_baris(entri, sys.stdout)
+        _tulis_baris(entri, sys.stdout, gaya_nama)
 
     if a.sitasi_out:
         with open(a.sitasi_out, "w", encoding="utf-8") as f:

@@ -321,6 +321,67 @@ PYCHK4
 if [ $? -eq 0 ]; then echo "LULUS DOCX: sisip setelah heading template"
 else echo "GAGAL DOCX: posisi entri salah"; gagal=$((gagal + 1)); fi
 
+# --- 6d. judul berawalan angka tidak menghilangkan nomor -------------------
+cat > "$TMP/angka.json" <<'JSON'
+[{"id":"x1","type":"motion_picture","title":"1984","issued":{"date-parts":[[2000]]}},
+ {"id":"x2","type":"book","title":"Zaman Baru","author":[{"family":"Saputra","given":"Iqbal"}],"issued":{"date-parts":[[2022]]}}]
+JSON
+cek "render judul berawalan angka" \
+    "$PY" "$S/render_sitasi.py" "$TMP/angka.json" --gaya apa --out "$TMP/angka.md"
+"$PY" - "$TMP" <<'PYCHK5'
+import re, sys
+t = open(f"{sys.argv[1]}/angka.md", encoding="utf-8").read()
+n = [int(m.group(1)) for m in re.finditer(r"^(\d+)\. ", t, re.M)]
+if n != list(range(1, len(n) + 1)):
+    print("nomor tidak berurutan:", n); sys.exit(1)
+if len(n) != 2:
+    print("jumlah entri salah:", n); sys.exit(1)
+print("ok: dua entri, nomor 1 dan 2 utuh")
+PYCHK5
+if [ $? -eq 0 ]; then echo "LULUS nomor utuh meski judul mulai angka"
+else echo "GAGAL nomor bolong pada judul berangka"; gagal=$((gagal + 1)); fi
+
+# --- 6e. dedup pustaka Zotero nyata (tanpa jaringan) -----------------------
+"$PY" - "$TMP" <<'PYDUP'
+import json, sys
+tmp = sys.argv[1]
+items = [
+    {"id": "a", "type": "article-journal", "title": "Sama", "DOI": "10.1/x",
+     "issued": {"date-parts": [[2020]]}},
+    {"id": "b", "type": "article-journal", "title": "Sama sekali lain",
+     "DOI": "https://doi.org/10.1/X", "issued": {"date-parts": [[2020]]}},
+    {"id": "c", "type": "book", "title": "Buku Kembar",
+     "issued": {"date-parts": [[2021]]}},
+    {"id": "d", "type": "book", "title": "buku  kembar",
+     "issued": {"date-parts": [[2021]]}},
+    {"id": "e", "type": "book", "title": "Buku Beda Tahun",
+     "issued": {"date-parts": [[2022]]}},
+]
+json.dump({"items": items}, open(f"{tmp}/dup.json", "w"))
+PYDUP
+"$PY" - "$TMP" <<'PYCHK6'
+import sys, importlib.util
+spec = importlib.util.spec_from_file_location("zc", "scripts/zotero_client.py")
+zc = importlib.util.module_from_spec(spec); spec.loader.exec_module(zc)
+import json
+items = json.load(open(f"{sys.argv[1]}/dup.json"))["items"]
+unik, dup = zc.dedup(items)
+gagal = []
+if len(unik) != 3:
+    gagal.append(f"unik={len(unik)} (harus 3)")
+if len(dup) != 2:
+    gagal.append(f"dup={len(dup)} (harus 2)")
+if not any(d["sebab"] == "DOI" for d in dup):
+    gagal.append("DOI case-sensitive / prefiks URL tidak dinormalkan")
+if not any(d["sebab"] == "judul+tahun" for d in dup):
+    gagal.append("duplikat judul+tahun tidak terdeteksi")
+if gagal:
+    print("; ".join(gagal)); sys.exit(1)
+print("ok: 5 -> 3 unik, 2 duplikat dilaporkan")
+PYCHK6
+if [ $? -eq 0 ]; then echo "LULUS dedup pustaka Zotero"
+else echo "GAGAL dedup pustaka Zotero"; gagal=$((gagal + 1)); fi
+
 # --- 7. ketahanan argumen --------------------------------------------------
 cek_tolak "render menolak gaya tak dikenal" \
     "$PY" "$S/render_sitasi.py" "$TMP/gabung.json" --gaya tidak-ada
