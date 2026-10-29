@@ -382,6 +382,19 @@ PYCHK6
 if [ $? -eq 0 ]; then echo "LULUS dedup pustaka Zotero"
 else echo "GAGAL dedup pustaka Zotero"; gagal=$((gagal + 1)); fi
 
+# --- 6f. entitas HTML tidak tercetak mentah -------------------------------
+cat > "$TMP/ent.bib" <<'BIB'
+@article{ent1, title={Knowledge Discovery &amp; Data Mining}, author={Satu, A.}, journal={Jurnal}, year={2023}, volume={1}, pages={1--2}}
+BIB
+cek "render entitas HTML" \
+    "$PY" "$S/konversi_pustaka.py" "$TMP/ent.bib" --out "$TMP/ent.json" >/dev/null 2>&1
+"$PY" "$S/render_sitasi.py" "$TMP/ent.json" --gaya apa --out "$TMP/ent.md" >/dev/null 2>&1
+if grep -q "&amp;" "$TMP/ent.md" 2>/dev/null; then
+    echo "GAGAL entitas HTML tercetak mentah (&amp;)"; gagal=$((gagal + 1))
+else
+    echo "LULUS entitas HTML di-decode"
+fi
+
 # --- 7. ketahanan argumen --------------------------------------------------
 cek_tolak "render menolak gaya tak dikenal" \
     "$PY" "$S/render_sitasi.py" "$TMP/gabung.json" --gaya tidak-ada

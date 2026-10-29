@@ -357,6 +357,18 @@ CROSSREF_TO_CSL = {
 }
 
 
+def _unescape_html(s: str) -> str:
+    """
+    Crossref mengirim entitas HTML di judul: "Knowledge Discovery &amp; Data
+    Mining". Tanpa di-decode, "&amp;" tercetak apa adanya di Daftar Pustaka
+    dan terbaca sebagai salah ketik.
+    """
+    import html as _html
+    if not isinstance(s, str) or "&" not in s:
+        return s
+    return _html.unescape(s)
+
+
 def rapikan_csl(rec: dict) -> dict:
     """Buang field non-CSL dan normalisasi bentuk list -> skalar."""
     out = {}
@@ -432,10 +444,11 @@ def rapikan_csl(rec: dict) -> dict:
                 out[k] = bersih
             else:
                 out.pop(k, None)
-    # judul/wadah: rapikan spasi ganda
-    for k in ("title", "container-title", "publisher"):
+    # judul/wadah/abstrak: decode entitas HTML lalu rapikan spasi
+    for k in ("title", "container-title", "publisher", "publisher-place",
+              "abstract", "note", "keyword"):
         if isinstance(out.get(k), str):
-            out[k] = re.sub(r"\s+", " ", out[k]).strip()
+            out[k] = re.sub(r"\s+", " ", _unescape_html(out[k])).strip()
     return out
 
 

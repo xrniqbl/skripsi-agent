@@ -80,6 +80,10 @@ mesin render + satu gerbang sekarang menggantikan penyalinan manual itu.
   `zotero_client.py` sekarang dedup DOI-dulu lalu judul+tahun dan
   melaporkan setiap duplikat (`--tanpa-dedup` untuk mematikannya).
 
+- **`&amp;` tercetak apa adanya.** Crossref dan ekspor BibTeX/RIS membawa
+  entitas HTML di judul ("Knowledge Discovery &amp; Data Mining"). Di-decode
+  di `rapikan_csl()` dan di konverter.
+
 ### Dependensi
 - `requirements.txt`: `citeproc-py>=0.7.0`, `bibtexparser>=2.0.0`.
 - `cek_dependensi.py`: peta impor `citeproc`/`bibtexparser` ditambahkan

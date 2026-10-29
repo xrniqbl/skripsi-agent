@@ -182,6 +182,14 @@ def _unescape_latex(s: str) -> str:
     return s
 
 
+def _unescape_html(s: str) -> str:
+    """BibTeX/RIS ekspor juga membawa entitas HTML: &amp; &lt; &#233;."""
+    import html as _html
+    if not isinstance(s, str) or "&" not in s:
+        return s
+    return _html.unescape(s)
+
+
 def _tahun_dari(s: str | None) -> dict | None:
     if not s:
         return None
@@ -248,7 +256,7 @@ def baca_bibtex(teks: str) -> tuple[list, list]:
         for k, v in f.items():
             dst = BIBTEX_FIELDS.get(k)
             if dst and v:
-                bersih = _unescape_latex(_bersih_judul(v)) if dst in (
+                bersih = _unescape_html(_unescape_latex(_bersih_judul(v))) if dst in (
                     "title", "container-title", "publisher", "publisher-place",
                     "collection-title", "abstract") else v
                 it[dst] = bersih
@@ -301,7 +309,7 @@ def _baca_bibtex_mini(teks: str) -> list:
         for k, v in f.items():
             dst = BIBTEX_FIELDS.get(k)
             if dst and v:
-                bersih = _unescape_latex(_bersih_judul(v)) if dst in (
+                bersih = _unescape_html(_unescape_latex(_bersih_judul(v))) if dst in (
                     "title", "container-title", "publisher", "publisher-place",
                     "collection-title", "abstract") else v
                 it[dst] = bersih
