@@ -174,6 +174,65 @@ def cari_sitasi_di_naskah(naskah: str, items: list) -> list:
 
 
 # ---------------------------------------------------------------------------
+def _matikan_et_al_bibliografi(root, NS: str) -> bool:
+    """
+    Tulis SEMUA nama pengarang di Daftar Pustaka, biarkan sitasi dalam teks
+    tetap memotong.
+
+    Panduan kampus Indonesia (ARS/FTI 4.10 butir 5) melarang "et al."/"dkk" di
+    daftar pustaka. Ia tidak melarangnya di dalam kalimat — dan menerapkannya
+    ke sitasi menghasilkan "(Harris, Millman, van der Walt, ... & Oliphant,
+    2020)" sepanjang tiga baris di tengah paragraf.
+
+    CSL memakai <macro> bersama untuk citation dan bibliography, jadi mengubah
+    atribut macro akan mengenai keduanya. Yang benar: buat salinan setiap
+    macro yang memuat <name et-al-*>, matikan et-al di salinan itu, lalu
+    arahkan <text macro="..."> DI DALAM <bibliography> ke salinan tersebut.
+    """
+    import copy
+
+    bib = next(root.iter(f"{{{NS}}}bibliography"), None)
+    if bib is None:
+        return False
+
+    def ada_et_al(elemen) -> bool:
+        for nm in elemen.iter(f"{{{NS}}}name"):
+            if nm.get("et-al-min") or nm.get("et-al-use-first"):
+                return True
+        return any(True for _ in elemen.iter(f"{{{NS}}}et-al"))
+
+    def matikan(elemen):
+        for nm in elemen.iter(f"{{{NS}}}name"):
+            for at in ("et-al-min", "et-al-use-first"):
+                if nm.get(at) is not None:
+                    nm.set(at, "999")
+            if nm.get("et-al-use-last") is not None:
+                nm.set("et-al-use-last", "false")
+        induk_peta = {anak: induk for induk in elemen.iter() for anak in induk}
+        for el in list(elemen.iter(f"{{{NS}}}et-al")):
+            induk = induk_peta.get(el)
+            if induk is not None:
+                induk.remove(el)
+
+    diubah = False
+    for i, macro in enumerate(list(root.iter(f"{{{NS}}}macro"))):
+        if not ada_et_al(macro):
+            continue
+        nama_asli = macro.get("name")
+        if not nama_asli:
+            continue
+        salinan = copy.deepcopy(macro)
+        salinan.set("name", nama_asli + "-pustaka")
+        matikan(salinan)
+        root.append(salinan)
+        # arahkan rujukan di dalam bibliography ke salinan
+        for teks in bib.iter(f"{{{NS}}}text"):
+            if teks.get("macro") == nama_asli:
+                teks.set("macro", nama_asli + "-pustaka")
+                diubah = True
+    return diubah
+
+
 def _terapkan_format_sitasi(root, NS: str, pola: str) -> bool:
     """
     Ganti layout <citation> sesuai pola kampus.
@@ -278,37 +337,15 @@ def siapkan_gaya(path: str, matikan_et_al: bool = False,
     diubah = False
 
     if matikan_et_al:
-        # Elemen <name> yang memotong daftar pengarang biasanya duduk di dalam
-        # <macro> di akar dokumen, bukan di dalam <citation>/<bibliography> —
-        # keduanya direferensikan lewat <text macro="...">. Jadi jelajahi
-        # seluruh dokumen, jangan hanya dua node itu.
-        for nm in root.iter(f"{{{NS}}}name"):
-            for at in ("et-al-min", "et-al-use-first"):
-                if nm.get(at) is not None:
-                    nm.set(at, BESAR)
-                    diubah = True
-            if nm.get("et-al-use-last") is not None:
-                nm.set("et-al-use-last", "false")
-                diubah = True
-
-        for node in root.iter(f"{{{NS}}}citation"):
-            for at in ("et-al-min", "et-al-use-first"):
-                if node.get(at) is not None:
-                    node.set(at, BESAR)
-                    diubah = True
-        for node in root.iter(f"{{{NS}}}bibliography"):
-            for at in ("et-al-min", "et-al-use-first"):
-                if node.get(at) is not None:
-                    node.set(at, BESAR)
-                    diubah = True
-
-        # buang elemen <et-al> (teks pengganti "et al.") di mana pun berada
-        induk_peta = {anak: induk for induk in root.iter() for anak in induk}
-        for el in list(root.iter(f"{{{NS}}}et-al")):
-            induk = induk_peta.get(el)
-            if induk is not None:
-                induk.remove(el)
-                diubah = True
+        # "Tanpa et al." adalah aturan DAFTAR PUSTAKA, bukan aturan sitasi
+        # dalam teks. Menerapkannya ke keduanya menghasilkan sitasi sepanjang
+        # 25 penulis di tengah kalimat — naskah jadi tidak terbaca. Jadi:
+        #   <citation>    -> tetap memotong (1 penulis + dkk/et al. gaya asli)
+        #   <bibliography> -> semua nama ditulis
+        # Macro dipakai bersama oleh keduanya, jadi yang diubah adalah
+        # salinan macro khusus bibliografi: ganti setiap rujukan macro di
+        # dalam <bibliography> dengan salinan yang et-al-nya dimatikan.
+        _matikan_et_al_bibliografi(root, NS)
 
     if format_kampus:
         # Pedoman kampus Indonesia (ARS/FTI 4.7) menyebut APA tetapi contohnya
@@ -388,7 +425,12 @@ def render(items: list, gaya_path: str, gaya_nama: str,
         c = Citation([CitationItem(it["id"], **kw)])
         bib.register(c)
         try:
-            sitasi[it["id"]] = bib.cite(c, lambda x: "[%s]" % x)
+            hasil = bib.cite(c, lambda x: "[%s]" % x)
+            # citeproc mengembalikan list potongan string untuk layout yang
+            # punya beberapa anak (mis. nama + tahun + locator). Tanpa
+            # digabung, pemanggil menerima list dan menuliskannya sebagai
+            # repr Python ke dalam DOCX.
+            sitasi[it["id"]] = "".join(hasil) if isinstance(hasil, list) else hasil
         except Exception as e:                       # gaya tanpa sitasi teks
             sitasi[it["id"]] = f"[?{type(e).__name__}]"
 

@@ -84,6 +84,15 @@ mesin render + satu gerbang sekarang menggantikan penyalinan manual itu.
   entitas HTML di judul ("Knowledge Discovery &amp; Data Mining"). Di-decode
   di `rapikan_csl()` dan di konverter.
 
+- **`--nama-lengkap` memanjangkan sitasi dalam teks.** Aturan "tanpa et al."
+  adalah aturan Daftar Pustaka, bukan aturan kalimat. Menerapkannya ke
+  `<citation>` menghasilkan sitasi 25 penulis selebar tiga baris. Sekarang
+  hanya `<bibliography>` yang memakai macro salinan tanpa pemotongan; sitasi
+  tetap `(Harris dkk., 2020:357)`.
+- **`bib.cite()` mengembalikan list potongan string** untuk layout beranak
+  banyak; tanpa `"".join()` hasilnya `['(', 'Harris ', 'dkk.', ...]` tercetak
+  sebagai repr Python ke dalam DOCX.
+
 ### Dependensi
 - `requirements.txt`: `citeproc-py>=0.7.0`, `bibtexparser>=2.0.0`.
 - `cek_dependensi.py`: peta impor `citeproc`/`bibtexparser` ditambahkan

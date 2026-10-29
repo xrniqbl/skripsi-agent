@@ -155,6 +155,27 @@ BIB
 cek_isi "Vancouver 3 penulis: semua nama tertulis" "$TMP/tiga-lengkap.md" "Tiga C"
 cek_tidak_isi "Vancouver 3 penulis lengkap: tanpa et al" "$TMP/tiga-lengkap.md" "et al"
 
+# --nama-lengkap = aturan DAFTAR PUSTAKA, bukan aturan sitasi. Sitasi yang
+# ikut dipanjangkan menghasilkan 25 nama di tengah kalimat.
+"$PY" "$S/render_sitasi.py" "$TMP/tiga.json" --gaya apa --nama-lengkap \
+    --sitasi-out "$TMP/tiga-sit.json" --out "$TMP/tiga-apa.md" >/dev/null 2>&1
+"$PY" - "$TMP" <<'PYCHK7'
+import json, sys
+d = json.load(open(f"{sys.argv[1]}/tiga-sit.json"))
+sit = list(d["sitasi"].values())[0]
+gagal = []
+if "Tiga C" in sit or sit.count(",") > 3:
+    gagal.append("sitasi ikut dipanjangkan: " + sit)
+bib = open(f"{sys.argv[1]}/tiga-apa.md", encoding="utf-8").read()
+if "Tiga, C." not in bib and "C. Tiga" not in bib:
+    gagal.append("daftar pustaka tidak memuat semua nama")
+if gagal:
+    print("; ".join(gagal)); sys.exit(1)
+print("ok: pustaka lengkap, sitasi tetap pendek:", sit)
+PYCHK7
+if [ $? -eq 0 ]; then echo "LULUS et al. hanya dimatikan di daftar pustaka"
+else echo "GAGAL et al. ikut memanjangkan sitasi"; gagal=$((gagal + 1)); fi
+
 # --- 4. nomor sitasi == nomor entri ---------------------------------------
 "$PY" - "$TMP" <<'PYCHK'
 import json, re, sys
