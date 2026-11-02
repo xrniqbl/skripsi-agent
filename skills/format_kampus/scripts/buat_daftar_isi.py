@@ -116,7 +116,11 @@ def main():
         sys.exit(1)
 
     def nomor_tampil(pdf_hal):
-        return romawi(pdf_hal) if pdf_hal < bab_pertama else str(mulai + pdf_hal - bab_pertama)
+        if pdf_hal < bab_pertama:
+            awal = ph.get('bagian_awal') or {}
+            offset = 0 if awal.get('sampul_dihitung', True) else 1
+            return romawi(max(1, pdf_hal - offset))
+        return str(mulai + pdf_hal - bab_pertama)
 
     doc = Document(path)
     paras = doc.paragraphs

@@ -27,6 +27,7 @@ dokumen:
 font:
   nama: "Times New Roman"              # 4.2 butir 4
   isi_pt: 12
+  warna: hitam                        # semua teks; tidak ada judul/caption berwarna
   judul_bab: {pt: 14, tebal: true, kapital: true, rata: tengah}   # 4.4 butir 1
   subbab: {pt: 12, tebal: true, kapital_awal: true}               # 4.4 butir 2
   sub_subbab: {pt: 12, tebal: true}
@@ -89,8 +90,20 @@ sistematika:
     - "Lampiran"
 
 penomoran_halaman:                      # 4.5
-  bagian_awal: {format: romawi_kecil, posisi: tengah_bawah, jarak_dari_bawah_cm: 2,
-                lembar_judul_dihitung_tanpa_nomor: true}
+  bagian_awal:
+    format: romawi_kecil
+    posisi: tengah_bawah
+    jarak_dari_bawah_cm: 2
+    # Sampul = halaman i, nomornya tidak dicetak -> halaman berikutnya ii.
+    # (Template resmi FTI memakai konvensi ini.)
+    sampul_dihitung: true
+    lembar_judul_dihitung_tanpa_nomor: true
+    # Halaman yang nomornya TIDAK dicetak tetapi TETAP dihitung. Isi dengan
+    # judul halaman persis seperti di sistematika. Kosongkan bila kampus
+    # mencetak nomor di semua halaman bagian awal.
+    # Konvensi lain yang juga lazim: sampul_dihitung: false + daftar ini berisi
+    # ["Lembar Pengesahan"] -> pengesahan = i (tidak dicetak), kata pengantar = ii.
+    nomor_disembunyikan: []
   bagian_pokok: {format: arab, mulai_dari: 1, awal_bab: tengah_bawah,
                  halaman_lain: kanan_atas}
   bagian_akhir: {format: arab_lanjutan, posisi: tengah_bawah,

@@ -103,7 +103,19 @@ def main():
     mulai = int(pokok.get('mulai_dari') or 1)
     pos_awal_bab = (pokok.get('awal_bab') or 'tengah_bawah')
     pos_lain = (pokok.get('halaman_lain') or 'kanan_atas')
+    # Halaman yang nomornya TIDAK dicetak tetapi tetap dihitung (sampul,
+    # lembar pengesahan). Dicocokkan dengan baris judul pertama halaman.
+    tersembunyi = {str(x).strip().lower()
+                   for x in (awal.get('nomor_disembunyikan') or [])}
+    # false = sampul di luar hitungan Romawi (pengesahan = i, kata pengantar = ii)
+    offset_romawi = 0 if awal.get('sampul_dihitung', True) else 1
     gagal = 0
+
+    def judul_halaman(n):
+        for l in halaman[n]:
+            if len(l) > 3 and not ANGKA.match(l) and not ROMAWI.match(l):
+                return l.lower()
+        return ''
 
     def periksa(n, zona, harap_slot, harap_nilai):
         nonlocal gagal
@@ -121,7 +133,16 @@ def main():
             print(f'LEWATI hal  1 [awal] lembar judul (periksa visual)')
             continue
         if n < bab_pertama:
-            periksa(n, 'awal', 'bawah', romawi(n))
+            judul = judul_halaman(n)
+            if judul in tersembunyi:
+                atas, bawah = slot(halaman[n])
+                ok = not atas and not bawah
+                if not ok:
+                    gagal += 1
+                print(f"{'LULUS' if ok else 'GAGAL'} hal {n:>2} [awal] "
+                      f"nomor disembunyikan — atas='{atas}' bawah='{bawah}'")
+                continue
+            periksa(n, 'awal', 'bawah', romawi(max(1, n - offset_romawi)))
         elif awal_akhir and n >= awal_akhir:
             # Bagian akhir melanjutkan penomoran Arab dari bagian pokok.
             # Hitung dari jumlah halaman pokok sebelum awal_akhir, bukan dari

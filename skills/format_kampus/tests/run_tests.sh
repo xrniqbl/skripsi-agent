@@ -400,6 +400,79 @@ else
     lewatkan "audit_halaman nyata" "poppler-utils tidak terpasang"
 fi
 
+# 8. perbaiki_skripsi — auditor yang juga memperbaiki dokumen mahasiswa
+cek "help valid: perbaiki_skripsi" $PY scripts/perbaiki_skripsi.py --help
+cek_tolak "perbaiki_skripsi menolak tanpa berkas" $PY scripts/perbaiki_skripsi.py
+cek "perbaiki_skripsi lulus pada template yang benar" \
+    $PY scripts/perbaiki_skripsi.py "$TMP/lengkap.docx" --profil "$PROFIL" --cek-saja
+
+# Dokumen dirusak dengan sengaja lalu harus pulih: warna tema pada style,
+# atribut font tema, dan pgNumType bagian akhir yang direset ke 1.
+$PY - "$TMP/lengkap.docx" "$TMP/rusak.docx" >/tmp/fk_rusak.out 2>&1 <<'PYEOF'
+import shutil, re, sys, zipfile
+src, dst = sys.argv[1], sys.argv[2]
+shutil.copy(src, dst)
+zin = zipfile.ZipFile(dst); zo = zipfile.ZipFile(dst + '.t', 'w', zipfile.ZIP_DEFLATED)
+for it in zin.infolist():
+    d = zin.read(it.filename)
+    if it.filename.startswith('word/') and it.filename.endswith('.xml'):
+        x = d.decode('utf8')
+        if it.filename == 'word/styles.xml':
+            x = x.replace('<w:rFonts w:ascii="Times New Roman"',
+                          '<w:rFonts w:asciiTheme="minorHAnsi" w:ascii="Times New Roman"', 1)
+            x = x.replace('<w:color w:val="000000"/>',
+                          '<w:color w:val="4F81BD" w:themeColor="accent1"/>', 1)
+        if it.filename == 'word/document.xml':
+            m = list(re.finditer(r'<w:pgNumType[^>]*/>', x))[-1]
+            x = x[:m.start()] + '<w:pgNumType w:fmt="decimal" w:start="1"/>' + x[m.end():]
+        d = x.encode('utf8')
+    zo.writestr(it, d)
+zo.close(); zin.close()
+shutil.move(dst + '.t', dst)
+print('dokumen uji dirusak')
+PYEOF
+cek_tolak "audit menangkap dokumen rusak" \
+    $PY scripts/perbaiki_skripsi.py "$TMP/rusak.docx" --profil "$PROFIL" --cek-saja
+cek "perbaiki_skripsi memulihkan dokumen rusak" \
+    $PY scripts/perbaiki_skripsi.py "$TMP/rusak.docx" --profil "$PROFIL"
+
+# 9. konvensi penomoran alternatif: sampul di luar hitungan + nomor disembunyikan.
+# Dua konvensi ini sama-sama dipakai kampus Indonesia, jadi keduanya harus lulus
+# dengan profil yang sama — hanya bagian_awal yang berubah.
+cek "profil penomoran alternatif dibuat" $PY - "$PROFIL" "$TMP/profil-alt.yaml" <<'PYEOF'
+import sys, yaml
+p = yaml.safe_load(open(sys.argv[1], encoding='utf8'))
+p['penomoran_halaman']['bagian_awal'].update({
+    'sampul_dihitung': False,
+    'nomor_disembunyikan': ['Lembar Pengesahan'],
+})
+yaml.safe_dump(p, open(sys.argv[2], 'w'), allow_unicode=True, sort_keys=False)
+PYEOF
+cek "template dengan penomoran alternatif terbentuk" \
+    $PY scripts/buat_template_lengkap.py "$TMP/profil-alt.yaml" "$TMP/alt.docx"
+if command -v soffice >/dev/null 2>&1 && command -v pdfinfo >/dev/null 2>&1; then
+    ( cd "$TMP" && soffice --headless --convert-to pdf alt.docx --outdir "$TMP" >/dev/null 2>&1 )
+    cek "audit_halaman lulus pada konvensi sampul-dihitung=false" \
+        $PY scripts/audit_halaman.py "$TMP/alt.pdf" "$TMP/profil-alt.yaml"
+else
+    lewatkan "audit_halaman konvensi alternatif" "soffice/poppler tidak terpasang"
+fi
+
+# 10. skripsi wajib hitam: tidak boleh ada warna non-hitam di paket
+cek "template bebas warna non-hitam" $PY - "$TMP/lengkap.docx" <<'PYEOF'
+import re, sys, zipfile
+z = zipfile.ZipFile(sys.argv[1])
+sisa = []
+for n in z.namelist():
+    if n.startswith('word/') and n.endswith('.xml'):
+        for m in re.findall(r'<w:color\b[^>]*/>', z.read(n).decode('utf8')):
+            v = re.search(r'w:val="([^"]*)"', m)
+            if v and v.group(1).upper() not in ('000000', 'FFFFFF'):
+                sisa.append((n, v.group(1)))
+print(f'warna non-hitam: {len(sisa)}', sisa[:5])
+sys.exit(0 if not sisa else 1)
+PYEOF
+
 echo
 if [ "$gagal" -eq 0 ]; then
     echo "Ringkasan: SEMUA LULUS${lewat:+ ($lewat dilewati)}"

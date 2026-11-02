@@ -3,6 +3,77 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.8.0] — 2026-11-02
+
+### Konteks
+Penomoran halaman skripsi punya tiga zona dengan aturan berbeda, dan zona itu
+bukan selera: bagian awal Romawi kecil, bagian pokok Arab mulai 1, bagian akhir
+Arab lanjutan. Bundel sebelumnya hanya benar pada bagian pokok. Bagian awal
+memakai SATU seksi untuk semua halaman, sehingga nomor tidak bisa disembunyikan
+di sampul dan lembar pengesahan tanpa ikut menghilangkan nomor di seluruh
+bagian awal. Jarak nomor dari tepi bawah (2 cm) ada di profil tetapi tidak
+pernah diterapkan. Dan warna teks tidak pernah dipaksa hitam — style `Caption`
+bawaan mencetak biru `4F81BD`.
+
+### Ditambahkan
+- **`skills/format_kampus/scripts/perbaiki_skripsi.py`** — auditor yang juga
+  MEMPERBAIKI dokumen skripsi yang sudah ada (template lama, hasil konversi,
+  kiriman pembimbing), bukan hanya melaporkan:
+  - `--cek-saja` untuk audit; tanpa itu berkas diperbaiki lalu diaudit.
+  - Semua atribut font tema dibuang dan diganti literal; SEMUA `w:color`
+    non-hitam dipaksa `000000` (putih dipertahankan untuk teks di atas latar
+    gelap pada style tabel bawaan).
+  - Margin & ukuran kertas diseragamkan di SELURUH seksi, bukan hanya seksi 1.
+  - Nomor halaman diatur per zona: Romawi kecil + `w:start="1"`, Arab mulai 1
+    di seksi pertama bab, Arab lanjutan tanpa `w:start` untuk bagian akhir.
+  - Seksi berisi bab memakai `titlePg`: halaman pembuka bab tengah bawah,
+    halaman lanjutan kanan atas.
+  - `--pisah-seksi` memasang section break di depan SETIAP bab dan di depan
+    bagian akhir, untuk dokumen yang masih satu seksi (tanpa itu mustahil
+    memakai dua format nomor dalam satu berkas).
+  - `--rapikan-awal` mengubah judul halaman bagian awal (Lembar Pengesahan,
+    Kata Pengantar, Abstrak, Daftar Isi, dst) menjadi Heading 1 dan memulai
+    tiap judul di halaman baru — supaya masuk daftar isi dan bisa dinomori.
+- **Dukungan dua konvensi penomoran bagian awal** lewat profil:
+  `bagian_awal.sampul_dihitung: true` (sampul = i tidak dicetak → kata pengantar
+  ii, konvensi template ARS) atau `false` (sampul di luar hitungan → pengesahan
+  i tidak dicetak, kata pengantar ii), plus `bagian_awal.nomor_disembunyikan:
+  [judul halaman]` untuk halaman yang nomornya tidak dicetak tetapi tetap
+  dihitung.
+- Preset `ars-fti.yaml` mendapat `font.warna: hitam` dan blok
+  `penomoran_halaman.bagian_awal` yang diperluas dengan dua kunci di atas
+  beserta komentar konvensinya.
+- `SKILL.md` bagian **6b** (tabel tiga zona + empat kesalahan klasik) dan
+  **6c** (cara memakai `perbaiki_skripsi.py`).
+- Tes baru di `tests/run_tests.sh`: `perbaiki_skripsi` (help, tolak tanpa
+  argumen, lulus pada template benar, menangkap dokumen rusak, memulihkannya),
+  konvensi `sampul_dihitung: false` sampai lulus audit render, dan paket bebas
+  warna non-hitam. Total `format_kampus` 107 → 117 pemeriksaan.
+
+### Diperbaiki
+- **Nomor halaman hilang di seluruh bagian awal** setelah bagian awal dipecah
+  per halaman: seksi baru mewarisi `titlePg`, sehingga halaman pertamanya
+  memakai footer "first" yang kosong. Sekarang `titlePg` dimatikan eksplisit di
+  setiap seksi yang nomornya harus tampil.
+- **Jarak nomor 2 cm dari tepi bawah tidak pernah dipakai** — `footer_distance`
+  sekarang diisi dari `penomoran_halaman.bagian_awal.jarak_dari_bawah_cm`.
+- **BAB I tercetak "16" bukan "1"** saat Romawi berpindah ke Arab: seksi
+  pertama bagian pokok sekarang wajib menulis `w:start="1"`.
+- **Daftar Pustaka kembali ke halaman 1**: seksi bagian akhir tidak boleh punya
+  `w:start`; penghitung meneruskan angka terakhir bagian pokok.
+- **Semua seksi terbaca sebagai bagian awal** pada dokumen mahasiswa (21 seksi
+  semuanya berzona awal, nomor Arab hilang). Zona sekarang ditentukan dengan
+  membagi paragraf per `w:sectPr` lalu membaca Heading 1 PERTAMA tiap seksi,
+  bukan judul terakhir sebelum batas seksi — yang justru judul seksi sebelumnya.
+- **Hanya halaman pembuka BAB I yang bernomor tengah bawah**: `_pisah_seksi`
+  kini memasang section break di depan setiap bab, sehingga BAB II–V juga
+  dapat aturan "halaman awal bab tengah bawah".
+- **`audit_halaman.py`** mengenali halaman yang nomornya memang disembunyikan
+  dan konvensi `sampul_dihitung: false`; `buat_daftar_isi.py` memakai offset
+  yang sama agar nomor di daftar isi cocok dengan hasil render.
+- **`render_halaman.py`** tidak lagi memaksa `page_break_before` bila halaman
+  sudah dibuka oleh section break (dulu menghasilkan halaman kosong).
+
 ## [2.7.0] — 2026-10-29
 
 ### Konteks

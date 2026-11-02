@@ -84,8 +84,63 @@ daftar isi skripsi). Dua alat menegakkannya:
   dari tab stop kanan, dan nomor sesuai skema profil. Jalankan setiap kali
   paginasi berubah; jangan mengetik daftar isi secara manual.
 
-### 7. Periksa isi yang diikat panduan, bukan hanya rupa
+### 6b. Penomoran halaman tiga zona — aturan yang paling sering salah
 
+Skema baku skripsi Indonesia, dan yang ditegakkan profil:
+
+| Zona | Isi | Format | Posisi |
+|---|---|---|---|
+| Bagian awal | sampul, pengesahan, pernyataan, kata pengantar, abstrak, daftar isi/gambar/tabel/lampiran | Romawi KECIL (i, ii, iii) | tengah bawah, 2 cm dari tepi |
+| Bagian pokok | BAB I … BAB V | Arab mulai 1 | halaman awal bab tengah bawah, halaman lain kanan atas |
+| Bagian akhir | Daftar Pustaka, Lampiran, Riwayat Hidup | Arab LANJUTAN (bukan mulai 1) | tengah bawah |
+
+Empat kesalahan yang wajib dicegah, semuanya sudah ditutup kode:
+
+1. **Sampul dan pengesahan tidak dicetak nomornya tetapi tetap dihitung.**
+   Dicapai dengan menjadikan SETIAP halaman bagian awal seksi tersendiri
+   (`buat_template_lengkap.py`) — bukan dengan mengosongkan footer satu seksi
+   penuh, karena itu menghilangkan nomor di semua halaman.
+   Dua konvensi didukung lewat profil:
+   `bagian_awal.sampul_dihitung: true` (sampul = i → kata pengantar ii) atau
+   `false` (pengesahan = i → kata pengantar ii), plus
+   `bagian_awal.nomor_disembunyikan: ["Lembar Pengesahan"]`.
+2. **Romawi bocor ke bagian pokok.** Perpindahan ke Arab WAJIB menulis
+   `w:start="1"` di seksi pertama bab; tanpa itu penghitung meneruskan angka
+   Romawi dan BAB I tercetak "16".
+3. **Daftar Pustaka kembali ke halaman 1.** Seksi bagian akhir TIDAK boleh
+   punya `w:start` — penghitung harus meneruskan dari BAB V.
+4. **`titlePg` diwarisi antar seksi.** Seksi baru mewarisi
+   `different_first_page_header_footer`, sehingga halaman pertamanya memakai
+   footer "first" yang kosong dan nomornya hilang. Set eksplisit ke `False`
+   di setiap seksi yang nomornya harus tampil.
+
+`scripts/audit_halaman.py` memeriksa keempatnya halaman per halaman dari hasil
+render PDF, termasuk halaman yang nomornya memang disembunyikan
+(`nomor_disembunyikan`).
+
+### 6c. Dokumen mahasiswa yang sudah ada — perbaiki, jangan hanya dilaporkan
+
+`audit_docx.py` melaporkan; `scripts/perbaiki_skripsi.py` MEMPERBAIKI. Dipakai
+untuk skripsi yang sudah jadi (template lama, hasil konversi, kiriman
+pembimbing) yang gagal di titik yang sama berulang kali:
+
+```bash
+# audit saja
+python3 scripts/perbaiki_skripsi.py Skripsi.docx --profil profil-kampus.yaml --cek-saja
+
+# perbaiki + audit (+ verifikasi nomor halaman dari render)
+python3 scripts/perbaiki_skripsi.py Skripsi.docx --profil profil-kampus.yaml --pdf Skripsi.pdf
+```
+
+Yang diperbaiki: seluruh atribut font tema dibuang (Word menampilkan
+Aptos/Calibri walau style menulis Times New Roman), SEMUA `w:color`
+non-hitam dipaksa `000000`, margin & ukuran kertas tiap seksi, dan
+format/posisi/pemutusan nomor halaman per zona. Isi naskah tidak disentuh.
+Zona ditentukan dengan membagi paragraf per `w:sectPr` dan membaca Heading 1
+pertama tiap seksi — bukan "judul terakhir sebelum batas seksi", yang
+membaca judul seksi sebelumnya dan membuat semua seksi berlabel bagian awal.
+
+### 7. Periksa isi yang diikat panduan, bukan hanya rupa
 Tiga pemeriksa terakhir menutup hal yang tidak terlihat dari DOCX: urutan bagian,
 isi Daftar Pustaka, dan aturan bahasa. Semua menerima `.md`, `.txt`, `.docx`,
 atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otomatis.

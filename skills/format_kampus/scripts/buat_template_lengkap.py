@@ -297,7 +297,27 @@ def seksi_baru(doc, profil: dict):
     s.top_margin = Cm(mar.get("atas", 3))
     s.right_margin = Cm(mar.get("kanan", 3))
     s.bottom_margin = Cm(mar.get("bawah", 3))
+    _jarak_nomor(s, profil)
     return s
+
+
+def _jarak_nomor(seksi, profil: dict) -> None:
+    """Jarak nomor halaman dari tepi bawah kertas (panduan: 2 cm).
+
+    Tanpa ini Word memakai 1,27 cm bawaan, sehingga nomor halaman "melayang"
+    lebih tinggi daripada yang diukur panduan — kesalahan yang tidak terlihat
+    di dokumen tapi terlihat di hasil cetak.
+    """
+    from docx.shared import Cm
+
+    ph = profil.get("penomoran_halaman") or {}
+    jarak = (ph.get("bagian_awal") or {}).get("jarak_dari_bawah_cm")
+    if jarak is None:
+        jarak = ph.get("jarak_dari_bawah_cm")
+    if jarak is not None:
+        seksi.footer_distance = Cm(float(jarak))
+    # header tetap di 1,5 cm: nomor "kanan atas" tidak boleh menempel tepi
+    seksi.header_distance = Cm(1.5)
 
 
 # ---------------------------------------------------------------- isi
@@ -409,17 +429,21 @@ def tulis_sampul(doc, profil: dict, judul: str, nama: str, nim: str,
                tebal=smp.get("institusi_tebal", True), spasi=1.0)
 
 
-def tulis_halaman(doc, judul: str, catatan: str | None) -> None:
+def tulis_halaman(doc, judul: str, catatan: str | None,
+                  page_break: bool = True) -> None:
     """Satu halaman bagian awal/akhir: judul tengah kapital + catatan isi.
 
     `page_break_before` dipakai, bukan add_page_break(): kalau memakai paragraf
     kosong berisi page break, halaman judul berikutnya bisa terdorong sehingga
     muncul halaman kosong. Ini penyebab paling umum "PDF-nya ada halaman bolong".
+
+    `page_break=False` dipakai bila halaman ini sudah dibuka oleh section break —
+    dua pemisah halaman sekaligus menghasilkan satu halaman kosong.
     """
     from docx.enum.text import WD_ALIGN_PARAGRAPH
 
     h = doc.add_heading(judul, level=1)
-    h.paragraph_format.page_break_before = True
+    h.paragraph_format.page_break_before = page_break
     if catatan:
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -554,6 +578,7 @@ def main() -> int:
     s1.top_margin = Cm(mar.get("atas", 3))
     s1.right_margin = Cm(mar.get("kanan", 3))
     s1.bottom_margin = Cm(mar.get("bawah", 3))
+    _jarak_nomor(s1, profil)
 
     tulis_sampul(doc, profil, a.judul, a.nama, a.nim, a.prodi, a.tahun)
 
@@ -571,26 +596,63 @@ def main() -> int:
         return True
 
     # "Lembar Judul" sudah dibuat sebagai sampul
+    #
+    # Nomor Romawi bagian awal dimulai di sampul: sampul adalah halaman i
+    # TETAPI nomornya tidak dicetak.
+    tambah_penomoran_halaman(s1, "lowerRoman", mulai=1)
+    s1.different_first_page_header_footer = True
+    _kosongkan(s1.first_page_footer)
+    _kosongkan(s1.footer)
+    _kosongkan(s1.header)
+
+    # Tiap halaman bagian awal = SEKSI sendiri. Hanya dengan begitu nomor bisa
+    # disembunyikan per halaman (sampul, lembar pengesahan) TANPA memutus
+    # hitungan Romawi: halaman tersembunyi tetap dihitung, halaman berikutnya
+    # melanjutkan ii, iii, iv. Satu seksi untuk seluruh bagian awal membuat
+    # "hilangkan nomor di pengesahan saja" mustahil tanpa menghilangkan semua.
+    _ph = profil.get("penomoran_halaman") or {}
+    _awal_ph = _ph.get("bagian_awal") or {}
+    tersembunyi = {str(x).strip().lower()
+                   for x in (_awal_ph.get("nomor_disembunyikan") or [])}
+    sampul_dihitung = _awal_ph.get("sampul_dihitung", True)
+    gaya_awal = dict(gaya, page_break=False)   # seksi baru sudah memindah halaman
+
+    pertama = True
     for item in awal:
         if re.fullmatch(r"lembar\s+judul", item, re.I):
             continue
-        if gambar_halaman(item):
+        sa = seksi_baru(doc, profil)
+        # Dua konvensi yang sama-sama dipakai kampus Indonesia:
+        #   sampul_dihitung: true  -> sampul = i (tidak dicetak), halaman
+        #                             berikutnya ii, iii, ...   (template ARS)
+        #   sampul_dihitung: false -> sampul di luar hitungan, halaman pertama
+        #                             setelah sampul = i, berikutnya ii, ...
+        #                             (konvensi umum: pengesahan i, kata
+        #                             pengantar ii)
+        if pertama and not sampul_dihitung:
+            tambah_penomoran_halaman(sa, "lowerRoman", mulai=1)
+        else:
+            tambah_penomoran_halaman(sa, "lowerRoman")   # tanpa `mulai` = lanjut
+        pertama = False
+
+        sembunyi = item.strip().lower() in tersembunyi
+        # Seksi baru mewarisi `titlePg` dari seksi sebelumnya. Kalau dibiarkan,
+        # halaman pertama seksi memakai footer "first" yang kosong — nomor
+        # hilang di SETIAP halaman bagian awal, bukan hanya yang diminta.
+        sa.different_first_page_header_footer = False
+        if sembunyi:
+            _kosongkan(sa.footer)
+            _kosongkan(sa.header)
+        else:
+            _nomor_di(sa.footer, "center")
+            _kosongkan(sa.header)
+
+        hal = halaman_def.get(item)
+        if hal:
+            RH.render(doc, item, hal, nilai_halaman, gaya_awal)
             continue
         ch = (profil.get("catatan_halaman") or {}).get(item)
-        tulis_halaman(doc, item, ch)
-
-    # Nomor Romawi bagian awal: sampul adalah halaman i TETAPI nomornya tidak
-    # dicetak, jadi halaman berikutnya mulai "ii" (sesuai template resmi).
-    tambah_penomoran_halaman(s1, "lowerRoman", mulai=1)
-    # sembunyikan nomor di halaman sampul: footer halaman pertama seksi = kosong
-    try:
-        s1.different_first_page_header_footer = True
-        ff = s1.first_page_footer
-        for p_ in list(ff.paragraphs):
-            for r_ in list(p_.runs):
-                r_._r.getparent().remove(r_._r)
-    except Exception:
-        pass
+        tulis_halaman(doc, item, ch, page_break=False)
 
     # ---- seksi 2: bagian pokok, Arab mulai 1 ----
     s2 = seksi_baru(doc, profil)
@@ -701,10 +763,14 @@ def main() -> int:
     # python-docx dan membuat Word MENGGANTI Times New Roman menjadi Calibri.
     # Pakai pembersih yang sama dengan generator template biasa.
     try:
-        from buat_template_docx import bersihkan_paket
+        from buat_template_docx import bersihkan_paket, hitamkan_paket
         bersihkan_paket(a.keluaran, nama_font)
+        # Skripsi dicetak hitam. Tanpa langkah ini, style Caption/Title bawaan
+        # masih membawa warna tema (accent1 biru) dan Word/KLIK cetak bisa
+        # mengeluarkan caption berwarna di tengah naskah yang sudah "benar".
+        hitamkan_paket(a.keluaran)
     except Exception as exc:                    # pragma: no cover
-        print(f"PERINGATAN: gagal membersihkan atribut font tema: {exc}",
+        print(f"PERINGATAN: gagal membersihkan font/warna tema: {exc}",
               file=sys.stderr)
     print(f"template lengkap tersimpan: {a.keluaran}")
     print(f"  bagian awal : {len(awal)} (+sampul)")

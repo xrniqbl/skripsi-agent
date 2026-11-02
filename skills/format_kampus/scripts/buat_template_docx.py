@@ -135,6 +135,53 @@ def main():
     print('template tersimpan:', keluar)
 
 
+def hitamkan_paket(path, biarkan_putih=True):
+    """Paksa seluruh warna teks menjadi hitam (000000) di semua bagian paket.
+
+    Kenapa perlu: template bawaan python-docx membawa warna tema pada puluhan
+    style (Caption/Heading4-9/Title/Subtitle = accent1 biru, dst). Selama warna
+    itu ada, dokumen skripsi bisa mencetak caption biru atau judul bab berwarna
+    walau teksnya ditulis dengan style yang "terlihat" normal. Skripsi wajib
+    hitam, jadi warna tema dibuang dan diganti literal.
+
+    `w:val="FFFFFF"` dibiarkan: itu teks putih di atas latar gelap pada style
+    tabel bawaan yang tidak dipakai dokumen skripsi.
+    """
+    RE_WARNA = re.compile(r"<w:color\b[^>]*/>")
+
+    def ganti(m):
+        tag = m.group(0)
+        v = re.search(r'w:val="([^"]*)"', tag)
+        if biarkan_putih and v and v.group(1).upper() == "FFFFFF":
+            return tag
+        return '<w:color w:val="000000"/>'
+
+    def pastikan_default(xml):
+        """docDefaults harus punya warna literal, kalau tidak Word memakai tema."""
+        m = re.search(r"<w:rPrDefault>\s*<w:rPr>(.*?)</w:rPr>", xml, re.S)
+        if not m or "<w:color" in m.group(1):
+            return xml
+        isi = m.group(1)
+        baru = isi + '<w:color w:val="000000"/>'
+        return xml[:m.start(1)] + baru + xml[m.end(1):]
+
+    zin = zipfile.ZipFile(path)
+    tmp = path + ".hitam"
+    zout = zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED)
+    for item in zin.infolist():
+        data = zin.read(item.filename)
+        if item.filename.startswith("word/") and item.filename.endswith(".xml"):
+            xml = data.decode("utf8")
+            xml = RE_WARNA.sub(ganti, xml)
+            if item.filename.endswith("styles.xml"):
+                xml = pastikan_default(xml)
+            data = xml.encode("utf8")
+        zout.writestr(item, data)
+    zout.close()
+    zin.close()
+    shutil.move(tmp, path)
+
+
 def bersihkan_paket(path, nama_font):
     """Terapkan kunci font ke SELURUH paket: template bawaan membawa atribut tema
     pada puluhan style laten; Word memprioritaskan tema, jadi semua harus dibuang

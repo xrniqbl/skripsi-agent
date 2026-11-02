@@ -146,7 +146,11 @@ def render(doc, nama_halaman: str, hal: dict, nilai: dict, gaya: dict) -> None:
 
     def judul(teks, *, sebelum=0, sesudah=12):
         p = doc.add_heading(level=1)
-        p.paragraph_format.page_break_before = True
+        # `page_break` bisa dimatikan oleh pemanggil: bila halaman ini sudah
+        # dibuka oleh section break (seksi baru), page break tambahan akan
+        # menghasilkan halaman kosong di depannya.
+        if gaya.get("page_break", True):
+            p.paragraph_format.page_break_before = True
         p.paragraph_format.space_before = Pt(sebelum)
         p.paragraph_format.space_after = Pt(sesudah)
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER

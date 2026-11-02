@@ -6,7 +6,7 @@ Skripsi Agent menyatukan 24 skill penulisan akademik (menemukan topik, riset men
 
 > Bundel ini hanya berisi skill dan dokumentasinya. Tidak ada proposal, data penelitian, atau dokumen pribadi milik siapa pun di dalam repo ini.
 
-**Versi terkini: 2.2.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
+**Versi terkini: 2.8.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
 
 ## Mulai dari Mana: Topik Dulu, Baru Format
 
@@ -82,8 +82,10 @@ ke panduan itu, bukan sebaliknya:
 ### Dua lapis pemeriksaan
 
 **Lapis rupa** (DOCX/PDF): margin, font per elemen, spasi, atribut font tema pada XML —
-penyebab klasik dokumen tampil dengan font yang salah di Microsoft Word — judul anti-yatim,
-tabel/gambar tanpa caption, dan nomor halaman hasil render.
+penyebab klasik dokumen tampil dengan font yang salah di Microsoft Word — warna teks
+non-hitam, judul anti-yatim, tabel/gambar tanpa caption, dan nomor halaman hasil render
+per zona (Romawi kecil / Arab / Arab lanjutan), termasuk halaman yang nomornya memang
+disembunyikan.
 
 **Lapis isi**: apakah naskah benar-benar mematuhi panduan, bukan hanya terlihat rapi.
 
@@ -136,6 +138,69 @@ spasi isi 2 vs 1,5 · caption `Tabel IV.1` vs `Tabel 4.1` · subbab
   skema bagian (Romawi/Arab). Bukan ketikan manual.
 
 
+## Penomoran Halaman, Warna, dan Perbaikan Dokumen Jadi
+
+Tiga hal yang paling sering membuat skripsi dikembalikan pembimbing, dan sekarang
+ditangani kode — bukan diingat-ingat manual:
+
+### Tiga zona nomor halaman
+
+| Zona | Isi | Format | Posisi |
+|---|---|---|---|
+| Bagian awal | sampul, pengesahan, pernyataan, kata pengantar, abstrak, daftar isi/gambar/tabel/lampiran | Romawi KECIL (i, ii, iii…) | tengah bawah, 2 cm dari tepi |
+| Bagian pokok | BAB I … BAB V | Arab mulai 1 | halaman pembuka bab tengah bawah, halaman lain kanan atas |
+| Bagian akhir | Daftar Pustaka, Lampiran, Riwayat Hidup | Arab **lanjutan** — bukan mulai 1 | tengah bawah |
+
+Sampul dan lembar pengesahan **tidak menampilkan** nomor tetapi **tetap dihitung**.
+Dua konvensi kampus didukung lewat profil:
+
+```yaml
+penomoran_halaman:
+  bagian_awal:
+    sampul_dihitung: true                    # sampul = i (tak dicetak) → kata pengantar ii
+    nomor_disembunyikan: []                  # mis. ["Lembar Pengesahan"]
+```
+
+dengan `sampul_dihitung: false` untuk konvensi lain: sampul di luar hitungan,
+pengesahan = i (tak dicetak), kata pengantar = ii.
+
+Empat kesalahan yang sudah ditutup dan diuji: nomor hilang di seluruh bagian awal
+akibat `titlePg` warisan antar seksi · BAB I tercetak "16" karena Romawi tidak
+di-reset ke 1 · Daftar Pustaka kembali ke halaman 1 · nomor hanya di tengah bawah
+pada BAB I karena lima bab berbagi satu seksi.
+
+### Warna teks wajib hitam
+
+`hitamkan_paket()` membersihkan seluruh paket OOXML: setiap `w:color` non-hitam
+dipaksa `000000`, warna tema pada style (`Caption`, `Title`, `Heading 4–9` = biru
+`4F81BD`) dibuang, dan `docDefaults` diberi warna literal. Caption atau judul yang
+mencetak biru di tengah naskah tidak mungkin lolos lagi.
+
+### Memperbaiki skripsi yang sudah ada
+
+`audit_docx.py` melaporkan; **`perbaiki_skripsi.py` memperbaiki**. Untuk dokumen
+dari template lama, hasil konversi, atau kiriman pembimbing:
+
+```bash
+# audit saja — tidak mengubah berkas
+python3 skills/format_kampus/scripts/perbaiki_skripsi.py Skripsi.docx \
+    --profil profil-kampus.yaml --cek-saja
+
+# perbaiki + audit + cocokkan nomor halaman dengan hasil render
+python3 skills/format_kampus/scripts/perbaiki_skripsi.py Skripsi.docx \
+    --profil profil-kampus.yaml --pdf Skripsi.pdf --pisah-seksi --rapikan-awal
+```
+
+- font tema → literal (Word berhenti menampilkan Aptos/Calibri)
+- semua warna → hitam, margin & ukuran kertas diseragamkan di **semua** seksi
+- nomor halaman diatur ulang per zona, termasuk pemutusan Romawi → Arab
+- `--pisah-seksi` memasang section break di depan **setiap** bab + bagian akhir
+  (wajib kalau dokumen masih satu seksi — tanpa itu dua format nomor mustahil)
+- `--rapikan-awal` menjadikan judul halaman bagian awal Heading 1 dan memulai
+  tiap judul di halaman baru, supaya masuk daftar isi dan bisa dinomori
+
+Isi naskah tidak disentuh: tidak ada paragraf yang dihapus atau ditulis ulang.
+
 ## Referensi: Zotero dan DOI ke Daftar Pustaka
 
 `skills/zotero_pustaka/` menutup celah terbesar alur skripsi: referensi. Empat
@@ -174,7 +239,7 @@ Yang dijaga, dan ini yang membedakannya dari menyalin manual:
 
 | Skill | Fungsi |
 |---|---|
-| `format_kampus` | Panduan skripsi kampus mana pun → profil format YAML yang mengikat → template DOCX → audit dokumen terhadap profil (rupa + isi) |
+| `format_kampus` | Panduan skripsi kampus mana pun → profil format YAML yang mengikat → template DOCX → audit dokumen terhadap profil (rupa + isi); `perbaiki_skripsi.py` memperbaiki dokumen yang sudah ada: font tema, warna non-hitam, margin semua seksi, dan penomoran halaman tiga zona |
 | `bahasa_akademik` | Pedoman bahasa akademik Indonesia (EYD/PUEBI) + pemeriksa otomatis ragam baku |
 | `bab_iv_v` | Menyusun BAB IV (hasil & pembahasan) dan BAB V (simpulan & saran) yang terpetakan 1:1 ke rumusan/identifikasi masalah; `peta_bab45.py` memeriksa pemetaan, kehadiran angka statistik, dan kelengkapan saran |
 | `revisi_pembimbing` | Catatan pembimbing (foto/PDF/DOCX/teks) → daftar kerja terlacak per butir, dengan verifikasi bukti sebelum ditandai selesai |
@@ -307,7 +372,7 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 36 pemeriksaan, `format_kampus` 107,
+Status tes saat ini: `tes_bundel` 35 pemeriksaan, `format_kampus` 117,
 `bahasa_akademik` 12, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 17,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 
