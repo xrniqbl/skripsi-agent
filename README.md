@@ -6,7 +6,7 @@ Skripsi Agent menyatukan 24 skill penulisan akademik (menemukan topik, riset men
 
 > Bundel ini hanya berisi skill dan dokumentasinya. Tidak ada proposal, data penelitian, atau dokumen pribadi milik siapa pun di dalam repo ini.
 
-**Versi terkini: 2.8.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
+**Versi terkini: 2.9.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
 
 ## Mulai dari Mana: Topik Dulu, Baru Format
 
@@ -201,6 +201,31 @@ python3 skills/format_kampus/scripts/perbaiki_skripsi.py Skripsi.docx \
 
 Isi naskah tidak disentuh: tidak ada paragraf yang dihapus atau ditulis ulang.
 
+## Mutu Isi: Naskah yang Bertentangan dengan Dirinya Sendiri
+
+Rapi belum berarti benar. Format bisa lulus 100% sementara isinya meniadakan
+dirinya sendiri. Rilis 2.9.0 menambah lima pemeriksa untuk kelas cacat itu,
+semuanya masuk ke `gate_naskah.sh`:
+
+- **`periksa_konsistensi.py`** — nama/NIM sama di semua halaman (satu huruf beda
+  = dokumen dikembalikan), tanggal pengesahan tidak mendahului tanggal sidang,
+  **jumlah butir** rumusan masalah = tujuan = simpulan, rujukan `Bab VI` pada
+  skripsi lima bab, serta aturan catatan kaki & lampiran yang diikat profil.
+- **`periksa_sitasi_numerik.py`** — pada gaya IEEE/Vancouver: `[n]` yang tidak
+  punya entri, entri yang tidak pernah disitasi, dan urutan kemunculan yang
+  tidak menaik. Dilewati otomatis pada profil APA.
+- **`cek_kemiripan_korpus.py`** — membandingkan naskah dengan indeks frasa dari
+  18 skripsi Indonesia (`skills/format_kampus/korpus/`). Menangkap frasa yang
+  dipinjam antar-skripsi, kelas yang paling sering lolos pemeriksa manual.
+- **`uji_asumsi.py`** — Shapiro-Wilk, Levene, VIF/tolerance, Durbin-Watson:
+  bagian "Uji Asumsi Klasik" yang selalu diminta penguji di awal BAB IV.
+- **`buat_daftar_tabel_gambar.py`** — menomori ulang caption per bab dan
+  membangun Daftar Tabel/Gambar/Lampiran lengkap dengan nomor halaman.
+
+Angka kemiripan korpus adalah **indikator**, bukan skor Turnitin: 18 dokumen
+tidak sebanding dengan miliaran halaman. Dan semua pemeriksa isi adalah
+pemeriksa pola — temuannya wajib dinilai konteksnya, bukan diperbaiki buta.
+
 ## Referensi: Zotero dan DOI ke Daftar Pustaka
 
 `skills/zotero_pustaka/` menutup celah terbesar alur skripsi: referensi. Empat
@@ -372,8 +397,8 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 35 pemeriksaan, `format_kampus` 117,
-`bahasa_akademik` 12, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 17,
+Status tes saat ini: `tes_bundel` 35 pemeriksaan, `format_kampus` 134,
+`bahasa_akademik` 16, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 20,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 
 Preset kampus nyata dapat disumbangkan ke `skills/format_kampus/presets/` mengikuti

@@ -329,6 +329,20 @@ Pearson/Spearman, Cronbach's alpha. Memakai `scipy`/`statsmodels` bila terpasang
 tanpa dependensi pun, perhitungan internal tetap jalan (nilai kritis divalidasi
 terhadap tabel).
 
+Sebelum uji utama, jalankan **uji asumsi klasik** — bagian yang selalu diminta
+penguji di awal BAB IV dan tidak dihitung oleh `stats_tests.py`:
+
+```bash
+python3 scripts/uji_asumsi.py data/responden.csv --dv kinerja --iv motivasi,kompensasi,disiplin
+```
+
+Menghasilkan Shapiro-Wilk per variabel, Levene median-centred (per grup),
+VIF/tolerance per IV, dan Durbin-Watson dari residual regresi. Keluaran
+`hasil_asumsi.json` + ringkasan siap tempel. Tanpa dependensi; memakai `scipy`
+bila ada dan melaporkan mesin yang dipakai (`scipy` vs `royston`) supaya jelas
+angka mana yang presisi. Ambang: p > 0,05 = asumsi terpenuhi; VIF > 10 =
+multikolinearitas serius; DW 1,5–2,5 = bebas autokorelasi.
+
 > Angka hasil uji di BAB III harus **salin dari `hasil_uji.md`**, termasuk nilai p,
 > t/F/χ², dan keputusan. Jangan menulis "berdasarkan hasil uji, Signifikan" tanpa angka.
 

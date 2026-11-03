@@ -473,6 +473,148 @@ print(f'warna non-hitam: {len(sisa)}', sisa[:5])
 sys.exit(0 if not sisa else 1)
 PYEOF
 
+# 11. skrip isi: konsistensi, sitasi numerik, uji asumsi, daftar tabel/gambar,
+# dan kemiripan korpus. Semua diuji dengan naskah/data yang SENGAJA cacat, karena
+# pemeriksa yang hanya lulus pada berkas bersih tidak membuktikan apa pun.
+NASKAH_CACAT="$TMP/cacat.md"
+cat > "$NASKAH_CACAT" <<'MD'
+BAB I PENDAHULUAN
+
+1.1 Identifikasi Masalah
+1. Apakah motivasi berpengaruh terhadap kinerja?
+2. Apakah kompensasi berpengaruh terhadap kinerja?
+
+1.2 Tujuan Penelitian
+1. Menganalisis pengaruh motivasi terhadap kinerja.
+
+BAB V PENUTUP
+
+5.1 Simpulan
+1. Motivasi berpengaruh positif terhadap kinerja.
+2. Kompensasi berpengaruh positif terhadap kinerja.
+
+Lihat Bab VI untuk lanjutan.
+
+Nama : Ahmad Fauzi
+NIM : 20230001
+Nama : Ahmad Fauzii
+NIM : 20230002
+
+Dipertahankan pada tanggal 20 November 2026
+Pengesahan disahkan pada tanggal 10 November 2026
+MD
+cek_tolak "periksa_konsistensi menolak naskah tidak konsisten" \
+    $PY scripts/periksa_konsistensi.py "$NASKAH_CACAT"
+cek "periksa_konsistensi melaporkan jumlah butir" \
+    bash -c "$PY scripts/periksa_konsistensi.py '$NASKAH_CACAT' | grep -q 'identifikasi=2'"
+cek "periksa_konsistensi melaporkan nama berbeda" \
+    bash -c "$PY scripts/periksa_konsistensi.py '$NASKAH_CACAT' | grep -q 'nama berbeda'"
+cek "periksa_konsistensi melaporkan tanggal terbalik" \
+    bash -c "$PY scripts/periksa_konsistensi.py '$NASKAH_CACAT' | grep -q 'mendahului tanggal'"
+
+NASKAH_BERSIH="$TMP/bersih.md"
+cat > "$NASKAH_BERSIH" <<'MD'
+BAB I PENDAHULUAN
+
+1.1 Identifikasi Masalah
+1. Apakah motivasi berpengaruh terhadap kinerja?
+2. Apakah kompensasi berpengaruh terhadap kinerja?
+
+1.2 Tujuan Penelitian
+1. Menganalisis pengaruh motivasi terhadap kinerja.
+2. Menganalisis pengaruh kompensasi terhadap kinerja.
+
+BAB V PENUTUP
+
+5.1 Simpulan
+1. Motivasi berpengaruh positif terhadap kinerja.
+2. Kompensasi berpengaruh positif terhadap kinerja.
+
+Nama : Ahmad Fauzi
+NIM : 20230001
+Dipertahankan pada tanggal 10 November 2026
+Pengesahan disahkan pada tanggal 20 November 2026
+MD
+cek "periksa_konsistensi lulus pada naskah konsisten" \
+    $PY scripts/periksa_konsistensi.py "$NASKAH_BERSIH"
+
+NASKAH_SITASI="$TMP/sitasi.md"
+cat > "$NASKAH_SITASI" <<'MD'
+BAB II TINJAUAN PUSTAKA
+
+Penelitian terdahulu menunjukkan hal serupa [1]. Lalu [4] memperkuat.
+Kemudian [2] menyatakan berbeda. Nomor [9] tidak ada entrinya.
+
+DAFTAR PUSTAKA
+
+[1] Alpha, B. (2024). Tata Kelola TI. Jurnal SI, 1(1), 1-10.
+[2] Beta, C. (2023). Sistem Informasi. Jurnal SI, 2(1), 11-20.
+[3] Gamma, D. (2023). Audit Sistem. Jurnal SI, 2(2), 21-30.
+[4] Delta, E. (2022). Manajemen Layanan. Jurnal SI, 3(1), 31-40.
+MD
+cek_tolak "periksa_sitasi_numerik menolak rujukan tanpa entri" \
+    $PY scripts/periksa_sitasi_numerik.py "$NASKAH_SITASI" --ketat
+cek "periksa_sitasi_numerik menemukan entri tak disitasi" \
+    bash -c "$PY scripts/periksa_sitasi_numerik.py '$NASKAH_SITASI' | grep -q 'tidak pernah disitasi'"
+cek "periksa_sitasi_numerik menemukan urutan tidak menaik" \
+    bash -c "$PY scripts/periksa_sitasi_numerik.py '$NASKAH_SITASI' | grep -q 'tidak menaik'"
+
+# uji asumsi: data dengan multikolinearitas ekstrem harus dilaporkan serius
+$PY - "$TMP/data.csv" <<'PYEOF'
+import random, sys
+random.seed(7)
+b = [f"Motivasi,Kompensasi,Disiplin,Kinerja,Grup"]
+for i in range(40):
+    m = random.gauss(70, 8)
+    k = 0.6 * m + random.gauss(0, 1)      # sengaja hampir kolinear
+    d = random.gauss(65, 9)
+    y = 0.5 * m + 0.3 * d + random.gauss(0, 4)
+    b.append(f"{m:.3f},{k:.3f},{d:.3f},{y:.3f},{'A' if i % 2 else 'B'}")
+open(sys.argv[1], "w").write("\n".join(b))
+PYEOF
+cek "uji_asumsi menghasilkan JSON" \
+    $PY ../proposal_skripsi/scripts/uji_asumsi.py "$TMP/data.csv" \
+        --dv Kinerja --iv Motivasi,Kompensasi,Disiplin --out "$TMP/asumsi"
+cek "uji_asumsi melaporkan VIF" \
+    bash -c "$PY ../proposal_skripsi/scripts/uji_asumsi.py '$TMP/data.csv' --dv Kinerja --iv Motivasi,Kompensasi,Disiplin --out '$TMP/asumsi' | grep -q 'VIF'"
+cek "uji_asumsi melaporkan Durbin-Watson" \
+    bash -c "$PY ../proposal_skripsi/scripts/uji_asumsi.py '$TMP/data.csv' --dv Kinerja --iv Motivasi,Kompensasi,Disiplin --out '$TMP/asumsi' | grep -q 'DW='"
+cek "uji_asumsi menandai multikolinearitas" \
+    bash -c "$PY ../proposal_skripsi/scripts/uji_asumsi.py '$TMP/data.csv' --dv Kinerja --iv Motivasi,Kompensasi,Disiplin --out '$TMP/asumsi' | grep -q 'MULTIKOLINEAR'"
+cek_tolak "uji_asumsi menolak kolom tidak ada" \
+    $PY ../proposal_skripsi/scripts/uji_asumsi.py "$TMP/data.csv" --iv TidakAda
+
+# daftar tabel/gambar: caption bernomor seragam harus dinomori ulang per bab
+$PY - "$TMP/lt.docx" <<'PYEOF'
+import sys
+from docx import Document
+d = Document()
+d.add_heading("BAB I", level=1); d.add_heading("PENDAHULUAN", level=1)
+d.add_paragraph("Paragraf isi bab satu yang panjang untuk mengisi halaman. " * 6)
+d.add_paragraph("Tabel 9.9 Operator Perbandingan (Alfa, 2025)")
+d.add_heading("BAB II", level=1); d.add_heading("LANDASAN", level=1)
+d.add_paragraph("Paragraf isi bab dua yang panjang untuk mengisi halaman. " * 6)
+d.add_paragraph("Tabel 9.9 Simbol Matematika")
+d.add_paragraph("Gambar 9.9 Diagram Alur")
+d.add_heading("Daftar Tabel", level=1)
+d.add_heading("Daftar Gambar", level=1)
+d.save(sys.argv[1])
+PYEOF
+cek "daftar tabel/gambar terbentuk" \
+    bash -c "$PY scripts/buat_daftar_tabel_gambar.py '$TMP/lt.docx' '$PROFIL' | grep -q 'daftar dibangun'"
+cek "daftar tabel/gambar menomori ulang per bab" \
+    bash -c "$PY scripts/buat_daftar_tabel_gambar.py '$TMP/lt.docx' '$PROFIL' | grep -q 'Tabel     2: I.1, II.1'"
+
+# kemiripan korpus: dokumen yang menyalin dirinya sendiri harus terdeteksi 100%
+if [ -f korpus/indeks_korpus.json.gz ]; then
+    cek "kemiripan korpus mendeteksi salinan" \
+        bash -c "$PY scripts/cek_kemiripan_korpus.py '$NASKAH_BERSIH' --indeks korpus/indeks_korpus.json.gz | grep -q 'kemiripan:'"
+    cek "kemiripan korpus membaca indeks .gz" \
+        bash -c "$PY scripts/cek_kemiripan_korpus.py '$NASKAH_BERSIH' --indeks korpus/indeks_korpus.json.gz | grep -q '18 dokumen'"
+else
+    lewatkan "kemiripan korpus" "indeks_korpus.json.gz tidak ada"
+fi
+
 echo
 if [ "$gagal" -eq 0 ]; then
     echo "Ringkasan: SEMUA LULUS${lewat:+ ($lewat dilewati)}"

@@ -195,13 +195,90 @@ atau `.pdf`, dan keluar kode 1 bila ada galat — jadi bisa dipakai di alur otom
 Keenamnya **pemeriksa pola, bukan vonis**. Setiap temuan wajib dinilai konteksnya;
 jangan memperbaiki otomatis tanpa membaca kalimatnya.
 
+### 7b. Naskah yang bertentangan dengan dirinya sendiri
+
+Format bisa lulus 100% sementara isinya saling meniadakan. Dua pemeriksa menutup
+kelas cacat itu — keduanya sering lolos karena dokumennya "terlihat rapi".
+
+- `scripts/periksa_konsistensi.py naskah [--profil P] [--ketat]` — memeriksa:
+  nama & NIM sama di semua halaman (satu huruf beda = dokumen dikembalikan);
+  tanggal pengesahan tidak mendahului tanggal sidang; **jumlah butir**
+  Identifikasi/Rumusan Masalah = jumlah Tujuan = jumlah Simpulan (pertanyaan
+  klasik penguji: "tujuan Anda empat, simpulan Anda tiga?"); rujukan `Bab VI`
+  pada skripsi lima bab; serta aturan `catatan_kaki:` dan `lampiran:` yang
+  diikat profil.
+
+  Fungsi pencarian bagiannya sengaja memilih kandidat dengan butir terbanyak,
+  karena heading yang sama juga muncul di Daftar Isi — memilih kemunculan
+  pertama membuat jumlahnya selalu terbaca 0 dan pemeriksaan tidak pernah
+  bekerja. Pemeriksaan jumlah dilewati bila salah satu bagian hanya punya satu
+  butir (tujuan penelitian paragraf-tunggal bukan daftar).
+
+- `scripts/periksa_sitasi_numerik.py naskah --gaya ieee|vancouver` — pada gaya
+  numerik, `[3]` di teks harus benar-benar entri ke-3. Tiga temuan: nomor
+  disitasi tanpa entri, entri tidak pernah disitasi, dan urutan kemunculan
+  tidak menaik (tanda daftar pustaka tidak diurutkan ulang sesudah naskah
+  disunting). Rentang `[2-5]` dan `[2,4,7]` didukung. Pada profil bergaya APA
+  pemeriksaan ini **dilewati** oleh gerbang, karena akan menghasilkan
+  kebisingan.
+
+### 7c. Daftar Tabel, Daftar Gambar, dan penomoran caption
+
+`scripts/buat_daftar_tabel_gambar.py dokumen.docx profil.yaml [--cek]
+[--hanya-renumber] [--pdf r.pdf]` melakukan dua hal yang biasanya dikerjakan
+manual dan salah:
+
+1. **Menomori ulang caption per bab** sesuai gaya profil
+   (`Tabel IV.1` Romawi kapital, `Tabel 4.1` Arab, atau berurutan). Nomor
+   ditulis sebagai field `SEQ Tabel \* ARABIC \r N` sehingga Word melanjutkan
+   sendiri saat caption baru disisipkan. Caption hasil salin-tempel yang
+   semuanya berbunyi "Tabel 9.9" diperbaiki dalam satu jalan.
+2. **Membangun Daftar Tabel / Daftar Gambar / Daftar Lampiran** dari caption
+   yang ditemukan, dengan titik pemimpin dan nomor halaman dari render PDF.
+
+Tiga jebakan yang sudah ditutup di kode:
+
+- Judul caption panjang terpecah menjadi dua paragraf; paragraf kedua bukan
+  caption. Tanpa penjagaan, satu tabel dihitung dua kali dan nomornya melompat.
+- Blok Daftar Tabel itu sendiri berisi baris berbentuk "Tabel I.1⇥3" yang
+  menyerupai caption. Menjalankan ulang skrip pada dokumen yang sudah punya
+  daftar membuatnya membaca daftarnya sendiri sebagai caption baru.
+- Pencarian nomor halaman wajib melewati halaman daftar; kalau tidak, semua
+  entri "ditemukan" di halaman yang memuat seluruh judul dan kolom halaman
+  berisi angka yang sama.
+
+### 7d. Kemiripan terhadap korpus skripsi Indonesia
+
+`scripts/cek_kemiripan_korpus.py naskah --indeks korpus/indeks_korpus.json.gz`
+membandingkan naskah dengan indeks shingle 5-kata dari 18 skripsi Indonesia
+(`korpus/README.md`, `korpus/sumber.json`). Kelas yang ditangkap: frasa yang
+dipinjam antar-skripsi — bukan dari jurnal, karena itu yang paling sering lolos
+pemeriksa manual.
+
+Indeks hanya memuat hash dan metadata sumber; teks penuh tidak pernah masuk repo
+(penjaga konten `tests/tes_bundel.py`). Bangun ulang dengan `--bangun-indeks
+folder_teks`. Angka kemiripan adalah **indikator**, bukan skor Turnitin: 18
+dokumen tidak sebanding dengan miliaran halaman. Jangan pernah menyebut angkanya
+sebagai "hasil Turnitin" kepada pengguna.
+
+### 7e. Uji asumsi klasik (kuantitatif)
+
+`skills/proposal_skripsi/scripts/uji_asumsi.py data.csv --dv Y --iv A,B,C`
+menghitung empat uji yang selalu diminta di awal BAB IV dan tidak pernah
+disediakan `stats_tests.py` (yang menghitung uji utamanya): Shapiro-Wilk per
+variabel, Levene (median-centred), VIF/tolerance, dan Durbin-Watson. Tanpa
+dependensi — memakai scipy bila ada, dan melaporkan mesin mana yang dipakai
+(`scipy` vs `royston`) supaya jelas mana angka presisi.
+
 ### 8. Satu perintah untuk semua gerbang isi
 
 `scripts/gate_naskah.sh NASKAH PROFIL.yaml [--ketat] [--min-jurnal N] [--tahun-acuan T]`
-menjalankan keenam pemeriksa berurutan (penomoran hanya untuk `.docx`) dan melaporkan satu ringkasan. Tanpa
-`--ketat`, hanya galat yang menggagalkan; dengan `--ketat`, satu peringatan pun
-menggagalkan. Batas minimal jurnal dibaca dari `sitasi.min_jurnal_atau_prosiding`
-profil — jangan diulang sebagai angka di tempat lain.
+menjalankan kesepuluh pemeriksa berurutan (penomoran hanya `.docx`; sitasi
+numerik hanya pada profil IEEE/Vancouver; kemiripan hanya bila indeks ada) dan
+melaporkan satu ringkasan. Tanpa `--ketat`, hanya galat yang menggagalkan;
+dengan `--ketat`, satu peringatan pun menggagalkan. Batas minimal jurnal dibaca
+dari `sitasi.min_jurnal_atau_prosiding` profil — jangan diulang sebagai angka di
+tempat lain. Indeks korpus lain bisa diarahkan lewat `INDEKS_KORPUS=...`.
 
 ```text
   ~ sistematika   — Ringkasan: 0 galat, 5 peringatan
@@ -211,6 +288,9 @@ profil — jangan diulang sebagai angka di tempat lain.
   - penomoran     — dilewati (bukan .docx; nomor sudah berupa teks)
   OK bahasa       — Ringkasan: 0 kesalahan, 0 peringatan
   OK bab IV/V     — Ringkasan: 0 galat, 0 peringatan
+  OK konsistensi  — Ringkasan: 0 galat, 0 peringatan
+  - sitasi        — dilewati (gaya APA, bukan numerik)
+  OK kemiripan    — lulus
 ```
 
 ## Preset
@@ -226,11 +306,23 @@ Folder `presets/` adalah registry profil kampus yang sudah jadi (daftarnya di
    hasilnya sebagai preset baru mengikuti aturan di `presets/INDEX.md`.
 
 Registry berisi satu contoh FIKSI (`universitas-contoh.yaml`) sebagai acuan bentuk
-isian, dan satu preset NYATA: `ars-fti.yaml` untuk Fakultas Teknologi Informasi
-Universitas Adhirajasa Reswara Sanjaya (Panduan Penyusunan Laporan Skripsi,
-Revisi 2025). Preset nyata mengikat: spasi isi 2 (bukan 1,5), caption angka
-Romawi per bab, subbab "1.2. Identifikasi Masalah" (bukan "Rumusan Masalah"),
-BAB II "Landasan Pemikiran".
+isian, satu preset NYATA yang ditulis tangan dengan kutipan butir panduan
+(`ars-fti.yaml` untuk Fakultas Teknologi Informasi Universitas Adhirajasa Reswara
+Sanjaya, Panduan Penyusunan Laporan Skripsi Revisi 2025), dan 28 preset hasil
+`campus_json2yaml.py` dari `skills/proposal_skripsi/campus_templates/`.
+
+Preset nyata mengikat: spasi isi 2 (bukan 1,5), caption angka Romawi per bab,
+subbab "1.2. Identifikasi Masalah" (bukan "Rumusan Masalah"), BAB II "Landasan
+Pemikiran".
+
+**Yang penting soal 28 preset konversi:** semuanya sudah diuji dengan menjalankan
+`buat_template_lengkap.py`, dan **5 di antaranya berhenti** karena sumber JSON
+kampusnya tidak menyebut margin/spasi (`ipb`, `uad`, `umy`, `unhas`, `custom`).
+Itu perilaku yang benar: skrip menolak mencetak dengan nilai nol, dan
+`catatan_konflik:` menyebut apa yang harus dicari di panduan. Untuk memakainya
+sekarang, timpa lewat CLI
+(`--margin kiri=4 --margin atas=4 --margin kanan=3 --margin bawah=3 --spasi 2`).
+Status kesiapan tiap berkas ada di tabel `presets/INDEX.md`.
 
 ## Batasan
 

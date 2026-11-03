@@ -3,6 +3,62 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.9.0] — 2026-11-03
+
+### Konteks
+2.8.0 menutup format: margin, Times New Roman, teks hitam, penomoran tiga zona.
+Yang tersisa adalah cacat yang TIDAK terlihat dari DOCX — naskah yang rapi tetapi
+bertentangan dengan dirinya sendiri, sitasi numerik yang menunjuk entri salah,
+Daftar Tabel/Gambar yang belum pernah dibangun, uji asumsi klasik yang selalu
+diminta penguji tetapi tidak pernah disediakan, dan frasa yang dipinjam dari
+skripsi lain. Semuanya ditutup di rilis ini, dan semuanya diuji dengan naskah
+yang SENGAJA cacat.
+
+### Ditambahkan
+- **`periksa_konsistensi.py`** — identitas (nama/NIM sama di semua halaman),
+  tanggal (pengesahan tidak mendahului sidang), **jumlah butir** identifikasi =
+  tujuan = simpulan, rujukan bab yang tidak ada, serta aturan `catatan_kaki:`
+  dan `lampiran:` yang diikat profil. Memilih kandidat bagian dengan butir
+  terbanyak supaya Daftar Isi tidak terbaca sebagai bagian sesungguhnya.
+- **`periksa_sitasi_numerik.py`** — `[n]` di teks vs entri Daftar Pustaka pada
+  gaya IEEE/Vancouver: nomor tanpa entri, entri tak pernah disitasi, urutan
+  kemunculan tidak menaik. Rentang `[2-5]`, `[2,4,7]` didukung.
+- **`cek_kemiripan_korpus.py`** + `korpus/` — indeks shingle 5-kata dari 18
+  skripsi Indonesia (UIN Suska, via OAI-PMH), disimpan `.json.gz` (2,7 MB,
+  hanya hash + metadata, tanpa teks). Laporan Markdown opsional.
+- **`uji_asumsi.py`** (di `proposal_skripsi/scripts/`) — Shapiro-Wilk, Levene
+  median-centred, VIF/tolerance, Durbin-Watson. Tanpa dependensi; scipy dipakai
+  bila ada dan mesinnya dilaporkan (`scipy` vs `royston`).
+- **`buat_daftar_tabel_gambar.py`** — menomori ulang caption per bab sebagai
+  field `SEQ` dan membangun Daftar Tabel/Gambar/Lampiran dengan titik pemimpin
+  + nomor halaman dari render.
+- **`campus_json2yaml.py`** — konversi 29 JSON template kampus menjadi profil
+  YAML; nilai yang tidak tertulis di sumber menjadi `null` + `catatan_konflik`,
+  bukan tebakan. Menolak menimpa preset tulisan tangan.
+- Kunci profil baru: `catatan_kaki:` (dipakai/wajib/gaya/penomoran) dan
+  `lampiran:` (dihitung_dalam_batas_halaman/penomoran).
+- `buat_template_lengkap.py`: `validasi_profil()` (gagal dengan daftar kunci
+  yang hilang, bukan `TypeError`), `--margin SISI=CM`, `--spasi`, `--kertas`.
+  Kertas B5 ditambahkan di generator dan `audit_docx.py`.
+- Gerbang `gate_naskah.sh` naik dari 7 menjadi 10 pemeriksa; sitasi numerik
+  dilewati otomatis pada profil APA, kemiripan dilewati bila indeks tidak ada
+  (`INDEKS_KORPUS=` untuk mengarahkan ke indeks lain).
+
+### Diperbaiki
+- `buat_daftar_tabel_gambar.py`: caption dua paragraf dihitung dua kali; blok
+  Daftar Tabel terbaca sebagai caption saat skrip dijalankan ulang; kolom
+  halaman berisi angka yang sama karena pencarian tidak melewati halaman daftar.
+- `periksa_konsistensi.py`: `cari_bagian()` mengembalikan rentang nol panjang
+  sehingga pemeriksaan jumlah tidak pernah berjalan; heading Markdown (`## 1.2.`)
+  tidak dikenali; daftar pustaka numerik terbaca sebagai catatan kaki.
+- `cek_kemiripan_korpus.py`: dukungan indeks `.json.gz`.
+
+### Diuji
+`format_kampus/tests/run_tests.sh` naik dari 117 menjadi **134 pemeriksaan,
+semua lulus** (0 dilewati); `tests/tes_bundel.py` **35 lulus** termasuk penjaga
+konten. Uji asumsi diverifikasi silang terhadap scipy (Shapiro/Levene/VIF/DW
+cocok sampai 3 desimal).
+
 ## [2.8.0] — 2026-11-02
 
 ### Konteks

@@ -60,5 +60,21 @@ sampul:
 bahasa:
   istilah_asing: miring   # istilah asing tanpa padanan ditulis miring
 
+# --- cincin opsional: hanya bila panduan mengaturnya -------------------------
+# Catatan kaki / endnote. Profil yang tidak menyebut bagian ini berarti
+# panduan tidak mengaturnya (jangan diisi dugaan).
+catatan_kaki:
+  dipakai: null          # true | false | null (tidak diatur)
+  wajib: null            # true bila panduan mewajibkan footnote
+  gaya: null             # footnote | endnote | angka dalam kurung
+  penomoran: null        # per_halaman | per_bab | berurutan
+  spasi: null            # spasi di dalam catatan kaki
+
+# Lampiran: apakah dihitung dalam batas halaman minimal, dan bagaimana dinomori.
+lampiran:
+  dihitung_dalam_batas_halaman: null   # false = lampiran di luar hitungan
+  penomoran: null                      # "angka Arab (Lampiran 1)" | "Romawi (Lampiran I)"
+  halaman_lampiran_dinomori: null      # true bila halaman lampiran punya nomor sendiri
+
 pengecualian: []      # penyimpangan yang disetujui pengguna, dicatat eksplisit
 catatan_konflik: []   # ketentuan panduan yang saling bertentangan, untuk ditanyakan

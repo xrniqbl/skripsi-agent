@@ -33,7 +33,8 @@ import sys
 
 ROMAWI = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
           "XI", "XII"]
-KERTAS = {"A4": (21.0, 29.7), "F4": (21.59, 33.02), "Letter": (21.59, 27.94)}
+KERTAS = {"A4": (21.0, 29.7), "F4": (21.59, 33.02), "Letter": (21.59, 27.94),
+          "B5": (17.6, 25.0)}
 
 
 def _muat_yaml(path):
@@ -48,6 +49,36 @@ def _muat_yaml(path):
 def _nilai(d, kunci, bawaan=None):
     v = (d or {}).get(kunci)
     return bawaan if v is None else v
+
+
+def validasi_profil(profil: dict, izinkan_kosong: bool = False) -> list[str]:
+    """Periksa nilai yang WAJIB ada sebelum dokumen dibangun.
+
+    Profil hasil konversi JSON boleh memuat `null` (panduan tidak menyebutkan).
+    Itu benar sebagai data, tetapi tidak bisa dicetak: margin `null` membuat
+    `Cm(None)` melempar TypeError, dan spasi `null` menghasilkan dokumen yang
+    tidak sesuai panduan mana pun. Lebih baik berhenti dengan pesan yang
+    menyebut kunci persisnya daripada menghasilkan dokumen yang salah format
+    tanpa satu pun peringatan.
+    """
+    kurang: list[str] = []
+    mar = (profil.get("dokumen") or {}).get("margin_cm") or {}
+    for sisi in ("kiri", "atas", "kanan", "bawah"):
+        if mar.get(sisi) is None:
+            kurang.append(f"dokumen.margin_cm.{sisi}")
+    if not (profil.get("dokumen") or {}).get("ukuran_kertas"):
+        kurang.append("dokumen.ukuran_kertas")
+    fon = profil.get("font") or {}
+    if fon.get("isi_pt") is None:
+        kurang.append("font.isi_pt")
+    if (profil.get("spasi") or {}).get("isi") is None:
+        kurang.append("spasi.isi")
+    sis = profil.get("sistematika") or {}
+    if not (sis.get("bab") or {}):
+        kurang.append("sistematika.bab")
+    if not (sis.get("bagian_awal") or []):
+        kurang.append("sistematika.bagian_awal")
+    return kurang
 
 
 # ---------------------------------------------------------------- penomoran
@@ -475,6 +506,13 @@ def main() -> int:
     ap.add_argument("--isi-paragraf", type=int, default=1,
                     help="jumlah paragraf contoh per subbab (pakai angka besar "
                          "untuk menguji penomoran halaman lanjutan)")
+    ap.add_argument("--margin", action="append", default=[], metavar="SISI=CM",
+                    help="timpa margin profil, mis. --margin kiri=4 --margin atas=3 "
+                         "(wajib bila profil hasil konversi masih null)")
+    ap.add_argument("--spasi", type=float, default=None,
+                    help="timpa spasi isi profil (1.0 | 1.15 | 1.5 | 2.0)")
+    ap.add_argument("--kertas", default=None, metavar="A4|F4|Letter|B5",
+                    help="timpa ukuran kertas (dipakai profil hasil konversi)")
     a = ap.parse_args()
 
     if not os.path.isfile(a.profil):
@@ -483,6 +521,44 @@ def main() -> int:
     profil = _muat_yaml(a.profil)
     if not isinstance(profil, dict) or "sistematika" not in profil:
         print("GAGAL: profil tidak memuat kunci 'sistematika'.", file=sys.stderr)
+        return 2
+
+    # ---- timpaan dari CLI (dipakai profil hasil konversi yang masih null) ----
+    for item in a.margin:
+        if "=" not in item:
+            print(f"GAGAL: --margin harus SISI=CM, dapat: {item}", file=sys.stderr)
+            return 2
+        sisi, nilai = item.split("=", 1)
+        sisi = sisi.strip().lower()
+        if sisi not in ("kiri", "atas", "kanan", "bawah"):
+            print(f"GAGAL: sisi margin tidak dikenal: {sisi}", file=sys.stderr)
+            return 2
+        try:
+            profil.setdefault("dokumen", {}).setdefault("margin_cm", {})[sisi] = float(nilai)
+        except ValueError:
+            print(f"GAGAL: nilai margin bukan angka: {nilai}", file=sys.stderr)
+            return 2
+    if a.spasi is not None:
+        profil.setdefault("spasi", {})["isi"] = a.spasi
+    if a.kertas:
+        if a.kertas not in ("A4", "F4", "Letter", "B5"):
+            print(f"GAGAL: --kertas harus A4|F4|Letter|B5, dapat: {a.kertas}",
+                  file=sys.stderr)
+            return 2
+        profil.setdefault("dokumen", {})["ukuran_kertas"] = a.kertas
+
+    kurang = validasi_profil(profil)
+    if kurang:
+        print("GAGAL: profil belum lengkap untuk dicetak — kunci berikut masih kosong:",
+              file=sys.stderr)
+        for k in kurang:
+            print(f"  - {k}", file=sys.stderr)
+        print("\nIsi di profil, atau timpa lewat CLI:\n"
+              "  buat_template_lengkap.py profil.yaml out.docx "
+              "--margin kiri=4 --margin atas=3 --margin kanan=3 --margin bawah=3 "
+              "--spasi 2", file=sys.stderr)
+        print(f"  (catatan_konflik profil ini: "
+              f"{len(profil.get('catatan_konflik') or [])} butir)", file=sys.stderr)
         return 2
 
     # ---- berkas bunyi halaman (opsional) ----

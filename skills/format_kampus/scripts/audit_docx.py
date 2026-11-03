@@ -53,7 +53,8 @@ def main():
     nama_font = fon.get('nama') or 'Times New Roman'
 
     s = doc.sections[0]
-    kertas = {'A4': (21.0, 29.7), 'Letter': (21.59, 27.94), 'F4': (21.59, 33.02)}
+    kertas = {'A4': (21.0, 29.7), 'Letter': (21.59, 27.94), 'F4': (21.59, 33.02),
+              'B5': (17.6, 25.0)}
     w, h = kertas.get(dok.get('ukuran_kertas') or 'A4', kertas['A4'])
     catat('ukuran kertas', abs(cm(s.page_width) - w) <= TOL_CM and abs(cm(s.page_height) - h) <= TOL_CM,
           f'{cm(s.page_width)}x{cm(s.page_height)} cm')

@@ -1,0 +1,131 @@
+# Profil Format Kampus — ISI DENGAN NAMA INSTITUSI ANDA
+# DIKONVERSI OTOMATIS dari campus_templates/custom.json oleh
+# scripts/campus_json2yaml.py. Jangan disunting tangan: perbaiki
+# JSON sumbernya, atau salin berkas ini lalu ubah manual (tandai
+# 'manual: true' di kepala berkas supaya konverter tidak menimpanya).
+#
+# Setiap nilai null berarti panduan TIDAK menyebutkannya — bukan nol,
+# bukan default. Periksa catatan_konflik sebelum memakai profil ini
+# untuk dokumen yang akan dicetak.
+kampus:
+  nama: ISI DENGAN NAMA INSTITUSI ANDA
+  fakultas: ''
+  program_studi: skripsi
+  sumber_panduan: Salin berkas ini menjadi nama Institutional_anda.json, lalu isi seluruh field dari pedoman
+    resmi kampus Anda. Jangan menebak aturan tata letak; Field yang kosong akan diisi manual.
+  sumber_template: dikonversi dari campus_templates/kode.json
+  catatan_sumber: Salin berkas ini menjadi nama Institutional_anda.json, lalu isi seluruh field dari pedoman
+    resmi kampus Anda. Jangan menebak aturan tata letak; Field yang kosong akan diisi manual.
+dokumen:
+  ukuran_kertas: null
+  margin_cm:
+    kiri: null
+    atas: null
+    kanan: null
+    bawah: null
+font:
+  nama: Times New Roman
+  isi_pt: 12
+  warna: hitam
+  judul_bab:
+    pt: 14
+    tebal: true
+    kapital: true
+    rata: tengah
+  subbab:
+    pt: 12
+    tebal: true
+  sub_subbab:
+    pt: 12
+    tebal: true
+  judul_tabel_gambar_pt: 12
+spasi:
+  isi: null
+  judul: 1.5
+  tabel: 1.0
+  daftar_pustaka: 1.0
+  catatan_daftar_pustaka: tiap entri 1 spasi, jarak antar entri 2 spasi
+sistematika:
+  bagian_awal:
+  - Halaman Judul
+  - Lembar Persetujuan
+  - Pernyataan Keaslian
+  judul_bab:
+    BAB I: PENDAHULUAN
+    BAB II: TINJAUAN PUSTAKA
+    BAB III: METODE PENELITIAN
+  bab:
+    BAB I:
+    - Latar Belakang Masalah
+    - Rumusan Masalah
+    - Tujuan Penelitian
+    - Manfaat Penelitian
+    - Batasan Masalah
+    BAB II:
+    - Landasan Teori
+    - Penelitian Terdahulu yang Relevan
+    - Kerangka Berpikir
+    - Hipotesis
+    BAB III:
+    - Desain Penelitian
+    - Populasi dan Sampel
+    - Variabel Penelitian
+    - Definisi Operasional Variabel
+    - Skala Pengukuran
+    - Teknik Pengumpulan Data
+    - Teknik Analisis Data
+  bagian_akhir:
+  - Daftar Pustaka
+  - Lampiran
+penomoran_halaman:
+  bagian_awal:
+    format: romawi_kecil
+    posisi: tengah_bawah
+    jarak_dari_bawah_cm: null
+    lembar_judul_dihitung_tanpa_nomor: true
+    sampul_dihitung: true
+    nomor_disembunyikan: []
+  bagian_pokok:
+    format: arab
+    mulai_dari: 1
+    awal_bab: tengah_bawah
+    halaman_lain: kanan_atas
+  bagian_akhir:
+    format: arab_lanjutan
+    posisi: tengah_bawah
+caption:
+  tabel:
+    posisi: di_atas_tabel
+    rata: tengah
+    penomoran: BELUM DIKETAHUI
+  gambar:
+    posisi: di_bawah_gambar
+    rata: tengah
+    penomoran: BELUM DIKETAHUI
+sitasi:
+  gaya: null
+  min_jurnal_atau_prosiding: null
+  batas_usia_referensi_tahun: null
+  aturan_khusus: []
+sampul:
+  judul:
+    pt: 14
+    kapital: true
+    spasi: 1.5
+  kata_skripsi_pt: 18
+  nama_nim_pt: 14
+  institusi_pt: 12
+  kalimat_diajukan: Diajukan untuk memenuhi salah satu syarat kelulusan Program Sarjana
+bahasa:
+  istilah_asing: miring
+pengecualian: []
+catatan_konflik:
+- margin kiri tidak terbaca dari panduan ('') — isi manual
+- margin atas tidak terbaca dari panduan ('') — isi manual
+- margin kanan tidak terbaca dari panduan ('') — isi manual
+- margin bawah tidak terbaca dari panduan ('') — isi manual
+- font isi tidak diatur di JSON
+- penomoran halaman tidak diatur di JSON — memakai skema baku (Romawi kecil / Arab mulai 1 / Arab lanjutan)
+- penomoran caption (Tabel 4.1 vs Tabel IV.1) tidak disebut — periksa panduan sebelum menulis caption
+- 'gaya sitasi tidak dikenali: '''''
+- 'spasi isi tidak terbaca: '''' — isi manual (1,5 atau 2)'

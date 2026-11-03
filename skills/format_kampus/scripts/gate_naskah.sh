@@ -17,6 +17,11 @@
 #   5. periksa_penomoran     nomor subbab dari numbering.xml (khusus .docx)
 #   6. cek_bahasa            ragam baku + aturan bahasa panduan
 #   7. peta_bab45            pemetaan rumusan -> hasil -> simpulan
+#   8. periksa_konsistensi   identitas, tanggal, jumlah butir, rujukan bab
+#   9. periksa_sitasi_numerik  [n] di teks vs entri daftar pustaka (IEEE/Vancouver)
+#  10. cek_kemiripan_korpus  tumpang tindih frasa dengan indeks korpus lokal
+#                            (INDEKS_KORPUS=mengarah ke indeks lain; tanpa
+#                             indeks, pemeriksaan ini dilewati)
 #
 # Tanpa --ketat, temuan berupa PERINGATAN tidak menggagalkan gerbang; dengan
 # --ketat, satu peringatan pun membuat exit 1.
@@ -28,11 +33,11 @@
 set -uo pipefail
 
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
-    sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
 fi
 if [ $# -lt 2 ]; then
-    sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
     exit 2
 fi
 
@@ -126,6 +131,34 @@ case "$NASKAH" in
 esac
 jalankan "bahasa" "$ROOT/skills/bahasa_akademik/scripts/cek_bahasa.py" "$NASKAH"
 jalankan "bab IV/V" "$ROOT/skills/bab_iv_v/scripts/peta_bab45.py" "$NASKAH" --periksa
+# Konsistensi internal: identitas, tanggal, jumlah rumusan/tujuan/simpulan,
+# rujukan bab. Cacat kelas ini lolos dari pemeriksa format karena naskahnya
+# terlihat rapi, tetapi dokumennya bertentangan dengan dirinya sendiri.
+jalankan "konsistensi" "$HERE/periksa_konsistensi.py" "$NASKAH" --profil "$PROFIL"
+# Sitasi numerik hanya bermakna pada gaya IEEE/Vancouver; pada APA gaya ini
+# tidak dipakai dan pemeriksa akan melaporkan kebisingan.
+GAYA_SITASI="$("$PY" - "$PROFIL" <<'PYEOF'
+import sys, yaml
+try:
+    p = yaml.safe_load(open(sys.argv[1], encoding="utf-8")) or {}
+    print(str((p.get("sitasi") or {}).get("gaya") or "").upper())
+except Exception:
+    print("")
+PYEOF
+)"
+case "$GAYA_SITASI" in
+    IEEE|VANCOUVER)
+        jalankan "sitasi" "$HERE/periksa_sitasi_numerik.py" "$NASKAH" --gaya "${GAYA_SITASI,,}" ;;
+    *)  echo "  - sitasi       — dilewati (gaya ${GAYA_SITASI:-tidak diketahui}, bukan numerik)" ;;
+esac
+# Kemiripan korpus hanya bila indeks tersedia: tanpa indeks pemeriksa tidak
+# punya pembanding dan akan menyesatkan.
+INDEKS="${INDEKS_KORPUS:-$ROOT/skills/format_kampus/korpus/indeks_korpus.json.gz}"
+if [ -f "$INDEKS" ]; then
+    jalankan "kemiripan" "$HERE/cek_kemiripan_korpus.py" "$NASKAH" --indeks "$INDEKS"
+else
+    echo "  - kemiripan    — dilewati (indeks korpus belum dibangun)"
+fi
 
 echo
 if [ "$gagal" -eq 0 ]; then
