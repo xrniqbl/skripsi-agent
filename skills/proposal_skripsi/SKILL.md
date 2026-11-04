@@ -569,7 +569,7 @@ berlebihan. **Dilarang** mengubah angka, kutipan asli, penanda `[L-n]`/`[D:kolom
 rumusan masalah, tujuan, dan hipotesis.
 
 **Lapis 2 — Mekanis/EYD.** Otomatis penuh. Selain `id_language_check.py`, jalankan
-`plagiarism_check.py`. Rujukan: EYD V (Permendikbudristek 18/2022) dan KBBI. Bila
+`plagiarism_check.py`. Rujukan: EYD V (Kepka Badan Bahasa 0424/I/BS.00.01/2022) dan KBBI. Bila
 LanguageTool `id-ID` tersedia, jalankan sebagai pelengkap dan **verifikasi manual
 setiap sarannya** — LanguageTool sering menolak kata baku.
 

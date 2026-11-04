@@ -38,6 +38,26 @@ terkunci:
 3. Bila pengguna belum punya panduan, tanyakan kampus dan pedomannya; selama belum
    ada profil, gunakan ketentuan umum skripsi Indonesia dan sampaikan bahwa format
    belum terkunci kampus.
+4. **Preset bukan panduan kampus.** Hasil audit (`skills/format_kampus/presets/AUDIT.md`):
+   8 preset berisi angka "konvensi umum" yang belum diverifikasi, dan 16 bersumber dari
+   pedoman satu fakultas/prodi saja (mis. UGM dari FKH, ITB dari Teknik Geologi). Saat
+   pengguna menyebut kampus: **tanyakan fakultas dan prodinya**, katakan bila presetnya
+   tidak terverifikasi atau berasal dari fakultas lain, dan jangan menyajikan angkanya
+   sebagai ketentuan kampus. Format nomor caption dan minimal jurnal jangan ditebak.
+
+## Langkah Nol-B: Bentuk Tugas Akhir dan Aturan AI
+
+Dua pertanyaan yang menentukan seluruh struktur naskah, dan sebelumnya tidak pernah ditanyakan:
+
+1. **Bentuk tugas akhir.** Sejak Permendikbudristek 53/2023, program sarjana/D4 boleh
+   menetapkan tugas akhir berupa skripsi, prototipe, proyek, atau bentuk sejenis
+   (perorangan atau kelompok), dan kebijakannya ada di tingkat program studi. Tanyakan
+   bentuk yang ditetapkan prodi pengguna. Bila bukan skripsi, jangan memaksakan BAB I–V;
+   ikuti pedoman prodi. (Nomor pasal belum diverifikasi — jangan disebut.)
+2. **Aturan penggunaan AI.** Muat `skills/integritas_akademik/`. Tanyakan apakah kampus/
+   fakultas/pembimbing mengatur penggunaan AI dan di mana pernyataannya diletakkan. AI
+   tidak boleh tercantum sebagai penulis, penggunaannya diungkapkan, dan referensi hasil
+   AI diverifikasi satu per satu.
 
 ## Peta Tahap ke Sub-Skill
 
@@ -46,7 +66,8 @@ terkunci:
 | Belum punya topik / cari fenomena / uji judul / nilai kelayakan topik | `skills/topik_skripsi/` |
 | Panduan/format/template kampus → profil format + template DOCX + audit dokumen | `skills/format_kampus/` |
 | Menyambung Zotero / BibTeX / RIS / DOI → Daftar Pustaka otomatis, sisip sitasi ke DOCX | `skills/zotero_pustaka/` |
-| Memeriksa/menyunting bahasa naskah agar baku akademik (EYD) + pemeriksa otomatis | `skills/bahasa_akademik/` |
+| Memeriksa/menyunting bahasa naskah agar baku akademik (EYD Edisi V) + pemeriksa otomatis | `skills/bahasa_akademik/` |
+| Naskah dibantu AI / "boleh pakai AI?" / pernyataan penggunaan AI / sisa artefak chatbot | `skills/integritas_akademik/` |
 | Verifikasi DOI / entri Daftar Pustaka yang mungkin dikarang | `skills/proposal_skripsi/scripts/verify_doi.py` |
 | Data sudah terkumpul → menulis BAB IV hasil & pembahasan, BAB V simpulan & saran | `skills/bab_iv_v/` |
 | Akan seminar/sidang → slide, daftar pertanyaan penguji, latihan jawab | `skills/sidang/` |
@@ -102,6 +123,10 @@ Suite ARS memakai sumber daya bersama di `skills/ars_shared_files/` (alias
    - Penomoran DOCX: jalankan `skills/format_kampus/scripts/periksa_penomoran.py
      <naskah.docx> <profil-kampus.yaml>` — nomor subbab dihitung dari
      `numbering.xml`, bukan dari style heading.
+   - Integritas AI: jalankan `skills/integritas_akademik/scripts/cek_integritas_ai.py
+     <naskah> --profil <profil-kampus.yaml>` — pernyataan penggunaan AI, AI di kolom
+     penulis, dan artefak chatbot yang tertinggal. Pemeriksa pola: "tidak ada temuan"
+     bukan bukti naskah bebas AI.
    - Semua sekaligus: `bash skills/format_kampus/scripts/gate_naskah.sh <naskah>
      <profil-kampus.yaml> [--ketat]`.
    - Kerapian Word: jalankan `skills/format_kampus/scripts/audit_rapi.py` —

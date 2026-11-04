@@ -3,6 +3,82 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.10.0] — 2026-11-04
+
+### Konteks
+Audit terhadap standar penyusunan skripsi kampus-kampus besar Indonesia menemukan
+bahwa 2.9.0 kuat di pemeriksa format dan isi, tetapi lemah di tiga hal yang tidak
+terlihat dari DOCX: **provenans preset kampus**, **regulasi yang berubah sejak 2022**,
+dan **penggunaan AI** — padahal bundel ini sendiri alat berbasis AI. Rilis ini menutup
+yang bisa ditutup tanpa panduan resmi tambahan, dan mencatat terang-terangan yang belum.
+
+### Ditambahkan
+- **`skills/integritas_akademik/`** — skill baru: aturan penggunaan AI (AI bukan penulis,
+  pernyataan transparan, verifikasi referensi, kerahasiaan data responden), templat
+  pernyataan (Indonesia/Inggris, termasuk bentuk "tidak menggunakan AI"), dan
+  `references/regulasi.md` yang menandai **tingkat verifikasi tiap rujukan**.
+- **`cek_integritas_ai.py`** — pemeriksa pola: pernyataan ada atau tidak, tiga unsurnya
+  (alat, tujuan/bagian, verifikasi penulis), AI di kolom penulis, artefak chatbot
+  (`Sebagai model bahasa…`, `oaicite`, `utm_source=chatgpt.com`). Sikap kampus dibaca
+  dari kunci profil baru `integritas.pernyataan_ai` (wajib | dianjurkan | tidak_diatur).
+  Dipasang sebagai gerbang ke-11 di `gate_naskah.sh`. Pemeriksa pola: "tidak ada
+  temuan" bukan bukti naskah bebas AI.
+- **`audit_preset.py`** + **`presets/AUDIT.md`** — audit provenans dan kelengkapan 27
+  preset dengan tujuh kriteria tanpa bobot. Dijaga CI agar laporan tidak basi.
+- Router: **Langkah Nol-B** (bentuk tugas akhir menurut Permendikbudristek 53/2023 dan
+  aturan AI) serta butir 4 pada Langkah Nol (preset bukan panduan kampus).
+- `.github/workflows/tes.yml` — CI menjalankan seluruh suite tes pada tiap push/PR.
+
+### Diperbaiki
+- **`presets/INDEX.md` menyesatkan.** Menandai "Siap pakai: ya" untuk 8 preset yang
+  berkasnya sendiri menyatakan angkanya "BELUM diverifikasi ke pedoman resmi" (BINUS,
+  Budi Luhur, Gunadarma, Udinus, UNY, UPN Veteran Yogyakarta/Jawa Timur/Jakarta).
+  Kini ditandai **TIDAK TERVERIFIKASI**, dengan peringatan di kepala berkas. Tes
+  bundel menghitung silang secara independen dan menolak INDEX yang kembali polos.
+- **Rujukan EYD V yang salah.** `proposal_skripsi` menyebutnya "Permendikbudristek No. 18
+  Tahun 2022". Sumber yang dibuka menunjuk Keputusan Kepala Badan Bahasa
+  No. 0424/I/BS.00.01/2022 (mencabut PUEBI). Diganti di 4 berkas; tes menjaga agar
+  tidak kembali. Sumbernya sekunder (CNN Indonesia) — cocokkan dengan dokumen Badan Bahasa.
+- `bahasa_akademik` tidak lagi menyebut PUEBI sebagai pedoman berlaku.
+- `gate_naskah.sh --help` terpotong sebelum blok "Kode keluar"; rentangnya kini
+  dihitung dari posisi `set -uo pipefail`.
+
+### Hasil audit preset (rincian di `presets/AUDIT.md`)
+- 8 dari 27 preset **tidak terverifikasi** (angka dari konvensi umum).
+- 16 dari 27 bersumber dari pedoman **satu fakultas/prodi** (UGM = FKH, ITB = Teknik
+  Geologi, ITS = FTI, UNDIP = FPIK, UNAIR = Fakultas Vokasi).
+- 26 dari 27 **tidak menyatakan format nomor caption**; tidak satu pun menyatakan
+  minimal jurnal.
+- 0 dari 27 memenuhi ketujuh kriteria; tertinggi `ars-fti` 6/7.
+
+### Belum ditutup — butuh panduan resmi atau keputusan pemilik repo
+1. **Preset kampus ternama belum bisa dipercaya sebagai ketentuan kampus.** Memperbaikinya
+   berarti membaca pedoman resmi tiap universitas/fakultas dan mengutip butirnya
+   (cetakan: `ars-fti.yaml`). Prioritas: UI, UGM, ITB, IPB (margin/spasi/sitasi kosong),
+   ITS, UNAIR, UNDIP, UNPAD, UB.
+2. **Nomor SK pada `ui.yaml` (2143/SK/R/UI/2017) tidak terkonfirmasi.** Laman FEB UI
+   menyebut SK 628/SK/R/UI/2008.
+3. **Tidak ada berkas `LICENSE` di root**, sementara bundel mencampur komponen MIT dengan
+   suite ARS berlisensi CC BY-NC 4.0 (non-komersial). Lisensi bundel secara keseluruhan
+   perlu diputuskan pemilik (ini bukan nasihat hukum).
+4. **`scripts/buat_dokumen_usaha.py` di luar cakupan skripsi**: membuat "Surat Keterangan
+   Usaha" lengkap dengan cap bulat. Disarankan dikeluarkan dari repo ini.
+   `scripts/push-github.sh` adalah alat pengembangan pribadi, bukan bagian bundel.
+5. **Tugas akhir non-skripsi** (prototipe/proyek, Permendikbudristek 53/2023) belum punya
+   templat; sistematika seluruh preset masih BAB I–V. Nomor pasal 53/2023 belum diverifikasi.
+6. **Kaji etik** (ethical clearance/KEPK) belum tercakup. Tanyakan prodi; jangan diasumsikan.
+7. **Kaidah rinci EYD Edisi V** belum diterjemahkan menjadi aturan `cek_bahasa.py`; hanya
+   penamaannya yang dikoreksi. Butuh dokumen resmi Badan Bahasa.
+8. **Format sitasi keluaran AI**: contoh atribusi pada panduan Kemendikbudristek 2024
+   (hlm. 49) tidak terbaca; belum ada format yang bisa dikutip.
+9. **Korpus kemiripan hanya 18 skripsi dari satu repositori (UIN Suska)** — cakupan topik
+   sempit; angka kemiripannya indikator lemah di luar bidang itu.
+10. CI belum pernah dijalankan di GitHub; langkah-langkahnya hanya direplikasi lokal.
+
+### Diuji
+`tes_bundel` 35 → **43 lulus**; `integritas_akademik` **25 lulus** (baru, dengan naskah
+sengaja cacat); `format_kampus` 134, `bahasa_akademik` 16, `bab_iv_v` 15 tetap lulus.
+
 ## [2.9.0] — 2026-11-03
 
 ### Konteks

@@ -13,6 +13,7 @@ yang berlaku. Repo ini adalah agregasi untuk kemudahan install, bukan klaim kepe
 | `ars_academic_paper`, `ars_academic_paper_reviewer`, `ars_academic_pipeline`, `ars_deep_research`, `ars_sr_screener`, `ars_shared_files`, `shared` | imbad0202/academic-research-skills (v3.23.1) | CC BY-NC 4.0 |
 | `office_skripsi`, `office_skripsi_docx`, `office_skripsi_pdf`, `office_skripsi_pptx`, `office_skripsi_spreadsheet` | andypratama3/office-skripsi | MIT |
 | `proposal_skripsi` | bimajanuri/proposal-skripsi-skill | MIT |
+| `integritas_akademik` | Karya asli bundel ini (penggunaan AI, pernyataan transparansi, regulasi bertingkat verifikasi) | MIT |
 | `topik_skripsi` | Karya asli bundel ini (tahap fenomena → masalah → gap → FINER → judul) | MIT |
 | `bab_iv_v` | Karya asli bundel ini (BAB IV hasil/pembahasan + BAB V simpulan) | MIT |
 | `sidang` | Karya asli bundel ini (slide, bank pertanyaan penguji, teknik menjawab) | MIT |

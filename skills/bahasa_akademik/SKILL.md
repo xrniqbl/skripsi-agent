@@ -1,6 +1,6 @@
 ---
 name: bahasa_akademik
-description: Menjaga naskah skripsi/tesis/artikel berbahasa Indonesia tetap dalam ragam akademik baku sesuai EYD/PUEBI. Gunakan saat menulis, menyunting, atau memeriksa naskah akademik Bahasa Indonesia — sebelum dokumen dinyatakan selesai, jalankan pemeriksa scripts/cek_bahasa.py dan perbaiki temuannya mengikuti references/pedoman-bahasa-akademik.md.
+description: Menjaga naskah skripsi/tesis/artikel berbahasa Indonesia tetap dalam ragam akademik baku sesuai EYD Edisi V (2022). Gunakan saat menulis, menyunting, atau memeriksa naskah akademik Bahasa Indonesia — sebelum dokumen dinyatakan selesai, jalankan pemeriksa scripts/cek_bahasa.py dan perbaiki temuannya mengikuti references/pedoman-bahasa-akademik.md.
 ---
 
 # Bahasa Akademik — Ragam Baku untuk Naskah Ilmiah Indonesia
@@ -11,7 +11,7 @@ mana pun yang menghasilkan teks Indonesia wajib tunduk pada pedoman di sini.
 
 ## Aturan Inti (ringkasan — rincian di references/pedoman-bahasa-akademik.md)
 
-1. **Baku dan sesuai EYD**: kata baku (analisis, hipotesis, metode, sistem, jadwal),
+1. **Baku dan sesuai EYD Edisi V**: kata baku (analisis, hipotesis, metode, sistem, jadwal),
    imbuhan dan kata depan ditulis benar (`di` pasif disambung, `di` tempat dipisah),
    tanda baca dan huruf kapital mengikuti kaidah.
 2. **Tanpa orang pertama/kedua**: jangan memakai *saya, kami, kita, Anda, penulis

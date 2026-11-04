@@ -5,6 +5,22 @@ mengekstrak panduan dari nol, periksa daftar ini: bila kampus pengguna ada, paka
 presetnya sebagai draf awal — tetap konfirmasikan ringkasannya ke pengguna, karena
 panduan bisa berubah antar edisi.
 
+> **Peringatan (hasil audit 4 November 2026, lihat [AUDIT.md](AUDIT.md)).**
+> "Siap pakai" hanya berarti skrip generator bisa berjalan — **bukan** bahwa angkanya
+> ketentuan kampus tersebut.
+>
+> - **8 preset tidak terverifikasi**: berkasnya sendiri menyatakan angkanya berasal dari
+>   "konvensi umum", bukan dari pedoman kampus (BINUS, Budi Luhur, Gunadarma, Udinus,
+>   UNY, UPN Veteran Yogyakarta, UPN Veteran Jawa Timur, UPN Veteran Jakarta).
+>   Jangan menyajikannya sebagai format kampus; minta panduan resmi pengguna.
+> - **16 preset bersumber dari satu fakultas/prodi** (mis. UGM = FKH, ITB = Teknik
+>   Geologi, ITS = FTI, UNDIP = FPIK). Tanyakan fakultas pengguna sebelum memakainya.
+> - **26 dari 27** preset tidak menyatakan format nomor caption.
+> - Nomor SK pada `ui.yaml` (2143/SK/R/UI/2017) **tidak terkonfirmasi** (lihat
+>   `skills/integritas_akademik/references/regulasi.md`).
+>
+> Hasilkan ulang audit: `python3 scripts/audit_preset.py --out presets/AUDIT.md`
+
 Kolom **Siap pakai** adalah hasil percobaan nyata: menjalankan
 `buat_template_lengkap.py` terhadap setiap preset. Tanda `perlu isi` berarti
 sumber JSON kampusnya tidak menyebut angka tersebut (bukan salah konversi) —
@@ -14,18 +30,18 @@ Skrip akan berhenti dengan daftar kunci yang kosong, bukan diam-diam memakai nol
 | Berkas | Kampus | Kertas | Margin k/r/a/b (cm) | Spasi | Siap pakai |
 |---|---|---|---|---|---|
 | `ars-fti.yaml` | Univ. Adhirajasa Reswara Sanjaya — FTI | A4 | 4 / 3 / 3 / 3 | 2 | ya |
-| `binus.yaml` | BINUS University | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
-| `budi-luhur.yaml` | Universitas Budi Luhur | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
+| `binus.yaml` | BINUS University | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
+| `budi-luhur.yaml` | Universitas Budi Luhur | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 | `custom.yaml` | (kerangka kosong — isi sendiri) | — | — | — | perlu isi |
 | `generic.yaml` | Umum (tanpa kampus) | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
-| `gunadarma.yaml` | Universitas Gunadarma | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
+| `gunadarma.yaml` | Universitas Gunadarma | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 | `ipb.yaml` | Institut Pertanian Bogor | A4 | — | — | perlu isi |
 | `itb.yaml` | Institut Teknologi Bandung | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
 | `its.yaml` | Institut Teknologi Sepuluh Nopember | A4 | 3 / 3 / 2 / 2,5 | 1 | ya |
 | `telu.yaml` | Telkom University | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
 | `uad.yaml` | Universitas Ahmad Dahlan | A4 | — | 2 | perlu isi |
 | `ub.yaml` | Universitas Brawijaya | A4 | 3 / 2,5 / 2,5 / 2,5 | 1,5 | ya |
-| `udinus.yaml` | Universitas Dian Nusantara | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
+| `udinus.yaml` | Universitas Dian Nusantara | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 | `ugm.yaml` | Universitas Gadjah Mada | A4 | 4 / 4 / 3 / 3 | 2 | ya |
 | `ui.yaml` | Universitas Indonesia | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
 | `uii.yaml` | Universitas Islam Indonesia | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
@@ -39,10 +55,10 @@ Skrip akan berhenti dengan daftar kunci yang kosong, bukan diam-diam memakai nol
 | `unhas.yaml` | Universitas Hasanuddin | A4 | — / 2,25 / — / 2,25 | — | perlu isi |
 | `universitas-contoh.yaml` | Universitas Contoh (fiktif) | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
 | `unpad.yaml` | Universitas Padjadjaran | A4 | 4 / 4 / 3 / 3 | 2 | ya |
-| `uny.yaml` | Universitas Negeri Yogyakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
-| `upn-veteran.yaml` | UPN Veteran Yogyakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
-| `upnv-jatim.yaml` | UPN Veteran Jawa Timur | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
-| `upnvj.yaml` | UPN Veteran Jakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya |
+| `uny.yaml` | Universitas Negeri Yogyakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
+| `upn-veteran.yaml` | UPN Veteran Yogyakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
+| `upnv-jatim.yaml` | UPN Veteran Jawa Timur | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
+| `upnvj.yaml` | UPN Veteran Jakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 
 Seluruh preset bernilai **A4** dan **Times New Roman**; tidak ada kampus yang
 menyebut kertas atau font lain di sumber yang tersedia, jadi tidak ada yang

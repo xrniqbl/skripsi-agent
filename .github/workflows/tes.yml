@@ -1,0 +1,59 @@
+name: tes
+
+# Menjalankan tes regresi bundel pada setiap push dan pull request.
+# Tes memakai naskah yang SENGAJA cacat, jadi kegagalan di sini berarti sebuah
+# pemeriksa berhenti menangkap cacatnya, bukan sekadar gaya kode.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # LibreOffice dipakai uji render (nomor halaman, daftar isi). Tes yang
+      # membutuhkannya melewati diri sendiri bila soffice tidak ada.
+      - name: Pasang poppler dan LibreOffice
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends poppler-utils libreoffice-writer
+
+      - name: Pasang dependensi Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Periksa impor vs requirements
+        run: python scripts/cek_dependensi.py
+
+      - name: Tes bundel
+        run: python tests/tes_bundel.py
+
+      - name: Tes format_kampus
+        run: PYTHON=python bash skills/format_kampus/tests/run_tests.sh
+
+      - name: Tes bahasa_akademik
+        run: PYTHON=python bash skills/bahasa_akademik/tests/run_tests.sh
+
+      - name: Tes integritas_akademik
+        run: PYTHON=python bash skills/integritas_akademik/tests/run_tests.sh
+
+      - name: Tes bab_iv_v
+        run: PYTHON=python bash skills/bab_iv_v/tests/run_tests.sh
+
+      - name: Audit preset tidak basi
+        # AUDIT.md dihasilkan skrip; bila berbeda dari hasil jalan ulang, ada preset
+        # yang diubah tanpa menghasilkan ulang laporannya.
+        run: |
+          python skills/format_kampus/scripts/audit_preset.py \
+            --tahun-acuan 2026 --tanggal 2026-11-04 --out /tmp/AUDIT.baru.md
+          diff -u skills/format_kampus/presets/AUDIT.md /tmp/AUDIT.baru.md

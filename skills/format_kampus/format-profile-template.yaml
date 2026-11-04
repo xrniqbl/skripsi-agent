@@ -76,5 +76,12 @@ lampiran:
   penomoran: null                      # "angka Arab (Lampiran 1)" | "Romawi (Lampiran I)"
   halaman_lampiran_dinomori: null      # true bila halaman lampiran punya nomor sendiri
 
+# Integritas / penggunaan AI. Isi hanya bila panduan kampus mengaturnya; dibaca oleh
+# skills/integritas_akademik/scripts/cek_integritas_ai.py (dan gate_naskah.sh).
+integritas:
+  pernyataan_ai: null    # wajib | dianjurkan | tidak_diatur | null (belum diketahui)
+  letak_pernyataan: null # mis. "setelah Kata Pengantar" — hanya bila panduan menyebut
+  sumber: null           # nama dokumen + pasal
+
 pengecualian: []      # penyimpangan yang disetujui pengguna, dicatat eksplisit
 catatan_konflik: []   # ketentuan panduan yang saling bertentangan, untuk ditanyakan

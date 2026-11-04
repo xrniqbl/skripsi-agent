@@ -1,7 +1,7 @@
 # Checklist EYD (Layer 2)
 
 Pelacak untuk **Layer 2** dari `references/quality-gates.md`. Rujukan:
-`references/eyd-check.md` (EYD V, Permendikbudristek 18/2022, dan KBBI).
+`references/eyd-check.md` (EYD V, Kepka Badan Bahasa 0424/I/BS.00.01/2022, dan KBBI).
 
 Lapisan ini **mekanis dan dapat diautomasi**. Lulus Layer 2 bukan berarti bahasa
 sudah enak dibaca; itu tugas Layer 1 dan Layer 3.
