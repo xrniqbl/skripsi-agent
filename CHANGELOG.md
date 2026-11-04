@@ -3,6 +3,34 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.11.0] — 2026-11-04
+
+### Konteks
+Pengguna menempelkan butir 4.2–4.7 panduan ARS FTI beserta contoh halamannya dan
+bertanya apakah sudah tercakup. Pencocokan menunjukkan format dokumen (margin, font,
+cover, penomoran halaman, caption) sudah ada, tetapi **aturan pengutipan, penomoran
+tingkat ketiga, dan indentasi/daftar berjenjang belum**.
+
+### Ditambahkan
+- **`periksa_kutipan.py`** — gerbang ke-12; membaca blok `kutipan:` profil.
+- Blok `kutipan:`, `penomoran_bertingkat:`, `paragraf:` pada `presets/ars-fti.yaml`,
+  dan kerangkanya pada `format-profile-template.yaml`.
+- Tiga `catatan_konflik` baru di `ars-fti.yaml`: *et al/dkk* (4.7 butir 4a vs 4.10 butir 5),
+  dua bentuk penomoran sub-sub bab (`2.1.1.` vs `A.`), dan ukuran indentasi tak tertulis.
+- 5 pemeriksaan baru pada `tes_bundel` (43 → 48).
+
+### Sengaja TIDAK diisi (butuh jawaban prodi/pengguna)
+- `kutipan.et_al_dalam_teks: null` — panduan bertentangan; pemeriksa hanya mencatat.
+- `kutipan.langsung_panjang.menjorok_cm` dan `paragraf.menjorok_baris_pertama_cm` — ukuran
+  tidak disebut di teks panduan; kotak merah pada gambar contoh tidak jelas maksudnya.
+- Kode warna latar cover — tidak terbaca di teks panduan.
+
+### Belum ditegakkan
+- `buat_template_lengkap.py` belum menerapkan `penomoran_bertingkat`, indentasi baris
+  pertama, atau daftar berjenjang ke style DOCX (hanya tercatat di profil).
+- Panjang kutipan hanya perkiraan jumlah kata, bukan jumlah baris hasil render.
+- Hanya `ars-fti` yang punya blok `kutipan:`; 26 preset lain dilewati.
+
 ## [2.10.0] — 2026-11-04
 
 ### Konteks

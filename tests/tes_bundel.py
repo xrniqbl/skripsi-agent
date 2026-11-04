@@ -153,6 +153,34 @@ r = subprocess.run(['bash', os.path.join(fk, 'scripts', 'gate_naskah.sh'),
 cek('gate_naskah menjalankan pemeriksa integritas AI',
     r.returncode == 0 and 'integritas' in r.stdout, f'kode {r.returncode}')
 
+# --- periksa_kutipan ---
+pk = [sys.executable, os.path.join(fk, 'scripts', 'periksa_kutipan.py')]
+ars = os.path.join(fk, 'presets', 'ars-fti.yaml')
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_baik.md'), ars],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: naskah baik bersih', r.returncode == 0 and '0 galat, 0 peringatan' in r.stdout,
+    r.stdout[-120:])
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), ars],
+                   capture_output=True, text=True)
+ok_buruk = all(k in r.stdout for k in ('tanpa halaman', 'tanpa tanda kutip',
+                                       'tanpa kata \'dalam\'', 'hanya ~'))
+cek('periksa_kutipan: menangkap tanpa halaman, panjang, blok bertanda kutip, tanpa "dalam"',
+    ok_buruk, r.stdout[-200:])
+cek('periksa_kutipan: et al dalam teks hanya catatan selama profil null',
+    "profil belum menetapkan" in r.stdout and 'GALAT' not in r.stdout)
+tmpy = os.path.join(tempfile.gettempdir(), 'profil_etal_dilarang.yaml')
+open(tmpy, 'w', encoding='utf-8').write(
+    "kutipan:\n  et_al_dalam_teks: dilarang\n  batas_baris_blok: 5\n")
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), tmpy],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: et_al dilarang = galat', r.returncode == 1 and 'GALAT' in r.stdout)
+tmpy2 = os.path.join(tempfile.gettempdir(), 'profil_tanpa_kutipan.yaml')
+open(tmpy2, 'w', encoding='utf-8').write("kampus: {nama: x}\n")
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), tmpy2],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: profil tanpa blok kutipan dilewati, tidak menebak',
+    r.returncode == 0 and 'dilewati' in r.stdout)
+
 # --- audit preset: provenans harus jujur ---
 import json  # noqa: E402
 try:

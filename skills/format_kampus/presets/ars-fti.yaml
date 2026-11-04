@@ -137,6 +137,44 @@ sitasi:
     - "4.10 butir 12: DILARANG mengutip dari Blogspot, Wordpress, atau Wikipedia"
   larangan_sumber: ["Blogspot", "Wordpress", "Wikipedia"]
 
+# Aturan pengutipan, panduan 4.7. Angka dikutip dari teks panduan; yang tidak
+# diatur panduan diisi null — JANGAN ditebak.
+kutipan:
+  batas_baris_blok: 5                  # 4.7: < 5 baris ikut paragraf; >= 5 baris blok
+  langsung_pendek:                     # kurang dari 5 baris
+    spasi: 2
+    tanda_kutip: true
+    ikut_paragraf: true
+  langsung_panjang:                    # lima baris atau lebih
+    spasi: 1
+    tanda_kutip: false
+    menjorok: true                     # "paragraf lurus sesuai ketukan paragraf atau tab dari tepi kiri"
+    menjorok_cm: null                  # ukuran TIDAK disebut panduan; tanyakan, jangan tebak
+  langsung_syarat:
+    - "yang dikutip berupa definisi atau pengertian suatu teori"
+    - "sama persis dengan aslinya (susunan kata, ejaan, tanda baca)"
+  tidak_langsung:
+    tanda_kutip: false
+    spasi: 2
+    bukan_definisi: true               # kalimat yang dikutip bukan pengertian/definisi
+    bahasa_sendiri: true
+  sumber_sekunder: "Menurut Stoner dalam Handoko (2006:8) ..."   # pola 'X dalam Y (Tahun:Hal)'
+  et_al_dalam_teks: null               # KONFLIK: 4.7 butir 4a membolehkan 'et al/dkk' untuk >= 3
+                                       # pengarang; 4.10 butir 5 melarangnya (Daftar Pustaka).
+                                       # Tunggu konfirmasi prodi — lihat catatan_konflik.
+  reference_manager_wajib: true
+
+# Penomoran bertingkat dalam bab, panduan 4.4 butir 4. Dua bentuk tingkat ketiga
+# muncul dalam contoh panduan; belum jelas kapan masing-masing dipakai.
+penomoran_bertingkat:
+  subbab: "2.1."
+  sub_subbab: "2.1.1."
+  sub_subbab_alternatif_huruf: "A."    # contoh panduan juga memuat 'A. Judul Sub-sub Bab'
+  daftar_berjenjang: ["1.", "a.", "1)", "a)"]   # dari contoh halaman panduan (gambar)
+paragraf:
+  menjorok_baris_pertama_cm: null      # contoh panduan menjorok baris pertama; ukuran tak disebut
+  daftar_menggantung: true             # butir daftar memakai indentasi gantung (contoh panduan)
+
 sampul:                                 # 4.3 dan Tabel IV.1
   urutan_baris: ["Judul", "Logo ARS University", "SKRIPSI", "Diajukan ...dst",
                  "Nama Penulis", "NIM", "Program Studi", "Universitas",
@@ -203,6 +241,17 @@ sidang:                                 # 2.5, 2.6, 2.7
 pengecualian: []
 
 catatan_konflik:
+  - bidang: "et al / dkk dalam teks"
+    isi: "4.7 butir 4a: pengarang >= 3 orang cukup nama pertama + et al/dkk. 4.10 butir 5:
+          semua nama pengarang ditulis lengkap, tanpa et al/dkk. Kemungkinan 4.7 = sitasi
+          dalam teks dan 4.10 = Daftar Pustaka, tetapi panduan tidak menyatakannya.
+          kutipan.et_al_dalam_teks sengaja null sampai prodi mengonfirmasi."
+  - bidang: "penomoran sub-sub bab"
+    isi: "4.4 butir 4 memberi dua bentuk: '2.1.1.' dan 'A.'. Panduan tidak menyatakan
+          kapan 'A.' dipakai. Jangan menyeragamkan tanpa bertanya."
+  - bidang: "indentasi"
+    isi: "Contoh halaman panduan menjorok baris pertama paragraf dan memakai daftar
+          menggantung, tetapi ukuran (cm) tidak tertulis di teks panduan."
   - bidang: "spasi isi"
     isi: "4.2 butir 3 menulis 'Double (2 spasi)'; template lama banyak yang
           memakai 1,5. Panduan 2025 = 2 spasi. Konfirmasi ke prodi bila draft

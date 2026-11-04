@@ -25,6 +25,8 @@
 #  11. cek_integritas_ai    pernyataan penggunaan AI, AI di kolom penulis, artefak
 #                            chatbot (sikap kampus dibaca dari integritas.pernyataan_ai
 #                            di profil; tanpa kunci itu, pernyataan hilang = peringatan)
+#  12. periksa_kutipan      kutipan langsung/tidak langsung/sumber lain menurut blok
+#                            `kutipan:` profil (profil tanpa blok itu = dilewati)
 #
 # Tanpa --ketat, temuan berupa PERINGATAN tidak menggagalkan gerbang; dengan
 # --ketat, satu peringatan pun membuat exit 1.
@@ -166,6 +168,8 @@ fi
 # Integritas penggunaan AI: pernyataan, AI sebagai penulis, artefak chatbot.
 # Pemeriksa pola — "tidak ada temuan" bukan bukti naskah bebas AI.
 jalankan "integritas" "$ROOT/skills/integritas_akademik/scripts/cek_integritas_ai.py" "$NASKAH" --profil "$PROFIL"
+
+jalankan "kutipan" "$HERE/periksa_kutipan.py" "$NASKAH" "$PROFIL"
 
 echo
 if [ "$gagal" -eq 0 ]; then
