@@ -64,14 +64,22 @@ def angka(teks, pola=None):
 
 
 def ukuran_kertas(teks):
-    """'A4 (kuarto 21 x 28 cm)' -> 'A4'. B5/Letter dikenali, tak dikenal -> None."""
+    """'A4 (kuarto 21 x 28 cm)' -> 'A4'. B5/Letter dikenali, tak dikenal -> None.
+
+    Yang dipilih adalah kata kunci yang MUNCUL PERTAMA di teks, bukan yang pertama
+    di daftar: 'B5 (176 x 250 mm) - format buku, bukan A4' menyebut A4 sebagai
+    pembanding, dan pencocokan berdasar urutan daftar salah membacanya sebagai A4
+    (bug yang membuat preset UNHAS tertulis A4 padahal pedomannya B5).
+    """
     s = (teks or "").upper()
+    terawal = None
     for kunci, nilai in (("A4", "A4"), ("A-4", "A4"), ("KUARTO", "A4"),
                          ("F4", "F4"), ("FOLIO", "F4"),
                          ("LETTER", "Letter"), ("B5", "B5")):
-        if kunci in s:
-            return nilai
-    return None
+        i = s.find(kunci)
+        if i >= 0 and (terawal is None or i < terawal[0]):
+            terawal = (i, nilai)
+    return terawal[1] if terawal else None
 
 
 def gaya_sitasi(teks):

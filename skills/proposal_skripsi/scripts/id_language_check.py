@@ -56,7 +56,7 @@ PARA_PANJANG = 120
 KONJUNGSI = {"dan", "atau", "tetapi", "namun", "melainkan", "sedangkan", "padahal",
              "karena", "sehingga", "oleh karena itu", "sehingga", "maka"}
 
-# Kata non-baku. Rujukan: KBBI dan EYD (Permendikbudristek 18/2022).
+# Kata non-baku. Rujukan: KBBI dan EYD (Kepka Badan Bahasa 0424/I/BS.00.01/2022).
 TIDAK_BAKU = {
     "analisa": "analisis", "apotik": "apotek", "managemen": "manajemen",
     "managier": "manajer", "hakekat": "hakikat", "kwality": "mutu",

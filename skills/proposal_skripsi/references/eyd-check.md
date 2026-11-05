@@ -1,7 +1,7 @@
 # EYD Check — Bahasa Indonesia Akademik (EYD V + KBBI)
 
 Pandu pemeriksaan ejaan, kaidah, dan kebenaran bahasa untuk naskah proposal. Rujukan:
-**Pedoman Umum Ejaan Bahasa Indonesia (EYD V), Permendikbudristek No. 18 Tahun 2022**, dan
+**Pedoman Umum Ejaan Bahasa Indonesia (EYD V), Keputusan Kepala Badan Bahasa No. 0424/I/BS.00.01/2022**, dan
 **KBBI daring** (kbbi.kemdikbud.go.id).
 
 > **Bedakan dengan Humanizer** (`references/revision-guide.md`): EYD menangani *kebenaran

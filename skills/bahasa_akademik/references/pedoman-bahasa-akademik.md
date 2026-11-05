@@ -1,7 +1,11 @@
 # Pedoman Bahasa Akademik (Bahasa Indonesia)
 
-Acuan menulis dan menyunting naskah ilmiah. Ikuti EYD (Ejaan Bahasa Indonesia yang
-Disempurnakan) dan PUEBI; bila pedoman kampus berbeda, pedoman kampus yang menang.
+Acuan menulis dan menyunting naskah ilmiah. Ikuti **EYD Edisi V** (Ejaan Bahasa
+Indonesia yang Disempurnakan, Keputusan Kepala Badan Bahasa No. 0424/I/BS.00.01/2022,
+Agustus 2022). Keputusan itu mencabut PUEBI (Keputusan 0321/I/BS.00.00/2021), jadi
+jangan lagi merujuk "PUEBI" sebagai pedoman berlaku. Dasar ini terverifikasi dari
+sumber sekunder; cocokkan kaidah rinci dengan dokumen resmi Badan Bahasa. Bila
+pedoman kampus berbeda, pedoman kampus yang menang.
 
 ## 1. Ragam dan Nada
 

@@ -76,5 +76,22 @@ lampiran:
   penomoran: null                      # "angka Arab (Lampiran 1)" | "Romawi (Lampiran I)"
   halaman_lampiran_dinomori: null      # true bila halaman lampiran punya nomor sendiri
 
+# Aturan pengutipan. Isi hanya bila panduan mengaturnya (lihat presets/ars-fti.yaml).
+# Dibaca oleh scripts/periksa_kutipan.py; tanpa blok ini pemeriksa dilewati.
+kutipan:
+  batas_baris_blok: null               # mis. 5: >= batas = blok tanpa tanda kutip
+  langsung_pendek: {spasi: null, tanda_kutip: null, ikut_paragraf: null}
+  langsung_panjang: {spasi: null, tanda_kutip: null, menjorok: null, menjorok_cm: null}
+  tidak_langsung: {tanda_kutip: null, spasi: null}
+  sumber_sekunder: null                # pola contoh, mis. "X dalam Y (Tahun:Hal)"
+  et_al_dalam_teks: null               # dilarang | boleh_tiga_atau_lebih | null (belum diketahui)
+
+# Integritas / penggunaan AI. Isi hanya bila panduan kampus mengaturnya; dibaca oleh
+# skills/integritas_akademik/scripts/cek_integritas_ai.py (dan gate_naskah.sh).
+integritas:
+  pernyataan_ai: null    # wajib | dianjurkan | tidak_diatur | null (belum diketahui)
+  letak_pernyataan: null # mis. "setelah Kata Pengantar" — hanya bila panduan menyebut
+  sumber: null           # nama dokumen + pasal
+
 pengecualian: []      # penyimpangan yang disetujui pengguna, dicatat eksplisit
 catatan_konflik: []   # ketentuan panduan yang saling bertentangan, untuk ditanyakan

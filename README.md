@@ -2,11 +2,11 @@
 
 **Paket skill AI agent untuk menulis skripsi, proposal, dan artikel ilmiah — dari riset sampai siap sidang.**
 
-Skripsi Agent menyatukan 24 skill penulisan akademik (menemukan topik, riset mendalam, penyusunan proposal Bab I–III, penulisan Bab IV–V, penyuntingan dokumen Word, persiapan sidang, sampai paket submit jurnal) menjadi satu bundel yang bisa dipasang di platform AI agent mana pun: Claude, ChatGPT, dan agent berbasis berkas lainnya. Setiap skill adalah folder mandiri berisi `SKILL.md` beserta referensi dan skrip pendukungnya.
+Skripsi Agent menyatukan 26 skill penulisan akademik (menemukan topik, riset mendalam, penyusunan proposal Bab I–III, penulisan Bab IV–V, penyuntingan dokumen Word, persiapan sidang, sampai paket submit jurnal) menjadi satu bundel yang bisa dipasang di platform AI agent mana pun: Claude, ChatGPT, dan agent berbasis berkas lainnya. Setiap skill adalah folder mandiri berisi `SKILL.md` beserta referensi dan skrip pendukungnya.
 
 > Bundel ini hanya berisi skill dan dokumentasinya. Tidak ada proposal, data penelitian, atau dokumen pribadi milik siapa pun di dalam repo ini.
 
-**Versi terkini: 2.9.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
+**Versi terkini: 2.12.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
 
 ## Mulai dari Mana: Topik Dulu, Baru Format
 
@@ -43,7 +43,9 @@ deep_research      tinjauan literatur bersitasi
       ↓
 bab_iv_v           BAB IV hasil & pembahasan, BAB V simpulan & saran
       ↓
-bahasa_akademik    pemeriksa EYD/PUEBI + aturan bahasa panduan kampus
+bahasa_akademik    pemeriksa EYD Edisi V + aturan bahasa panduan kampus
+      ↓
+integritas_akademik  pernyataan penggunaan AI, AI bukan penulis, artefak chatbot
       ↓
 revisi_pembimbing  catatan pembimbing → daftar kerja terlacak + verifikasi bukti
       ↓
@@ -63,7 +65,9 @@ ada yang gagal — jadi bisa dipakai di alur otomatis, bukan hanya dibaca manusi
 | Revisi | `parse_revisi.py` |
 | Sidang | `audit_sidang.py` |
 | Bahasa | `cek_bahasa.py` |
-| Semua gerbang isi | `gate_naskah.sh` — satu perintah, lima pemeriksa |
+| Integritas AI | `cek_integritas_ai.py` |
+| Pengutipan | `periksa_kutipan.py` |
+| Semua gerbang isi | `gate_naskah.sh` — satu perintah, dua belas pemeriksa |
 
 ## Fitur Utama: Adaptasi Format Kampus Otomatis
 
@@ -119,6 +123,13 @@ Keenamnya **pemeriksa pola, bukan vonis** — setiap temuan wajib dinilai kontek
 | `format_kampus/presets/ars-fti.yaml` | FTI Universitas Adhirajasa Reswara Sanjaya — S1 Sistem Informasi & Teknik Informatika | Panduan Penyusunan Laporan Skripsi FTI, Revisi 2025 (resmi, 42 halaman) |
 | `format_kampus/presets/universitas-contoh.yaml` | fiktif — hanya contoh bentuk isian | — |
 | `proposal_skripsi/campus_templates/*.json` | 29 preset kampus Indonesia (UGM, UI, ITB, IPB, ITS, BINUS, Telkom, dan lainnya) termasuk `ars_fti.json` | panduan resmi masing-masing kampus |
+
+> **Baca sebelum mengandalkan preset (audit 4 November 2026,
+> [presets/AUDIT.md](skills/format_kampus/presets/AUDIT.md)).** Dari 27 preset,
+> **8 tidak terverifikasi** (angkanya dari "konvensi umum", bukan pedoman kampus),
+> **16 berasal dari satu fakultas/prodi** (UGM dari FKH, ITB dari Teknik Geologi, ITS dari
+> FTI, UNDIP dari FPIK), dan **26 tidak menyatakan format nomor caption**. Preset hanyalah
+> draf awal: tanyakan fakultas pengguna dan cocokkan dengan pedoman resminya.
 
 Ketentuan yang **berbeda** antar kampus dan sering menjebak:
 spasi isi 2 vs 1,5 · caption `Tabel IV.1` vs `Tabel 4.1` · subbab
@@ -265,7 +276,8 @@ Yang dijaga, dan ini yang membedakannya dari menyalin manual:
 | Skill | Fungsi |
 |---|---|
 | `format_kampus` | Panduan skripsi kampus mana pun → profil format YAML yang mengikat → template DOCX → audit dokumen terhadap profil (rupa + isi); `perbaiki_skripsi.py` memperbaiki dokumen yang sudah ada: font tema, warna non-hitam, margin semua seksi, dan penomoran halaman tiga zona |
-| `bahasa_akademik` | Pedoman bahasa akademik Indonesia (EYD/PUEBI) + pemeriksa otomatis ragam baku |
+| `bahasa_akademik` | Pedoman bahasa akademik Indonesia (EYD Edisi V) + pemeriksa otomatis ragam baku |
+| `integritas_akademik` | Penggunaan AI dalam skripsi: aturan, templat pernyataan, regulasi dengan tingkat verifikasi, pemeriksa pernyataan/AI-sebagai-penulis/artefak chatbot |
 | `bab_iv_v` | Menyusun BAB IV (hasil & pembahasan) dan BAB V (simpulan & saran) yang terpetakan 1:1 ke rumusan/identifikasi masalah; `peta_bab45.py` memeriksa pemetaan, kehadiran angka statistik, dan kelengkapan saran |
 | `revisi_pembimbing` | Catatan pembimbing (foto/PDF/DOCX/teks) → daftar kerja terlacak per butir, dengan verifikasi bukti sebelum ditandai selesai |
 | `sidang` | Slide presentasi, daftar pertanyaan penguji yang diturunkan dari naskah sendiri, kartu angka, dan latihan tanya-jawab |
@@ -397,7 +409,7 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 35 pemeriksaan, `format_kampus` 134,
+Status tes saat ini: `tes_bundel` 53 pemeriksaan, `integritas_akademik` 25, `format_kampus` 134,
 `bahasa_akademik` 16, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 20,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 

@@ -124,6 +124,156 @@ r = subprocess.run([sys.executable, os.path.join(bv, 'scripts', 'peta_bab45.py')
 cek('uji asap bab_iv_v: --peta mencetak kerangka',
     r.returncode == 0 and 'Jawaban satu kalimat' in r.stdout)
 
+# --- integritas_akademik ---
+ia = os.path.join(ROOT, 'skills', 'integritas_akademik')
+ia_cek = os.path.join(ia, 'scripts', 'cek_integritas_ai.py')
+ia_t = os.path.join(ia, 'tests')
+r = subprocess.run([sys.executable, ia_cek, os.path.join(ia_t, 'naskah_ai_baik.md'), '--ketat'],
+                   capture_output=True, text=True)
+cek('uji asap integritas_akademik: pernyataan lengkap lulus bersih',
+    r.returncode == 0 and '0 galat, 0 peringatan' in r.stdout, f'kode {r.returncode}')
+r = subprocess.run([sys.executable, ia_cek, os.path.join(ia_t, 'naskah_ai_buruk.md')],
+                   capture_output=True, text=True)
+cek('uji asap integritas_akademik: AI sebagai penulis + artefak chatbot ditolak',
+    r.returncode == 1 and 'kolom penulis' in r.stdout and 'artefak chatbot' in r.stdout,
+    f'kode {r.returncode}')
+r = subprocess.run([sys.executable, ia_cek, os.path.join(ia_t, 'naskah_ai_tanpa_pernyataan.md'),
+                    '--profil', os.path.join(ia_t, 'profil_wajib.yaml')],
+                   capture_output=True, text=True)
+cek('uji asap integritas_akademik: profil wajib + pernyataan hilang = galat',
+    r.returncode == 1 and 'mewajibkan' in r.stdout, f'kode {r.returncode}')
+
+# gerbang harus benar-benar menjalankan langkah integritas
+fk = os.path.join(ROOT, 'skills', 'format_kampus')
+env = dict(os.environ, PYTHON=sys.executable)
+r = subprocess.run(['bash', os.path.join(fk, 'scripts', 'gate_naskah.sh'),
+                    os.path.join(fk, 'tests', 'naskah_fti_lengkap.md'),
+                    os.path.join(fk, 'presets', 'ars-fti.yaml'), '--min-jurnal', '3'],
+                   capture_output=True, text=True, env=env)
+cek('gate_naskah menjalankan pemeriksa integritas AI',
+    r.returncode == 0 and 'integritas' in r.stdout, f'kode {r.returncode}')
+
+# --- periksa_kutipan ---
+pk = [sys.executable, os.path.join(fk, 'scripts', 'periksa_kutipan.py')]
+ars = os.path.join(fk, 'presets', 'ars-fti.yaml')
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_baik.md'), ars],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: naskah baik bersih', r.returncode == 0 and '0 galat, 0 peringatan' in r.stdout,
+    r.stdout[-120:])
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), ars],
+                   capture_output=True, text=True)
+ok_buruk = all(k in r.stdout for k in ('tanpa halaman', 'tanpa tanda kutip',
+                                       'tanpa kata \'dalam\'', 'hanya ~'))
+cek('periksa_kutipan: menangkap tanpa halaman, panjang, blok bertanda kutip, tanpa "dalam"',
+    ok_buruk, r.stdout[-200:])
+cek('periksa_kutipan: et al dalam teks hanya catatan selama profil null',
+    "profil belum menetapkan" in r.stdout and 'GALAT' not in r.stdout)
+tmpy = os.path.join(tempfile.gettempdir(), 'profil_etal_dilarang.yaml')
+open(tmpy, 'w', encoding='utf-8').write(
+    "kutipan:\n  et_al_dalam_teks: dilarang\n  batas_baris_blok: 5\n")
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), tmpy],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: et_al dilarang = galat', r.returncode == 1 and 'GALAT' in r.stdout)
+tmpy2 = os.path.join(tempfile.gettempdir(), 'profil_tanpa_kutipan.yaml')
+open(tmpy2, 'w', encoding='utf-8').write("kampus: {nama: x}\n")
+r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), tmpy2],
+                   capture_output=True, text=True)
+cek('periksa_kutipan: profil tanpa blok kutipan dilewati, tidak menebak',
+    r.returncode == 0 and 'dilewati' in r.stdout)
+
+# --- konverter kertas, UNHAS B5, indentasi dari profil ---
+sys.path.insert(0, os.path.join(fk, 'scripts'))
+import campus_json2yaml as _cj  # noqa: E402
+cek('ukuran_kertas: "B5 ... bukan A4" terbaca B5 (kata kunci paling awal)',
+    _cj.ukuran_kertas('B5 (176 x 250 mm) - format buku, bukan A4') == 'B5'
+    and _cj.ukuran_kertas('A4 (kuarto 21 x 28 cm)') == 'A4')
+try:
+    import yaml as _yaml
+    _u = _yaml.safe_load(open(os.path.join(fk, 'presets', 'unhas.yaml'), encoding='utf-8'))
+    cek('preset UNHAS berkertas B5 sesuai pedomannya', _u['dokumen']['ukuran_kertas'] == 'B5')
+except ImportError:
+    cek('preset UNHAS berkertas B5 (butuh PyYAML)', False)
+try:
+    from docx import Document as _D
+    gen = os.path.join(fk, 'scripts', 'buat_template_lengkap.py')
+    d0 = tempfile.mkdtemp()
+    cfg = open(os.path.join(fk, 'presets', 'ars-fti.yaml'), encoding='utf-8').read()
+    open(os.path.join(d0, 'null.yaml'), 'w', encoding='utf-8').write(cfg)
+    open(os.path.join(d0, 'isi.yaml'), 'w', encoding='utf-8').write(
+        cfg.replace('menjorok_baris_pertama_cm: null', 'menjorok_baris_pertama_cm: 1.25'))
+    hasil = {}
+    for nama in ('null', 'isi'):
+        out = os.path.join(d0, nama + '.docx')
+        subprocess.run([sys.executable, gen, os.path.join(d0, nama + '.yaml'), out],
+                       capture_output=True, text=True, cwd=ROOT)
+        dd = _D(out)
+        hasil[nama] = next((p for p in dd.paragraphs if p.text.startswith('Paragraf isi contoh')), None)
+    ok_n = hasil['null'] is not None and 'bawaan generator' in hasil['null'].text \
+        and 'mengikuti panduan' not in hasil['null'].text
+    ok_i = hasil['isi'] is not None and abs(hasil['isi'].paragraph_format.first_line_indent.cm - 1.25) < 0.01 \
+        and 'sesuai profil' in hasil['isi'].text
+    cek('generator: indentasi null = bawaan dan JUJUR (tanpa klaim "mengikuti panduan")', ok_n)
+    cek('generator: indentasi dibaca dari profil (1,25 cm)', ok_i)
+except Exception as e:  # noqa: BLE001
+    cek('generator indentasi', False, str(e)[:100])
+cek('skrip di luar cakupan skripsi sudah dikeluarkan',
+    not os.path.exists(os.path.join(ROOT, 'scripts', 'buat_dokumen_usaha.py'))
+    and not os.path.exists(os.path.join(ROOT, 'scripts', 'push-github.sh')))
+
+# --- audit preset: provenans harus jujur ---
+import json  # noqa: E402
+try:
+    import yaml as _yaml
+    tmpj = os.path.join(tempfile.gettempdir(), 'audit_preset_uji.json')
+    r = subprocess.run([sys.executable, os.path.join(fk, 'scripts', 'audit_preset.py'),
+                        '--tahun-acuan', '2026', '--json', tmpj, '--out', os.devnull],
+                       capture_output=True, text=True)
+    hasil = json.load(open(tmpj, encoding='utf-8')) if r.returncode == 0 else []
+    audit_tak = {h['berkas'] for h in hasil if h['tak_terverifikasi']}
+    # penghitungan independen: berkas yang sumber_panduannya mengaku belum diverifikasi
+    tak_independen = set()
+    for f in os.listdir(os.path.join(fk, 'presets')):
+        if f.endswith('.yaml') and f not in ('universitas-contoh.yaml', 'custom.yaml',
+                                              'generic.yaml', 'ars-fti-halaman.yaml'):
+            p = _yaml.safe_load(open(os.path.join(fk, 'presets', f), encoding='utf-8')) or {}
+            sp = str((p.get('kampus') or {}).get('sumber_panduan') or '')
+            if re.search(r'belum\s+diverifikasi|kebiasaan\s+umum|konvensi\s+umum', sp, re.I):
+                tak_independen.add(f)
+    cek('audit_preset: preset tak terverifikasi terdeteksi (hitung silang independen)',
+        r.returncode == 0 and audit_tak == tak_independen and len(audit_tak) > 0,
+        f'audit={len(audit_tak)} independen={len(tak_independen)}')
+
+    # INDEX.md tidak boleh menyebut preset tak terverifikasi sebagai "siap pakai" polos
+    idx = open(os.path.join(fk, 'presets', 'INDEX.md'), encoding='utf-8').read()
+    polos = []
+    for f in sorted(audit_tak):
+        baris = [b for b in idx.splitlines() if b.startswith(f'| `{f}`')]
+        if not baris or 'TIDAK TERVERIFIKASI' not in baris[0]:
+            polos.append(f)
+    cek('INDEX.md menandai semua preset tak terverifikasi', not polos,
+        'belum ditandai: ' + ', '.join(polos) if polos else '')
+    cek('presets/AUDIT.md ada', os.path.isfile(os.path.join(fk, 'presets', 'AUDIT.md')))
+except ImportError:
+    cek('audit_preset (butuh PyYAML)', False, 'PyYAML tidak terpasang')
+
+# --- rujukan regulasi yang pernah salah tidak boleh kembali ---
+salah = []
+for base, _dirs, files in os.walk(skills_dir):
+    for f in files:
+        if f == 'README-upstream.md' or not f.endswith(('.md', '.py', '.yaml', '.json')):
+            continue
+        try:
+            isi = open(os.path.join(base, f), encoding='utf8').read()
+        except (UnicodeDecodeError, ValueError):
+            continue
+        # regulasi.md sengaja menyebut koreksi ini; selebihnya dilarang
+        if f == 'regulasi.md':
+            continue
+        if re.search(r'Permendikbudristek\s+(?:No\.?\s*)?18\s*(?:/|Tahun)\s*2022', isi):
+            salah.append(os.path.relpath(os.path.join(base, f), ROOT))
+cek('EYD V tidak lagi dirujuk sebagai Permendikbudristek 18/2022', not salah,
+    ', '.join(salah))
+
 # --- sidang ---
 sd = os.path.join(ROOT, 'skills', 'sidang')
 r = subprocess.run([sys.executable, os.path.join(sd, 'scripts', 'audit_sidang.py'),

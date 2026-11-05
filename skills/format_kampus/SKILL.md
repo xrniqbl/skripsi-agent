@@ -270,10 +270,30 @@ variabel, Levene (median-centred), VIF/tolerance, dan Durbin-Watson. Tanpa
 dependensi — memakai scipy bila ada, dan melaporkan mesin mana yang dipakai
 (`scipy` vs `royston`) supaya jelas mana angka presisi.
 
+### 7f. Aturan pengutipan (kutipan langsung, tidak langsung, sumber lain)
+
+`scripts/periksa_kutipan.py naskah profil-kampus.yaml` membaca blok `kutipan:` profil
+(contoh terisi: `presets/ars-fti.yaml`, panduan 4.7). Yang ditangkap:
+kutipan langsung tanpa halaman (`(Nama, Tahun)` padahal formatnya `:Halaman`), kutipan
+bertanda kutip yang sudah sepanjang blok (>= 5 baris, seharusnya 1 spasi tanpa tanda
+kutip), blok yang terlalu pendek atau masih bertanda kutip, "dikutip dari" tanpa
+pola "X **dalam** Y (Tahun:Hal)", dan *et al*/*dkk* dalam teks menurut
+`kutipan.et_al_dalam_teks`.
+
+Batasan yang harus disampaikan ke pengguna: **panjang kutipan hanya perkiraan dari
+jumlah kata** (jumlah baris baru pasti setelah render), dan indentasi menjorok tidak
+diperiksa karena ukurannya tidak disebut panduan (`menjorok_cm: null`). Profil tanpa
+blok `kutipan:` dilewati, bukan ditebak.
+
+Profil ARS juga mencatat penomoran bertingkat (`2.1.` → `2.1.1.`, serta bentuk
+alternatif `A.`) dan daftar berjenjang `1.` → `a.` → `1)` → `a)` pada
+`penomoran_bertingkat:` / `paragraf:`. Itu **pencatatan**, belum ditegakkan generator
+templat — lihat CHANGELOG 2.11.0.
+
 ### 8. Satu perintah untuk semua gerbang isi
 
 `scripts/gate_naskah.sh NASKAH PROFIL.yaml [--ketat] [--min-jurnal N] [--tahun-acuan T]`
-menjalankan kesepuluh pemeriksa berurutan (penomoran hanya `.docx`; sitasi
+menjalankan kedua belas pemeriksa berurutan (penomoran hanya `.docx`; sitasi
 numerik hanya pada profil IEEE/Vancouver; kemiripan hanya bila indeks ada) dan
 melaporkan satu ringkasan. Tanpa `--ketat`, hanya galat yang menggagalkan;
 dengan `--ketat`, satu peringatan pun menggagalkan. Batas minimal jurnal dibaca

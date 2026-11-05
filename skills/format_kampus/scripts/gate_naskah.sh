@@ -22,6 +22,11 @@
 #  10. cek_kemiripan_korpus  tumpang tindih frasa dengan indeks korpus lokal
 #                            (INDEKS_KORPUS=mengarah ke indeks lain; tanpa
 #                             indeks, pemeriksaan ini dilewati)
+#  11. cek_integritas_ai    pernyataan penggunaan AI, AI di kolom penulis, artefak
+#                            chatbot (sikap kampus dibaca dari integritas.pernyataan_ai
+#                            di profil; tanpa kunci itu, pernyataan hilang = peringatan)
+#  12. periksa_kutipan      kutipan langsung/tidak langsung/sumber lain menurut blok
+#                            `kutipan:` profil (profil tanpa blok itu = dilewati)
 #
 # Tanpa --ketat, temuan berupa PERINGATAN tidak menggagalkan gerbang; dengan
 # --ketat, satu peringatan pun membuat exit 1.
@@ -33,11 +38,11 @@
 set -uo pipefail
 
 if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
-    sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
 fi
 if [ $# -lt 2 ]; then
-    sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'
     exit 2
 fi
 
@@ -159,6 +164,12 @@ if [ -f "$INDEKS" ]; then
 else
     echo "  - kemiripan    — dilewati (indeks korpus belum dibangun)"
 fi
+
+# Integritas penggunaan AI: pernyataan, AI sebagai penulis, artefak chatbot.
+# Pemeriksa pola — "tidak ada temuan" bukan bukti naskah bebas AI.
+jalankan "integritas" "$ROOT/skills/integritas_akademik/scripts/cek_integritas_ai.py" "$NASKAH" --profil "$PROFIL"
+
+jalankan "kutipan" "$HERE/periksa_kutipan.py" "$NASKAH" "$PROFIL"
 
 echo
 if [ "$gagal" -eq 0 ]; then
