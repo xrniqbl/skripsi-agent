@@ -3,6 +3,53 @@
 Semua perubahan berarti pada bundel Skripsi Agent dicatat di sini.
 Format mengikuti Keep a Changelog; versi mengikuti Semantic Versioning.
 
+## [2.12.0] — 2026-11-05
+
+### Konteks
+Permintaan "kerjakan semua" atas rekomendasi lanjutan. Yang bisa dikerjakan tanpa menebak
+dikerjakan; yang butuh dokumen resmi tidak terbaca atau keputusan pemilik dicatat di bawah.
+
+### Diperbaiki
+- **Preset UNHAS salah kertas.** Tertulis A4, padahal pedomannya (Keputusan Rektor
+  10438/UN4.1/KEP/2023, butir 4.1.1) menyebut **B5 176×250 mm**. Penyebab: `ukuran_kertas()`
+  di `campus_json2yaml.py` mengambil kata kunci pertama di *daftar*, sehingga teks "B5 (...)
+  bukan A4" terbaca A4. Kini yang dipilih kata kunci yang muncul paling awal di teks.
+  Terbukti: templat UNHAS keluar 17,6 × 25,0 cm.
+- **Generator mengklaim hal yang tidak ada di panduan.** `buat_template_lengkap.py` mengetik
+  indentasi 1 cm dengan teks contoh "mengikuti panduan", padahal panduan tidak menyebut
+  ukurannya. Kini dibaca dari `paragraf.menjorok_baris_pertama_cm`; bila `null`, memakai
+  bawaan 1 cm dan teks contohnya **mengatakan itu bawaan generator**.
+
+### Ditambahkan
+- `presets/TEMUAN-PEDOMAN.md` — catatan apa yang benar-benar terbaca dari pedoman UNHAS dan
+  IPB, apa yang tidak, dan kenapa UI/ITB/UGM tidak bisa dibaca. Temuan menarik: UNHAS memakai
+  **"et al.", bukan "dkk"** (hlm. 31), kebalikan dari larangan ARS; aturan *et al* memang
+  berbeda antar kampus.
+- `references/tugas-akhir-non-skripsi.md` — pertanyaan yang harus diajukan, dan larangan
+  memaksakan BAB I–V pada prototipe/proyek.
+- `references/kaji-etik.md` — hanya yang terverifikasi (Permenkes 75/2020 ada; wajib/tidaknya
+  untuk mahasiswa **tidak** disebut sumber). Agent diperintahkan bertanya, bukan menyimpulkan.
+- Tes: `tes_bundel` 48 → 53.
+
+### Dikeluarkan
+- `scripts/buat_dokumen_usaha.py` (pembuat Surat Keterangan Usaha dengan cap; di luar
+  cakupan skripsi) dan `scripts/push-github.sh` (alat pribadi). Tidak dirujuk berkas lain;
+  tetap bisa dipulihkan dari riwayat git.
+
+### Tidak bisa dikerjakan, dan alasannya
+1. **Preset UI, ITB, UGM, IPB tidak bisa dinaikkan.** UI: URL tidak ada di allowlist sandbox.
+   ITB/UGM: tidak ada PDF tingkat universitas yang bisa dibuka. IPB: format pengetikan
+   ada di lampiran yang terpotong pada teks yang terbaca. Butuh PDF utuh dari pengguna.
+2. **Kaidah rinci EYD Edisi V** belum menjadi aturan `cek_bahasa.py`: halaman Wikisource
+   tidak bisa diambil dan dokumen resmi Badan Bahasa tidak ditemukan lewat pencarian.
+3. **Daftar berjenjang (1. a. 1) a)) dan penomoran sub-sub bab** belum diterapkan ke style
+   DOCX: ukurannya tidak tertulis di panduan.
+4. **Blok `kutipan:` untuk preset lain** — tanpa pedoman terbaca, mengisinya berarti menebak.
+5. **Korpus kemiripan** tetap 18 skripsi: repositori kampus lain memblokir pengambilan
+   otomatis.
+6. **Uji pada skripsi nyata** butuh naskah dan izin pemiliknya.
+7. **`LICENSE`** tetap keputusan pemilik repo (MIT dicampur CC BY-NC).
+
 ## [2.11.0] — 2026-11-04
 
 ### Konteks

@@ -9,7 +9,7 @@ Bundel ini sendiri adalah alat berbasis AI, jadi pengguna berhak mendapat jawaba
 jujur tentang batasnya. Skill ini memegang tiga hal: **apa yang diatur**, **apa yang
 harus tertulis di naskah**, dan **apa yang diperiksa sebelum dikumpulkan**.
 
-Dasar aturan dan tingkat verifikasinya ada di `references/regulasi.md`. Baca berkas itu
+Dasar aturan dan tingkat verifikasinya ada di `references/regulasi.md`. Untuk penelitian dengan responden manusia, lihat juga `references/kaji-etik.md`. Baca berkas itu
 sebelum mengutip pasal kepada pengguna — beberapa rujukan baru terverifikasi sebagian
 dan ditandai demikian.
 

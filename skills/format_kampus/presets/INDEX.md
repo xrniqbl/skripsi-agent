@@ -19,6 +19,8 @@ panduan bisa berubah antar edisi.
 > - Nomor SK pada `ui.yaml` (2143/SK/R/UI/2017) **tidak terkonfirmasi** (lihat
 >   `skills/integritas_akademik/references/regulasi.md`).
 >
+> Catatan pembacaan pedoman resmi dan apa yang tidak terbaca: [TEMUAN-PEDOMAN.md](TEMUAN-PEDOMAN.md).
+>
 > Hasilkan ulang audit: `python3 scripts/audit_preset.py --out presets/AUDIT.md`
 
 Kolom **Siap pakai** adalah hasil percobaan nyata: menjalankan
@@ -52,7 +54,7 @@ Skrip akan berhenti dengan daftar kunci yang kosong, bukan diam-diam memakai nol
 | `umy.yaml` | Universitas Muhammadiyah Yogyakarta | A4 | — | 2 | perlu isi |
 | `unair.yaml` | Universitas Airlangga | A4 | 4 / 4 / 3 / 3 | 2 | ya |
 | `undip.yaml` | Universitas Diponegoro | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
-| `unhas.yaml` | Universitas Hasanuddin | A4 | — / 2,25 / — / 2,25 | — | perlu isi |
+| `unhas.yaml` | Universitas Hasanuddin | **B5** | — / 2,25 / — / 2,25 | — | perlu isi |
 | `universitas-contoh.yaml` | Universitas Contoh (fiktif) | A4 | 4 / 3 / 3 / 3 | 1,5 | ya |
 | `unpad.yaml` | Universitas Padjadjaran | A4 | 4 / 4 / 3 / 3 | 2 | ya |
 | `uny.yaml` | Universitas Negeri Yogyakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
@@ -60,7 +62,7 @@ Skrip akan berhenti dengan daftar kunci yang kosong, bukan diam-diam memakai nol
 | `upnv-jatim.yaml` | UPN Veteran Jawa Timur | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 | `upnvj.yaml` | UPN Veteran Jakarta | A4 | 4 / 4 / 3 / 3 | 1,5 | ya — **TIDAK TERVERIFIKASI** |
 
-Seluruh preset bernilai **A4** dan **Times New Roman**; tidak ada kampus yang
+Seluruh preset bernilai **A4** (kecuali UNHAS = **B5** 176×250 mm, dikoreksi 5 Nov 2026) dan **Times New Roman**; tidak ada kampus yang
 menyebut kertas atau font lain di sumber yang tersedia, jadi tidak ada yang
 ditambahkan sebagai tebakan. `ars-fti-halaman.yaml` bukan profil — itu berisi
 bunyi halaman bagian awal/akhir untuk `--halaman`.

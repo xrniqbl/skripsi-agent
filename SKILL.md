@@ -58,6 +58,12 @@ Dua pertanyaan yang menentukan seluruh struktur naskah, dan sebelumnya tidak per
    fakultas/pembimbing mengatur penggunaan AI dan di mana pernyataannya diletakkan. AI
    tidak boleh tercantum sebagai penulis, penggunaannya diungkapkan, dan referensi hasil
    AI diverifikasi satu per satu.
+3. **Tugas akhir non-skripsi**: bila bukan skripsi, baca
+   `skills/format_kampus/references/tugas-akhir-non-skripsi.md` — jangan memaksakan BAB I–V.
+4. **Kaji etik**: bila penelitian melibatkan subjek manusia, baca
+   `skills/integritas_akademik/references/kaji-etik.md`. Tanyakan prodi; jangan
+   menyatakan kaji etik wajib atau tidak wajib tanpa pedomannya, dan jangan
+   mengarang nomor persetujuan.
 
 ## Peta Tahap ke Sub-Skill
 

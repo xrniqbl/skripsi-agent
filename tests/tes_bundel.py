@@ -181,6 +181,45 @@ r = subprocess.run(pk + [os.path.join(fk, 'tests', 'naskah_kutipan_buruk.md'), t
 cek('periksa_kutipan: profil tanpa blok kutipan dilewati, tidak menebak',
     r.returncode == 0 and 'dilewati' in r.stdout)
 
+# --- konverter kertas, UNHAS B5, indentasi dari profil ---
+sys.path.insert(0, os.path.join(fk, 'scripts'))
+import campus_json2yaml as _cj  # noqa: E402
+cek('ukuran_kertas: "B5 ... bukan A4" terbaca B5 (kata kunci paling awal)',
+    _cj.ukuran_kertas('B5 (176 x 250 mm) - format buku, bukan A4') == 'B5'
+    and _cj.ukuran_kertas('A4 (kuarto 21 x 28 cm)') == 'A4')
+try:
+    import yaml as _yaml
+    _u = _yaml.safe_load(open(os.path.join(fk, 'presets', 'unhas.yaml'), encoding='utf-8'))
+    cek('preset UNHAS berkertas B5 sesuai pedomannya', _u['dokumen']['ukuran_kertas'] == 'B5')
+except ImportError:
+    cek('preset UNHAS berkertas B5 (butuh PyYAML)', False)
+try:
+    from docx import Document as _D
+    gen = os.path.join(fk, 'scripts', 'buat_template_lengkap.py')
+    d0 = tempfile.mkdtemp()
+    cfg = open(os.path.join(fk, 'presets', 'ars-fti.yaml'), encoding='utf-8').read()
+    open(os.path.join(d0, 'null.yaml'), 'w', encoding='utf-8').write(cfg)
+    open(os.path.join(d0, 'isi.yaml'), 'w', encoding='utf-8').write(
+        cfg.replace('menjorok_baris_pertama_cm: null', 'menjorok_baris_pertama_cm: 1.25'))
+    hasil = {}
+    for nama in ('null', 'isi'):
+        out = os.path.join(d0, nama + '.docx')
+        subprocess.run([sys.executable, gen, os.path.join(d0, nama + '.yaml'), out],
+                       capture_output=True, text=True, cwd=ROOT)
+        dd = _D(out)
+        hasil[nama] = next((p for p in dd.paragraphs if p.text.startswith('Paragraf isi contoh')), None)
+    ok_n = hasil['null'] is not None and 'bawaan generator' in hasil['null'].text \
+        and 'mengikuti panduan' not in hasil['null'].text
+    ok_i = hasil['isi'] is not None and abs(hasil['isi'].paragraph_format.first_line_indent.cm - 1.25) < 0.01 \
+        and 'sesuai profil' in hasil['isi'].text
+    cek('generator: indentasi null = bawaan dan JUJUR (tanpa klaim "mengikuti panduan")', ok_n)
+    cek('generator: indentasi dibaca dari profil (1,25 cm)', ok_i)
+except Exception as e:  # noqa: BLE001
+    cek('generator indentasi', False, str(e)[:100])
+cek('skrip di luar cakupan skripsi sudah dikeluarkan',
+    not os.path.exists(os.path.join(ROOT, 'scripts', 'buat_dokumen_usaha.py'))
+    and not os.path.exists(os.path.join(ROOT, 'scripts', 'push-github.sh')))
+
 # --- audit preset: provenans harus jujur ---
 import json  # noqa: E402
 try:

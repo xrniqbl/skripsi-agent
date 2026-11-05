@@ -616,6 +616,12 @@ def main() -> int:
 
     doc = Document()
 
+    # indentasi baris pertama paragraf isi (profil: paragraf.menjorok_baris_pertama_cm)
+    _par = profil.get("paragraf") or {}
+    _ind = _par.get("menjorok_baris_pertama_cm")
+    indent_dari_profil = isinstance(_ind, (int, float)) and not isinstance(_ind, bool) and _ind >= 0
+    indent_cm = float(_ind) if indent_dari_profil else 1.0
+
     # ---- style dasar ----
     normal = doc.styles["Normal"]
     normal.font.name = nama_font
@@ -803,14 +809,20 @@ def main() -> int:
             h2.paragraph_format.left_indent = Cm(0)
             pasang_numpr(h2, peta_num[b["awalan"]], 0)
 
-        # paragraf contoh isi (indent baris pertama 1 cm)
+        # paragraf contoh isi. Indentasi baris pertama dibaca dari
+        # paragraf.menjorok_baris_pertama_cm. Bila profil null (panduan tidak
+        # menyebut ukuran), pakai bawaan generator DAN katakan itu di teks contoh —
+        # jangan menulis "mengikuti panduan" untuk angka yang tidak ada di panduan.
         for n_isi in range(max(1, a.isi_paragraf)):
             isi = doc.add_paragraph()
-            isi.paragraph_format.first_line_indent = Cm(1.0)
+            isi.paragraph_format.first_line_indent = Cm(indent_cm)
             isi.paragraph_format.line_spacing = spa.get("isi", 2.0) or 2.0
             isi.add_run(
                 "Paragraf isi contoh. Ganti dengan isi naskah sebenarnya; "
-                "indentasi baris pertama 1 cm mengikuti panduan."
+                + (f"indentasi baris pertama {indent_cm:g} cm sesuai profil."
+                   if indent_dari_profil else
+                   f"indentasi baris pertama {indent_cm:g} cm adalah bawaan generator "
+                   "(panduan tidak menyebut ukurannya) — sesuaikan dengan contoh kampus.")
                 + (f" (paragraf {n_isi + 1})" if a.isi_paragraf > 1 else ""))
 
 

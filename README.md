@@ -6,7 +6,7 @@ Skripsi Agent menyatukan 26 skill penulisan akademik (menemukan topik, riset men
 
 > Bundel ini hanya berisi skill dan dokumentasinya. Tidak ada proposal, data penelitian, atau dokumen pribadi milik siapa pun di dalam repo ini.
 
-**Versi terkini: 2.11.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
+**Versi terkini: 2.12.0** — riwayat perubahan di [CHANGELOG.md](CHANGELOG.md).
 
 ## Mulai dari Mana: Topik Dulu, Baru Format
 
@@ -409,7 +409,7 @@ cd skills/bab_iv_v        && PYTHON=../../.venv/bin/python bash tests/run_tests.
 cd skills/bahasa_akademik && PYTHON=../../.venv/bin/python bash tests/run_tests.sh
 ```
 
-Status tes saat ini: `tes_bundel` 48 pemeriksaan, `integritas_akademik` 25, `format_kampus` 134,
+Status tes saat ini: `tes_bundel` 53 pemeriksaan, `integritas_akademik` 25, `format_kampus` 134,
 `bahasa_akademik` 16, `proposal_skripsi` 64, `bab_iv_v` 15, `sidang` 20,
 `revisi_pembimbing` 21, `topik_skripsi` 17 — semuanya lulus.
 
